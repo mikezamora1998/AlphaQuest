@@ -17,16 +17,17 @@ public class RenderHandler
 		pixels = ((DataBufferInt) view.getRaster().getDataBuffer()).getData();
 		
 		
-		for(int heightIndex = 0; heightIndex < height; heightIndex++) {
+		/*for(int heightIndex = 0; heightIndex < height; heightIndex++) {
 			
 			int randomPixel = (int)(Math.random() * 0xFFFFFF);
 			
 			for(int widthIndex = 0; widthIndex < width; widthIndex++) {
 				pixels[heightIndex*width + widthIndex] = randomPixel;
 			}
-		}
+		}*/
 	}
 
+	//renders our pixel array t the screen.
 	public void render(Graphics graphics)
 	{
 		/*for(int index = 0; index < pixels.length; index++) {
@@ -34,6 +35,17 @@ public class RenderHandler
 		}*/
 
 		graphics.drawImage(view, 0, 0, view.getWidth(), view.getHeight(), null);
+	}
+	
+	//Render an image to an array
+	public void renderImage(BufferedImage image, int xPosition, int yPosition) {
+		int[] imagePixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
+		for(int y = 0; y < image.getHeight(); y++) {
+			for(int x = 0; x < image.getWidth(); x++) {
+				pixels[(x + xPosition) + (y + yPosition) * view.getWidth()]  = imagePixels[x + y * image.getWidth()]; 
+			}
+			
+		}
 	}
 
 }
