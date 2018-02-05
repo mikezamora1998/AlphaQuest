@@ -15,9 +15,11 @@ import java.io.IOException;
 
 public class Game extends JFrame implements Runnable
 {
+
 	private Canvas canvas = new Canvas();
 	private RenderHandler renderer;
-
+	private BufferedImage testImage;
+	
 	public Game() 
 	{
 		//Make our program shutdown when we exit out.
@@ -42,9 +44,14 @@ public class Game extends JFrame implements Runnable
 		
 		//String userHome = System.getProperty("user.dir");
 		//System.out.print(userHome);
-		String grassTile = System.getProperty("user.dir") + "\\src\\assets\\GrassTile.png";
-		System.out.print(grassTile);
-		BufferedImage testImage = loadImage(grassTile);
+	    //String grassTile = System.getProperty("user.dir") + "\\src\\assets\\GrassTile.png";
+		//System.out.println(grassTile);
+		//grassTile = grassTile.replace("\\", "/");
+		//System.out.println(grassTile);
+
+		System.out.println("GrassTile.png location. = " + Game.class.getResource("assets/GrassTile.png"));
+		testImage = loadImage("assets/GrassTile.png");
+      
 	}
 
 	
@@ -55,8 +62,10 @@ public class Game extends JFrame implements Runnable
 	private BufferedImage loadImage(String path) {
 		try {
 			BufferedImage loadedImage = ImageIO.read(Game.class.getResource(path));
-		
-			return loadedImage;
+			BufferedImage formattedImage = new BufferedImage(loadedImage.getWidth(), loadedImage.getHeight(), BufferedImage.TYPE_INT_RGB);
+			formattedImage.getGraphics().drawImage(loadedImage, 0,0, null);
+			
+			return formattedImage;
 		}catch(IOException exception){
 			exception.printStackTrace();
 			return null;
@@ -68,6 +77,7 @@ public class Game extends JFrame implements Runnable
 			Graphics graphics = bufferStrategy.getDrawGraphics();
 			super.paint(graphics);
 
+			renderer.renderImage(testImage, 0, 0);
 			renderer.render(graphics);
 
 			graphics.dispose();
@@ -75,9 +85,9 @@ public class Game extends JFrame implements Runnable
 	}
 
 	public void run() {
-		BufferStrategy bufferStrategy = canvas.getBufferStrategy();
-		int i = 0;
-		int x = 0;
+		//BufferStrategy bufferStrategy = canvas.getBufferStrategy();
+		//int i = 0;
+		//int x = 0;
 
 		long lastTime = System.nanoTime(); //long 2^63
 		double nanoSecondConversion = 1000000000.0 / 60; //60 frames per second
