@@ -74,7 +74,10 @@ public class Game extends JFrame implements Runnable
 			super.paint(graphics);
 			
 			//Zooms in on an image
-			renderer.renderImage(testImage, 0, 0, 200, 200);
+//1 to 1 ratio
+			int xZoom = 55;
+			int yZoom = 55;
+			renderer.renderImage(testImage, (getWidth()/2) - (testImage.getWidth()/2)*xZoom, (getHeight()/2) - (testImage.getHeight()/2)*yZoom, xZoom, yZoom);
 			renderer.render(graphics);
 
 			graphics.dispose();
