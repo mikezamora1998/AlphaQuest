@@ -47,8 +47,8 @@ public class RenderHandler
 		//System.out.println("screen Height: " + screenHeight + "\nScreen Width: " + screenWidth);
 		
 		//scaling to current screen resolution
-		float scaleWidth = screenHeight / 1080;	//screenHeight;
-		float scaleHeight = screenWidth / 1920;	//screenWidth;
+		float scaleWidth = 1080 / screenHeight;	//screenHeight;
+		float scaleHeight = 1920 / screenWidth;	//screenWidth;
 
 		//checks if the resolution is equal to 16/9 aspect ratio
 		if(scaleWidth < scaleHeight){
