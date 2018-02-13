@@ -26,8 +26,12 @@ public class Game extends JFrame implements Runnable
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		//Set the position and size of our frame.
-		setBounds(0,0, 1000, 800);
-
+		//setBounds(0,0, 1280, 720);
+		
+		//set the window to full screen
+		setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
+		setUndecorated(true);
+		
 		//Put our frame in the center of the screen.
 		setLocationRelativeTo(null);
 
@@ -41,17 +45,9 @@ public class Game extends JFrame implements Runnable
 		canvas.createBufferStrategy(3);
 
 		renderer = new RenderHandler(getWidth(), getHeight());
-		
-		//String userHome = System.getProperty("user.dir");
-		//System.out.print(userHome);
-	    //String grassTile = System.getProperty("user.dir") + "\\src\\assets\\GrassTile.png";
-		//System.out.println(grassTile);
-		//grassTile = grassTile.replace("\\", "/");
-		//System.out.println(grassTile);
 
 		System.out.println("GrassTile.png location. = " + Game.class.getResource("assets/GrassTile.png"));
 		testImage = loadImage("assets/GrassTile.png");
-      
 	}
 
 	
@@ -63,7 +59,7 @@ public class Game extends JFrame implements Runnable
 		try {
 			BufferedImage loadedImage = ImageIO.read(Game.class.getResource(path));
 			BufferedImage formattedImage = new BufferedImage(loadedImage.getWidth(), loadedImage.getHeight(), BufferedImage.TYPE_INT_RGB);
-			formattedImage.getGraphics().drawImage(loadedImage, 0,0, null);
+			formattedImage.getGraphics().drawImage(loadedImage ,0 ,0 , null);
 			
 			return formattedImage;
 		}catch(IOException exception){
@@ -76,8 +72,9 @@ public class Game extends JFrame implements Runnable
 			BufferStrategy bufferStrategy = canvas.getBufferStrategy();
 			Graphics graphics = bufferStrategy.getDrawGraphics();
 			super.paint(graphics);
-
-			renderer.renderImage(testImage, 0, 0);
+			
+			//Zooms in on an image
+			renderer.renderImage(testImage, 0, 0, 200, 200);
 			renderer.render(graphics);
 
 			graphics.dispose();
@@ -85,9 +82,6 @@ public class Game extends JFrame implements Runnable
 	}
 
 	public void run() {
-		//BufferStrategy bufferStrategy = canvas.getBufferStrategy();
-		//int i = 0;
-		//int x = 0;
 
 		long lastTime = System.nanoTime(); //long 2^63
 		double nanoSecondConversion = 1000000000.0 / 60; //60 frames per second
@@ -105,28 +99,11 @@ public class Game extends JFrame implements Runnable
 			render();
 			lastTime = now;
 		}
-
-		//Bad loop
-		// while(true) {
-		// 	bufferStrategy = canvas.getBufferStrategy();
-		// 	Graphics graphics = bufferStrategy.getDrawGraphics();
-		// 	super.paint(graphics);
-
-		// 	//Painting the Backround
-		// 	graphics.setColor(Color.black);
-		// 	graphics.fillRect(0, 0, getWidth(), getHeight());
-
-		// 	//Painting the Oval
-		// 	graphics.setColor(Color.red);		
-		// 	graphics.fillOval(x, 200, 50, 100);
-
-		// 	graphics.dispose();
-		// 	bufferStrategy.show();
-		// }
 	}
 
 	public static void main(String[] args) 
 	{
+		//Creates "game" object
 		Game game = new Game();
 		Thread gameThread = new Thread(game);
 		gameThread.start();
