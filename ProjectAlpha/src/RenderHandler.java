@@ -1,3 +1,4 @@
+
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -19,6 +20,7 @@ public class RenderHandler
 		
 		camera = new Rectangle(0, 0, width, height);
 		
+		//Camera is an object of rectangle class
 		camera.x = 0;
 		camera.y = 0;
 
@@ -64,35 +66,47 @@ public class RenderHandler
 		
 		//Renders to screen
 		graphics.drawImage(view, 0, 0, view.getWidth(), view.getHeight(), null);
-		graphics.drawString("GRASSSSSS TILLLLLLE!!!!!!!!!!!!!!", 960, 540);
+
+		//graphics.drawString("GRASSSSSS TILLLLLLE!!!!!!!!!!!!!!", 960, 540);
 	}
+	
 	
 	//Render an image to an array
 	public void renderImage(BufferedImage image, int xPosition, int yPosition, int xZoom, int yZoom) {
 		
 		int[] imagePixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
-		for(int y = 0; y < image.getHeight(); y++) {
-			for(int x = 0; x < image.getWidth(); x++) {
+		renderArray(imagePixels, image.getWidth(), image.getHeight(), xPosition, yPosition, xZoom, yZoom);
+	}
+	
+	public void renderRectangle(Rectangle rectangle, int xZoom, int yZoom) {
+		int[] rectanglePixels = rectangle.getPixels();
+		if(rectanglePixels != null) {
+			renderArray(rectanglePixels, rectangle.w, rectangle.h, rectangle.x, rectangle.y, xZoom, yZoom);
+		}
+	}
+	
+	public void renderArray(int[] renderPixels, int renderWidth, int renderHeigth, int xPosition, int yPosition, int xZoom, int yZoom) {
+		for(int y = 0; y < renderHeigth; y++) {
+			for(int x = 0; x < renderWidth; x++) {
 				for(int yZoomPosistion = 0; yZoomPosistion < xZoom; yZoomPosistion++) {
 					for(int xZoomPosistion = 0; xZoomPosistion < xZoom; xZoomPosistion++) {
 					
-						setPixel(imagePixels[x + y * image.getWidth()], (x * xZoom) + xPosition + xZoomPosistion, (y * yZoom) + yPosition + yZoomPosistion); 
+						setPixel(renderPixels[x + y * renderWidth], (x * xZoom) + xPosition + xZoomPosistion, (y * yZoom) + yPosition + yZoomPosistion); 
 					}
 				}
 			}
 		}
 	}
 	
-	
-	
 	//Checks if the pixel being rendered is in bounds of the array
 	private void setPixel(int pixel, int x, int y) {
 		if(x >= camera.x && y >= camera.y && x <= camera.x + camera.w && y <= camera.y + camera.h) {
 		
 			int pixelIndex = (x - camera.x) + (y - camera.y) * view.getWidth(); 
-			if(pixels.length > pixelIndex) {
+			if(pixels.length > pixelIndex && pixel != Game.alpha) {
 				pixels[pixelIndex] = pixel;
 			}
 		}
 	}
+	
 }

@@ -15,10 +15,13 @@ import java.io.IOException;
 
 public class Game extends JFrame implements Runnable
 {
-
+	//alpha color
+	public static int alpha = 0x123456;
+	
 	private Canvas canvas = new Canvas();
 	private RenderHandler renderer;
 	private BufferedImage testImage;
+	private Rectangle testRectangle = new Rectangle(960, 540, 100, 100);
 	
 	public Game() 
 	{
@@ -27,11 +30,11 @@ public class Game extends JFrame implements Runnable
 
 		//Set the position and size of our frame.
 		//setBounds(0,0, 1280, 720);
-		//github test
-		//set the window to full screen
+		
+		//set the window to full screen and removes tool bar.
 		setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
 		setUndecorated(true);
-		
+	
 		//Put our frame in the center of the screen.
 		setLocationRelativeTo(null);
 
@@ -48,6 +51,7 @@ public class Game extends JFrame implements Runnable
 
 		System.out.println("GrassTile.png location. = " + Game.class.getResource("assets/GrassTile.png"));
 		testImage = loadImage("assets/GrassTile.png");
+		testRectangle.generateGraphics(3, 12234);
 	}
 
 	
@@ -74,10 +78,13 @@ public class Game extends JFrame implements Runnable
 			super.paint(graphics);
 			
 			//Zooms in on an image
-//1 to 1 ratio
+			//1 to 1 ratio
 			int xZoom = 55;
 			int yZoom = 55;
+			//renders in linear order newest will be rendered over older
 			renderer.renderImage(testImage, (getWidth()/2) - (testImage.getWidth()/2)*xZoom, (getHeight()/2) - (testImage.getHeight()/2)*yZoom, xZoom, yZoom);
+			renderer.renderRectangle(testRectangle, 1, 1);
+			
 			renderer.render(graphics);
 
 			graphics.dispose();
