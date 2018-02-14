@@ -27,7 +27,7 @@ public class Game extends JFrame implements Runnable
 
 		//Set the position and size of our frame.
 		//setBounds(0,0, 1280, 720);
-		
+		//github test
 		//set the window to full screen
 		setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
 		setUndecorated(true);
