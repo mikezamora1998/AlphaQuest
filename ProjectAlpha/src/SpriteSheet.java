@@ -3,8 +3,14 @@ import java.awt.image.BufferedImage;
 public class SpriteSheet {
 	private int[] pixels;
 	private BufferedImage image;
+	
+	private int spriteSizeX;
 	public final int SIZEX;
 	public final int SIZEY;
+	
+	
+	private Sprite[] loadedSprites = null;
+	public boolean spritesLoaded = false;
 	
 	public SpriteSheet(BufferedImage sheetImage) {
 		image = sheetImage;
@@ -15,7 +21,38 @@ public class SpriteSheet {
 		pixels = sheetImage.getRGB(0, 0, SIZEX, SIZEY, pixels, 0, SIZEX);
 	}
 	
-	// 1:54
+	public  void loadSprites(int spriteSizeX, int spriteSizeY) {
+		
+		this.spriteSizeX = spriteSizeX;
+		loadedSprites = new Sprite[(SIZEX / spriteSizeX) * (SIZEY / spriteSizeY)];
+		
+		int spriteID = 0;
+		for(int y = 0; y <SIZEY; y += spriteSizeY) {
+			for(int x = 0; x< SIZEX; x += spriteSizeX) {
+				
+				loadedSprites[spriteID] = new Sprite(this, x, y, spriteSizeX, spriteSizeY);
+				spriteID++;
+			}
+		}
+		
+		spritesLoaded = true;
+	}
+	
+	public Sprite getSprite(int x, int y) {
+		if(spritesLoaded) {
+			int spriteID = x + y * (SIZEX / spriteSizeX);
+			
+			if(spriteID < loadedSprites.length) {
+				return loadedSprites[spriteID];
+			}else {
+				System.out.println("SpriteID of " + spriteID + " is out of the range with a length of " + loadedSprites.length + ".");
+			}
+		}else {
+			System.out.print("SpriteSheet could not get a sprite with no loaded sprites.");
+		}
+		
+		return null;
+	}
 	
 	public int[] getPixels() {
 		return pixels;

@@ -78,6 +78,10 @@ public class RenderHandler
 		renderArray(imagePixels, image.getWidth(), image.getHeight(), xPosition, yPosition, xZoom, yZoom);
 	}
 	
+	public void renderSprite(Sprite sprite, int xPosition, int yPosition, int xZoom, int yZoom) {
+		renderArray(sprite.getPixels(), sprite.getWidth(), sprite.getHeight(), xPosition, yPosition, xZoom, yZoom);
+	}
+	
 	public void renderRectangle(Rectangle rectangle, int xZoom, int yZoom) {
 		int[] rectanglePixels = rectangle.getPixels();
 		if(rectanglePixels != null) {
