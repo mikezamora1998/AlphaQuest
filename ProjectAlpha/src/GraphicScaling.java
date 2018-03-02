@@ -13,6 +13,9 @@ public class GraphicScaling {
 	//if true 16 by 9 aspect ratio is kept
 	private boolean defaultAspectRatio;
 	
+	public static final int DEFAULT_HEIGHT = 1080;
+	public static final int DEFAULT_WIDTH = 1920;
+	
 	public GraphicScaling(Graphics graphics) {
 		this.graphics = graphics;
 	}
@@ -34,8 +37,8 @@ public class GraphicScaling {
 		//System.out.println("Screen Height: " + screenHeight + "\nScreen Width: " + screenWidth);
 
 		//scaling to current screen resolution
-		float scaleWidth = 1080 / screenHeight;	//screenHeight;
-		float scaleHeight = 1920 / screenWidth;	//screenWidth;
+		float scaleWidth = DEFAULT_HEIGHT / screenHeight;	//screenHeight;
+		float scaleHeight = DEFAULT_WIDTH / screenWidth;	//screenWidth;
 
 		//Prints Aspect Ratio
 		//System.out.println("Scale Height: " + scaleHeight + "\nScale Width: " + scaleWidth);
@@ -99,5 +102,4 @@ public class GraphicScaling {
 	public boolean getDefaultAspectRatio() {
 		return defaultAspectRatio;
 	}
-	
 }
