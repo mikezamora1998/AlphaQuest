@@ -32,41 +32,14 @@ public class RenderHandler
 	//Render our array of pixels to the screen
 	public void render(Graphics graphics)
 	{
-		// java - get screen size using the Toolkit class
-				Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		
+		GraphicScaling graphicScale = new GraphicScaling(graphics);
+		Graphics2D graphics2D = graphicScale.setGraphics2D();
+		
+		//Renders to screen
+		graphics2D.drawImage(view, 0, 0, view.getWidth(), view.getHeight(), null);
 
-				// the screen height
-				screenSize.getHeight();
-
-				// the screen width
-				screenSize.getWidth();
-
-				int screenHeight = screenSize.height;
-				int screenWidth = screenSize.width;
-				
-				//Prints screen resolution
-				//System.out.println("screen Height: " + screenHeight + "\nScreen Width: " + screenWidth);
-				
-				//scaling to current screen resolution
-				float scaleWidth = 1080 / screenHeight;	//screenHeight;
-				float scaleHeight = 1920 / screenWidth;	//screenWidth;
-
-				//checks if the resolution is equal to 16/9 aspect ratio
-				if(scaleWidth < scaleHeight){
-					scaleHeight = scaleWidth;
-				}else{
-					scaleWidth = scaleHeight;
-				}
-				
-				Graphics2D g2 = (Graphics2D) graphics;
-				
-				//scales graphics
-				g2.scale(scaleWidth, scaleHeight);
-				
-				//Renders to screen
-				g2.drawImage(view, 0, 0, view.getWidth(), view.getHeight(), null);
-
-				//graphics.drawString("GRASSSSSS TILLLLLLE!!!!!!!!!!!!!!", 960, 540);
+		//graphics.drawString("GRASSSSSS TILLLLLLE!!!!!!!!!!!!!!", 960, 540);
 	}
 
 	//Render our image to our array of pixels.
