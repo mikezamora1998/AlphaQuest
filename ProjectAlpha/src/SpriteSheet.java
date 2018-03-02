@@ -21,7 +21,7 @@ public class SpriteSheet {
 		pixels = sheetImage.getRGB(0, 0, SIZEX, SIZEY, pixels, 0, SIZEX);
 	}
 	
-	public  void loadSprites(int spriteSizeX, int spriteSizeY) {
+	public void loadSprites(int spriteSizeX, int spriteSizeY) {
 		
 		this.spriteSizeX = spriteSizeX;
 		loadedSprites = new Sprite[(SIZEX / spriteSizeX) * (SIZEY / spriteSizeY)];

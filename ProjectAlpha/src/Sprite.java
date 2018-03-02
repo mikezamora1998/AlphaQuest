@@ -9,7 +9,7 @@ public class Sprite {
 		this.height = height;
 		
 		pixels = new int[width * height];
-		sheet.getImage().getRGB(startX,  startY, width, height, pixels, 0, width);
+		sheet.getImage().getRGB(startX, startY, width, height, pixels, 0, width);
 	}
 	
 	public Sprite(BufferedImage image) {
