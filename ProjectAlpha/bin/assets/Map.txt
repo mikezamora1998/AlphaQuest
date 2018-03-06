@@ -1,0 +1,7 @@
+//Fill tile for whole map
+Fill:0
+//TileID-X-Y
+1,0,6
+1,0,7
+2,0,8
+

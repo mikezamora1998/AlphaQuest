@@ -7,8 +7,10 @@ public class KeyBoardListener implements KeyListener, FocusListener{
 
 	public boolean[] keys = new boolean[120];
 	
-	public KeyBoardListener() {
-		
+	private Game game;
+	
+	public KeyBoardListener(Game game) {
+		this.game = game;
 	}
 
 	@Override
@@ -21,6 +23,10 @@ public class KeyBoardListener implements KeyListener, FocusListener{
 		//checks if key pressed is in bounds of keys array
 		if(keyCode < keys.length) {
 			keys[keyCode] = true;
+		}
+		
+		if(keys[KeyEvent.VK_CONTROL]) {
+			game.handleCTRL(keys);
 		}
 	}
 	

@@ -3,12 +3,12 @@ public class Player implements GameObject{
 
 	Rectangle playerRectangle;
 	//controls the speed of the player
-	int speed = 30;
+	int speed = 32;
 	
 	
 	public Player() {
-		playerRectangle = new Rectangle(32, 16, 16, 32);
-		playerRectangle.generateGraphics(3, 0xff00ff00);
+		playerRectangle = new Rectangle(32, 16, 16, 16);
+		playerRectangle.generateGraphics(3, 0xff923459);
 	}
 
 	@Override
@@ -19,6 +19,7 @@ public class Player implements GameObject{
 	@Override
 	public void update(Game game) {
 		KeyBoardListener keyListener = game.getKeyListener();
+
 		
 		if(keyListener.up()) {
 			playerRectangle.y -= speed;
@@ -29,6 +30,13 @@ public class Player implements GameObject{
 		}if(keyListener.right()) {
 			playerRectangle.x += speed;
 		}
+		
+		updateCamera(game.getRenderer().getCamera());
 	}
 
+	public void updateCamera(Rectangle camera) {
+		camera.x = playerRectangle.x - (camera.w / 2);
+		camera.y = playerRectangle.y - (camera.h / 2);
+		
+	}
 }

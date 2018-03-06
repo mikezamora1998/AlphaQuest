@@ -3,7 +3,7 @@ import java.awt.Color;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.awt.Graphics;
-
+import java.awt.event.KeyEvent;
 import java.lang.Runnable;
 import java.lang.Thread;
 
@@ -13,7 +13,7 @@ import javax.imageio.ImageIO;
 
 import java.io.File;
 import java.io.IOException;
-//2:19
+
 public class Game extends JFrame implements Runnable
 {
 	//alpha color			0xFF FF00DC	
@@ -31,8 +31,14 @@ public class Game extends JFrame implements Runnable
 	private Map map;
 	
 	private GameObject[] objects;
-	private KeyBoardListener keyListener = new KeyBoardListener();
+	private KeyBoardListener keyListener = new KeyBoardListener(this);
 	private Player player;
+	private MouseEventListener mouseListener = new MouseEventListener(this);
+	
+	//Zooms in on an image
+	//1 to 1 ratio
+	private int xZoom = 5;
+	private int yZoom = 5;
 	
 	public Game() 
 	{
@@ -72,7 +78,7 @@ public class Game extends JFrame implements Runnable
 		//retrieves the sprite from a grid (size defined above)
 		//testSprite = sheet.getSprite(4, 4);
 		
-		//testImage = loadImage("assets/GrassTile.png");
+		testImage = loadImage("assets/GrassTile.png");
 		//testImage = loadImage("assets/bRODY.jpg");
 		
 		//testRectangle.generateGraphics(3, 12234);
@@ -91,6 +97,8 @@ public class Game extends JFrame implements Runnable
 		//Add Listeners
 		canvas.addKeyListener(keyListener);
 		canvas.addFocusListener(keyListener);
+		canvas.addMouseListener(mouseListener);
+		canvas.addMouseMotionListener(mouseListener);
 	}
 
 	
@@ -113,18 +121,36 @@ public class Game extends JFrame implements Runnable
 		}
 	}
 
+	public void handleCTRL(boolean[] keys) {
+		if(keys[KeyEvent.VK_S]) {
+			map.saveMap();
+		}
+	}
+	
+	public void leftClick(int x, int y) {
+		//Divide by tile size default is 16
+		System.out.println(x + ", " + y);
+		x = (int) Math.floor((x + renderer.getCamera().x)/(16.0 * xZoom));
+		y = (int) Math.floor((y + renderer.getCamera().y)/(16.0 * yZoom));
+		map.setTile(x, y, 6);
+	}
+	
+	public void rightClick(int x, int y) {
+		//Divide by tile size default is 16
+		System.out.println(x + ", " + y);
+		x = (int) Math.floor((x + renderer.getCamera().x)/(16.0 * xZoom));
+		y = (int) Math.floor((y + renderer.getCamera().y)/(16.0 * yZoom));
+		map.removeTile(x, y);
+	}
+	
 	public void render() {
 			BufferStrategy bufferStrategy = canvas.getBufferStrategy();
 			Graphics graphics = bufferStrategy.getDrawGraphics();
 			super.paint(graphics);
 			
-		//Zooms in on an image
-			//1 to 1 ratio
-			int xZoom = 1;
-			int yZoom = 1;
 		//renders in linear order. Newest will be rendered over older
 			//renders test image
-			//renderer.renderImage(testImage, (getWidth()/2) - (testImage.getWidth()/2)*xZoom, (getHeight()/2) - (testImage.getHeight()/2)*yZoom, xZoom, yZoom);
+			renderer.renderImage(testImage, (getWidth()/2) - (testImage.getWidth()/2)*xZoom, (getHeight()/2) - (testImage.getHeight()/2)*yZoom, xZoom, yZoom);
 			//renders test sprite from sprite sheet
 			//renderer.renderSprite(testSprite, (getWidth()/2) - (testSprite.getWidth()/2)*xZoom, (getHeight()/2) - (testSprite.getHeight()/2)*yZoom, xZoom, yZoom);
 			//renders test rectangle
@@ -138,10 +164,11 @@ public class Game extends JFrame implements Runnable
 			}
 			
 			renderer.render(graphics);
-
+			renderer.renderImage(testImage, (getWidth()/2) - (testImage.getWidth()/2)*xZoom, (getHeight()/2) - (testImage.getHeight()/2)*yZoom, xZoom, yZoom);
+			
 			graphics.dispose();
 			bufferStrategy.show();
-			//renderer.clear();
+			renderer.clear();
 	}
 
 	public void run() {
@@ -174,5 +201,13 @@ public class Game extends JFrame implements Runnable
 
 	public KeyBoardListener getKeyListener() {
 		return keyListener;
+	}
+	
+	public MouseEventListener getMouseListener() {
+		return mouseListener;
+	}
+	
+	public RenderHandler getRenderer() {
+		return renderer;
 	}
 }
