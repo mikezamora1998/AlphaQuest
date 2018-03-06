@@ -50,7 +50,7 @@ public class GraphicScaling {
 			
 		} else {
 			
-			defaultAspectRatio =false;
+			defaultAspectRatio = false;
 			
 		}
 		
