@@ -1,17 +1,83 @@
 import java.awt.image.BufferedImage;
 
+/**
+ * Handles SpriteSheet functions.
+ * <p>
+ * @see {@literal Constructor: }
+ * <p> 
+ * {@link #SpriteSheet(BufferedImage sheetImage)}
+ * <p>
+ * {@literal Methods: }
+ * <p>
+ * {@link #loadSprites(int, int)}
+ * <p>
+ * {@link #getSprite(int, int)}
+ * <p>
+ * {@link #getPixels()}
+ * <p>
+ * {@link #getImage()}
+ * <p>
+ * {@literal Public Variables: }
+ * <p>
+ * final int {@link #SIZEX}
+ * <p>
+ * final int {@link #SIZEY}
+ * <p>
+ * @author Michael, David, Brandon
+ */
 public class SpriteSheet {
+	
+	/**
+	 * Integer array of pixels
+	 * @see #getPixels()
+	 */
 	private int[] pixels;
+	
+	/**
+	 * BufferedImage = SpriteSheet Image.
+	 * @see #getImage()
+	 */
 	private BufferedImage image;
 	
+	/**
+	 * Width of Sprites X.
+	 */
 	private int spriteSizeX;
+	
+	/**
+	 * Size <b>X</b> (Width) of SpriteSheet.
+	 * <p>
+	 * Final can only be set once.
+	 * @see SpriteSheet
+	 */
 	public final int SIZEX;
+	
+	/**
+	 * Size <b>Y</b> (Height) of SpriteSheet.
+	 * <p>
+	 * Final can only be set once.
+	 * @see SpriteSheet
+	 */
 	public final int SIZEY;
 	
-	
+	/**
+	 * Sprite Array of all loaded Sprites.
+	 * @see #loadSprites(int spriteSizeX, int spriteSizeY)
+	 */
 	private Sprite[] loadedSprites = null;
+	
+	/**
+	 * Boolean, false by default, if true Sprites are loaded.
+	 * @see #loadSprites(int spriteSizeX, int spriteSizeY)
+	 */
 	public boolean spritesLoaded = false;
 	
+	/**
+	 * Constructor for SpriteSheet.
+	 * <p>
+	 * Accepts a BufferedImage Object.
+	 * @param sheetImage BufferedImage
+	 */
 	public SpriteSheet(BufferedImage sheetImage) {
 		image = sheetImage;
 		SIZEX = sheetImage.getWidth();
@@ -21,11 +87,18 @@ public class SpriteSheet {
 		pixels = sheetImage.getRGB(0, 0, SIZEX, SIZEY, pixels, 0, SIZEX);
 	}
 	
+	/**
+	 * Loads all Sprites from SpriteSheet into the loadedSprites array.
+	 * <p>
+	 * Sets {@link #spritesLoaded} = true
+	 * @param spriteSizeX <b>int</b>
+	 * @param spriteSizeY <b>int</b>
+	 */
 	public void loadSprites(int spriteSizeX, int spriteSizeY) {
 		
 		this.spriteSizeX = spriteSizeX;
 		loadedSprites = new Sprite[(SIZEX / spriteSizeX) * (SIZEY / spriteSizeY)];
-		
+
 		int spriteID = 0;
 		for(int y = 0; y <SIZEY; y += spriteSizeY) {
 			for(int x = 0; x< SIZEX; x += spriteSizeX) {
@@ -38,6 +111,14 @@ public class SpriteSheet {
 		spritesLoaded = true;
 	}
 	
+	/**
+	 * Gets Sprite at a specific <b>X</b> and <b>Y</b> position in the SpriteSheet.
+	 * @param x <b>int</b>
+	 * @param y <b>int</b>
+	 * @return <b>loadedSprites[spriteId]</b>	
+	 * <p>
+	 * (or <b>null</b> , if an error is encountered)
+	 */
 	public Sprite getSprite(int x, int y) {
 		if(spritesLoaded) {
 			int spriteID = x + y * (SIZEX / spriteSizeX);
@@ -54,10 +135,20 @@ public class SpriteSheet {
 		return null;
 	}
 	
+	/**
+	 * Gets pixels array.
+	 * @return <b>pixels int[]</b>
+	 * @see #pixels
+	 */
 	public int[] getPixels() {
 		return pixels;
 	}
 	
+	/**
+	 * Gets BufferedImage image.
+	 * @return <b>BufferedImage image</b>
+	 * @see #image
+	 */
 	public BufferedImage getImage() {
 		return image;
 	}

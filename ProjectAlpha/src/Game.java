@@ -151,7 +151,7 @@ public class Game extends JFrame implements Runnable
 			
 		//renders in linear order. Newest will be rendered over older
 			//renders test image
-			renderer.renderImage(testImage, (getWidth()/2) - (testImage.getWidth()/2)*xZoom, (getHeight()/2) - (testImage.getHeight()/2)*yZoom, xZoom, yZoom);
+			//renderer.renderImage(testImage, (getWidth()/2) - (testImage.getWidth()/2)*xZoom, (getHeight()/2) - (testImage.getHeight()/2)*yZoom, xZoom, yZoom);
 			//renders test sprite from sprite sheet
 			//renderer.renderSprite(testSprite, (getWidth()/2) - (testSprite.getWidth()/2)*xZoom, (getHeight()/2) - (testSprite.getHeight()/2)*yZoom, xZoom, yZoom);
 			//renders test rectangle
@@ -165,7 +165,6 @@ public class Game extends JFrame implements Runnable
 			}
 			
 			renderer.render(graphics);
-			renderer.renderImage(testImage, (getWidth()/2) - (testImage.getWidth()/2)*xZoom, (getHeight()/2) - (testImage.getHeight()/2)*yZoom, xZoom, yZoom);
 			
 			graphics.dispose();
 			bufferStrategy.show();
