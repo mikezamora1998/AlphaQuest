@@ -1,8 +1,8 @@
 import java.awt.image.BufferedImage;
 
 public class Sprite {
-	private int width, height;
-	private int[] pixels;
+	protected int width, height;
+	protected int[] pixels;
 	
 	public Sprite(SpriteSheet sheet, int startX, int startY, int width, int height) {
 		this.width = width;
@@ -18,6 +18,10 @@ public class Sprite {
 		
 		pixels = new int[width * height];
 		image.getRGB(0, 0, width, height, pixels, 0, width);
+	}
+	
+	public Sprite() {
+		
 	}
 	
 	public int getWidth() {
