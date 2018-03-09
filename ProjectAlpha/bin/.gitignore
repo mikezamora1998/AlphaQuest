@@ -1,3 +1,15 @@
+/Game.class
+/GameObject.class
+/GraphicScaling.class
+/KeyBoardListener.class
+/Map$MappedTile.class
+/Map.class
 /MouseEventListener.class
-/jump.class
-/Jump.class
+/Player.class
+/Rectangle.class
+/RenderHandler.class
+/Sprite.class
+/SpriteSheet.class
+/Thumbs.db
+/Tiles$Tile.class
+/Tiles.class
