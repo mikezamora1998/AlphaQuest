@@ -3,11 +3,11 @@ import java.awt.image.BufferedImage;
 /**
  * Handles SpriteSheet functions.
  * <p>
- * @see {@literal Constructor: }
+ * @see <b>{@literal Constructor: }</b>
  * <p> 
  * {@link #SpriteSheet(BufferedImage sheetImage)}
  * <p>
- * {@literal Methods: }
+ * <b>{@literal Methods: }</b>
  * <p>
  * {@link #loadSprites(int, int)}
  * <p>
@@ -17,11 +17,11 @@ import java.awt.image.BufferedImage;
  * <p>
  * {@link #getImage()}
  * <p>
- * {@literal Public Variables: }
+ * <b>{@literal Public Variables: }</b>
  * <p>
- * final int {@link #SIZEX}
+ * <b>final int</b> {@link #SIZEX}
  * <p>
- * final int {@link #SIZEY}
+ * <b>final int</b> {@link #SIZEY}
  * <p>
  * @author Michael, David, Brandon
  */

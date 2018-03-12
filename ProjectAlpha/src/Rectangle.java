@@ -124,6 +124,10 @@ public class Rectangle {
 		}
 	}
 	
+	/**
+	 * Get method for returning pixels.
+	 * @return <b>pixels int[]</b>
+	 */
 	public int[] getPixels() {
 		if(pixels != null) {
 			return pixels;
