@@ -7,7 +7,7 @@ public class Player implements GameObject{
 	
 	
 	public Player() {
-		playerRectangle = new Rectangle(32, 16, 16, 16);
+		playerRectangle = new Rectangle(32, 16, 16, 64);
 		playerRectangle.generateGraphics(3, 0xff923459);
 	}
 
