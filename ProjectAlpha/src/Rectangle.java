@@ -68,6 +68,18 @@ public class Rectangle {
 		this(0,0,0,0);
 	}
 	
+	public boolean intersects(Rectangle otherRectangle) {
+		if(x > otherRectangle.x + otherRectangle.w || otherRectangle.x > x + w) {
+			return false;
+		}
+		
+		if(y > otherRectangle.y + otherRectangle.h || otherRectangle.y > y + h) {
+			return false;
+		}
+		
+		return true;
+	}
+	
 	/**
 	 * Generates a rectangle by accepting a <b>color</b>.
 	 * @param color <b>int</b>
@@ -135,5 +147,9 @@ public class Rectangle {
 			System.out.println("Attempted to retrive pixels from a Rectangle without generated graphics");
 		}
 		return null;
+	}
+	
+	public String toString() {
+		return "[ " + x + ", " + y + ", " + w + ", " + h + "]";
 	}
 }

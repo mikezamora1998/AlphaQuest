@@ -135,6 +135,10 @@ public class SpriteSheet {
 		return null;
 	}
 	
+	public Sprite[] getLoadedSprites() {
+		return loadedSprites;
+	}
+	
 	/**
 	 * Gets pixels array.
 	 * @return <b>pixels int[]</b>

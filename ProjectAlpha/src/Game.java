@@ -22,6 +22,7 @@ public class Game extends JFrame implements Runnable
 	private Canvas canvas = new Canvas();
 	private RenderHandler renderer;
 	private SpriteSheet sheet;
+	private SpriteSheet playerSheet;
 	
 	private BufferedImage testImage;
 	private Sprite testSprite;
@@ -39,6 +40,8 @@ public class Game extends JFrame implements Runnable
 	//1 to 1 ratio
 	private int xZoom = 5;
 	private int yZoom = 5;
+	private int TILESIZE = 16;
+	private int selectedTileID;
 	
 	public Game() 
 	{
@@ -78,6 +81,15 @@ public class Game extends JFrame implements Runnable
 		//retrieves the sprite from a grid (size defined above)
 		//testSprite = sheet.getSprite(4, 4);
 		
+		BufferedImage playerSheetImage = loadImage("assets/Player.png");
+		playerSheet = new SpriteSheet(playerSheetImage);
+		playerSheet.loadSprites(20, 26);
+		
+		/*Rectangle[] spritePositions = new Rectangle[8];
+		for(int i = 0; i < spritePositions.length; i++) {
+			spritePositions[i] = new Rectangle(i*20, 0, 20, 26);
+		}									//i times the width
+		*/
 		testImage = loadImage("assets/GrassTile.png");
 		//testImage = loadImage("assets/bRODY.jpg");
 		
@@ -89,10 +101,31 @@ public class Game extends JFrame implements Runnable
 		//Load Map
 		map = new Map(new File("bin/assets/Map.txt"), tiles);
 		
+		//player animation sprites
+		AnimatedSprite playerAnimations = new AnimatedSprite(playerSheet, 5);
+		
+		//load SDK GUI
+		GUIButtons[] buttons = new GUIButtons[tiles.size()];
+		Sprite[] tileSprites = tiles.getSprite();
+		int guiSpacing = 5;
+		for(int i = 0; i < buttons.length; i++) {
+			Rectangle tileRectangle = new Rectangle(0, i * (TILESIZE * xZoom + guiSpacing), TILESIZE * xZoom, TILESIZE * yZoom);
+			
+			buttons[i] = new SDKButton(this, i,tileSprites[i], tileRectangle);
+		}
+		
+		GUI gui = new GUI(buttons, 5, 5, true);
+		
 		//Load Objects
-		objects = new GameObject[1];
-		player = new Player();
+		objects = new GameObject[2];
+		player = new Player(playerAnimations);
 		objects[0] = player;
+		objects[1] = gui;
+
+		//testing animated sprites
+		/*BufferedImage[] animatedSpriteImages = new BufferedImage[2];
+		animTest = new AnimatedSprite(playerSheet, 5);*/
+		//objects[1] = animTest;
 		
 		//Add Listeners
 		canvas.addKeyListener(keyListener);
@@ -128,12 +161,24 @@ public class Game extends JFrame implements Runnable
 	}
 	
 	public void leftClick(int x, int y) {
-		//Divide by tile size default is 16
-		System.out.println(x + ", " + y);
-		x = (int) Math.floor((x + renderer.getCamera().x)/(16.0 * xZoom));
-		y = (int) Math.floor((y + renderer.getCamera().y)/(16.0 * yZoom));
-		//(x, y, TileID)
-		map.setTile(x, y, 5);
+		
+		Rectangle mouseRectangle = new Rectangle(x, y, 1, 1);
+		boolean stopChecking = false;
+		
+		for(int i = 0; i < objects.length; i++) {
+			if(!stopChecking) {
+				stopChecking = objects[i].handleMouseClick(mouseRectangle, renderer.getCamera(), xZoom, yZoom);
+			}
+		}
+		
+		
+		if(!stopChecking) {
+			//Divide by tile size default is 16
+			x = (int) Math.floor((x + renderer.getCamera().x)/(16.0 * xZoom));
+			y = (int) Math.floor((y + renderer.getCamera().y)/(16.0 * yZoom));
+			//(x, y, TileID)
+			map.setTile(x, y, selectedTileID);
+		}
 	}
 	
 	public void rightClick(int x, int y) {
@@ -142,6 +187,14 @@ public class Game extends JFrame implements Runnable
 		x = (int) Math.floor((x + renderer.getCamera().x)/(16.0 * xZoom));
 		y = (int) Math.floor((y + renderer.getCamera().y)/(16.0 * yZoom));
 		map.removeTile(x, y);
+	}
+	
+	public void changeTile(int tileID) {
+		selectedTileID = tileID;
+	}
+	
+	public int getSelectedTile() {
+		return selectedTileID;
 	}
 	
 	public void render() {
@@ -163,6 +216,8 @@ public class Game extends JFrame implements Runnable
 			for(int i = 0; i < objects.length; i++) {
 				objects[i].render(renderer, xZoom, yZoom);
 			}
+			
+			//renderer.renderSprite(animTest, 30, 30, xZoom, yZoom);
 			
 			renderer.render(graphics);
 			
