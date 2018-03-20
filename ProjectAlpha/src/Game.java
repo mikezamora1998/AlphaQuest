@@ -90,7 +90,7 @@ public class Game extends JFrame implements Runnable
 			spritePositions[i] = new Rectangle(i*20, 0, 20, 26);
 		}									//i times the width
 		*/
-		testImage = loadImage("assets/GrassTile.png");
+		//testImage = loadImage("assets/GrassTile.png");
 		//testImage = loadImage("assets/bRODY.jpg");
 		
 		//testRectangle.generateGraphics(3, 12234);

@@ -55,7 +55,7 @@ public class GraphicScaling {
 		}
 		
 		//Prints if default aspect ratio is kept
-		//System.out.println(defaultAspectRatio);		
+		System.out.println(defaultAspectRatio);		
 		
 		//assigns the scaling factor to the smallest ratio
 		if(scaleWidth < scaleHeight){

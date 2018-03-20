@@ -3,9 +3,37 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 
-
-public class RenderHandler 
-{
+/**
+ * Handles Rendering functions.
+ * Renders pixels to the canvas while accounting for camera and zoom.
+ * <p>
+ * @see <b>{@literal Constructor: }</b>
+ * <p> 
+ * {@link #RenderHandler(int width, int height)}
+ * <p>
+ * <b>{@literal Methods: }</b>
+ * <p>
+ * {@link #render(Graphics graphics)}
+ * <p>
+ * {@link #renderImage(BufferedImage image, int xPosition, int yPosition, int xZoom, int yZoom, boolean fixed)}
+ * <p>
+ * {@link #renderSprite(Sprite sprite, int xPosition, int yPosition, int xZoom, int yZoom, boolean fixed)}
+ * <p>
+ * {@link #renderRectangle(Rectangle rectangle, int xZoom, int yZoom, boolean fixed)}
+ *  <p>
+ * {@link #renderRectangle(Rectangle rectangle, Rectangle offset, int xZoom, int yZoom, boolean fixed)}
+ * <p>
+ * {@link #renderArray(int[] renderPixels, int renderWidth, int renderHeight, int xPosition, int yPosition, int xZoom, int yZoom, boolean fixed)}
+ * <p>
+ * {@link #setPixel(int pixel, int x, int y, boolean fixed)}
+ * <p>
+ * {@link #Rectangle getCamera()}
+ * <p>
+ * {@link #clear()}
+ * @author Michael, David, Brandon
+ */
+public class RenderHandler {
+	
 	private BufferedImage view;
 	private Rectangle camera;
 	private int[] pixels;
@@ -60,8 +88,7 @@ public class RenderHandler
 			renderArray(rectanglePixels, rectangle.w, rectangle.h, rectangle.x + offset.x, rectangle.y + offset.y, xZoom, yZoom, fixed);	
 	}
 
-	public void renderArray(int[] renderPixels, int renderWidth, int renderHeight, int xPosition, int yPosition, int xZoom, int yZoom, boolean fixed) 
-	{
+	public void renderArray(int[] renderPixels, int renderWidth, int renderHeight, int xPosition, int yPosition, int xZoom, int yZoom, boolean fixed) {
 		for(int y = 0; y < renderHeight; y++)
 			for(int x = 0; x < renderWidth; x++)
 				for(int yZoomPosition = 0; yZoomPosition < yZoom; yZoomPosition++)
