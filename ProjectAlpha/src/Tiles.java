@@ -22,8 +22,16 @@ public class Tiles {
 					int spriteX = Integer.parseInt(splitString[1]);
 					int spriteY = Integer.parseInt(splitString[2]);
 					Tile tile = new Tile(tileName, spriteSheet.getSprite(spriteX, spriteY));
-					tilesList.add(tile);
+					
 					System.out.println(tileName);
+					
+					//TODO collision
+					if(splitString.length >= 4) {
+						tile.collidable = true;
+						tile.collisionType = Integer.parseInt(splitString[3]);
+						System.out.println(tile.collisionType);
+					}
+					tilesList.add(tile);
 				}
 			}
 		}catch(FileNotFoundException e){
@@ -53,10 +61,25 @@ public class Tiles {
 		return sprites;
 	}
 	
+	//TODO collision
+	public int collisionType(int tileID) 
+	{
+		if(tileID >= 0 && tilesList.size() > tileID)
+		{
+			return tilesList.get(tileID).collisionType;
+		}
+		else
+		{
+			System.out.println("TileID " + tileID + " is not within range " + tilesList.size() + ".");
+		}
+		return -1;
+	}
 	
 	class Tile{
 		public String tileName;
 		public Sprite sprite;
+		public boolean collidable = false;
+		public int collisionType = -1;
 		
 		public Tile(String tileName, Sprite sprite) {
 			this.tileName = tileName;

@@ -1,5 +1,5 @@
 import java.awt.image.BufferedImage;
-//4:54
+
 public class AnimatedSprite extends Sprite implements GameObject{
 
 	private Sprite[] sprites;
@@ -74,7 +74,19 @@ public class AnimatedSprite extends Sprite implements GameObject{
 			currentSprite = startSprite;
 		}
 	}
-
+	
+	//TODO collision
+	public int getLayer() {
+		System.out.println("Called getLayer() of AnimatedSprite! This has no meaning here.");
+		return -1;
+	}
+	
+	//TODO collision
+	public Rectangle getRectangle() {
+		System.out.println("Called getRectangle() of AnimatedSprite! This has no meaning here.");
+		return null;
+	}
+	
 	public int getWidth() {
 		return sprites[currentSprite].getWidth();
 	}

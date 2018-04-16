@@ -1,5 +1,6 @@
 import java.awt.Graphics;
-import java.awt.Graphics2D;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 
@@ -37,17 +38,34 @@ public class RenderHandler {
 	private BufferedImage view;
 	private Rectangle camera;
 	private int[] pixels;
+	
+	private int maxScreenWidth;
+	private int maxScreenHeight;
 
 	public RenderHandler(int width, int height) {
+		
+		GraphicsDevice[] graphicsDevices = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
+		
+		maxScreenWidth = 0;
+		maxScreenHeight = 0;
+		for(int i = 0; i < graphicsDevices.length; i++) {
+			if(maxScreenWidth < graphicsDevices[i].getDisplayMode().getWidth()) {
+				maxScreenWidth = graphicsDevices[i].getDisplayMode().getWidth();
+			}
+			if(maxScreenHeight < graphicsDevices[i].getDisplayMode().getHeight()) {
+				maxScreenHeight = graphicsDevices[i].getDisplayMode().getHeight();
+			}
+		}
+		
 		//Create a BufferedImage that will represent our view.
-		view = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+		view = new BufferedImage(maxScreenWidth, maxScreenHeight, BufferedImage.TYPE_INT_RGB);
 
 		camera = new Rectangle(0, 0, width, height);
 
 
 		//Camera is an object of rectangle class
-		camera.x = 0;
-		camera.y = 0;
+		//camera.x = 0;
+		//camera.y = 0;
 		
 		//Create an array for pixels
 		pixels = ((DataBufferInt) view.getRaster().getDataBuffer()).getData();
@@ -57,11 +75,11 @@ public class RenderHandler {
 	//Render our array of pixels to the screen
 	public void render(Graphics graphics){
 		
-		GraphicScaling graphicScale = new GraphicScaling(graphics);
-		Graphics2D graphics2D = graphicScale.setGraphics2D();
+		//GraphicScaling graphicScale = new GraphicScaling(graphics);
+		//Graphics2D graphics2D = graphicScale.setGraphics2D();
 		
 		//Renders to screen
-		graphics2D.drawImage(view, 0, 0, view.getWidth(), view.getHeight(), null);
+		graphics.drawImage(view.getSubimage(0, 0, camera.w, camera.h), 0, 0, camera.w, camera.h, null);
 
 		//graphics.drawString("GRASSSSSS TILLLLLLE!!!!!!!!!!!!!!", 960, 540);
 	}
@@ -76,6 +94,11 @@ public class RenderHandler {
 		renderArray(sprite.getPixels(), sprite.getWidth(), sprite.getHeight(), xPosition, yPosition, xZoom, yZoom, fixed);
 	}
 
+	public void renderSprite(Sprite sprite, int xPosition, int yPosition, int renderWidth, int renderHeight, int xZoom, int yZoom, boolean fixed, int xOffset, int yOffset) {
+		renderArray(sprite.getPixels(), sprite.getWidth(), sprite.getHeight(), renderWidth, renderHeight, xPosition, yPosition, 
+					xZoom, yZoom, fixed, xOffset, yOffset);
+	}
+	
 	public void renderRectangle(Rectangle rectangle, int xZoom, int yZoom, boolean fixed){
 		int[] rectanglePixels = rectangle.getPixels();
 		if(rectanglePixels != null)
@@ -88,17 +111,46 @@ public class RenderHandler {
 			renderArray(rectanglePixels, rectangle.w, rectangle.h, rectangle.x + offset.x, rectangle.y + offset.y, xZoom, yZoom, fixed);	
 	}
 
-	public void renderArray(int[] renderPixels, int renderWidth, int renderHeight, int xPosition, int yPosition, int xZoom, int yZoom, boolean fixed) {
-		for(int y = 0; y < renderHeight; y++)
-			for(int x = 0; x < renderWidth; x++)
+	public void renderArray(int[] renderPixels, int renderWidth, int renderHeight, int xPosition, int yPosition, int xZoom, int yZoom, boolean fixed) 
+	{
+		renderArray(renderPixels, renderWidth, renderHeight, renderWidth, renderHeight, xPosition, yPosition, 
+					xZoom, yZoom, fixed, 0, 0);
+		// for(int y = 0; y < renderHeight; y++)
+		// 	for(int x = 0; x < renderWidth; x++)
+		// 		for(int yZoomPosition = 0; yZoomPosition < yZoom; yZoomPosition++)
+		// 			for(int xZoomPosition = 0; xZoomPosition < xZoom; xZoomPosition++)
+		// 				setPixel(renderPixels[x + y * renderWidth], (x * xZoom) + xPosition + xZoomPosition, ((y * yZoom) + yPosition + yZoomPosition), fixed);
+	}
+
+	/*
+		renderPixels = pixels to render
+		imageWidth = width of entire image
+		imageHeight = height of entire image
+		renderWidth = width of image to render
+		renderHeight = height of image to render
+		xPosition = x position to render image
+		yPosition = y position to render image
+		xZoom = horizontal zoom
+		yZoom = vertical zoom
+		fixed = should offset by camera position
+		xOffset = offset into the full image to render x
+		yOffset = offset into the full image to render y
+		
+	*/
+	public void renderArray(int[] renderPixels, int imageWidth, int imageHeight, int renderWidth, int renderHeight, int xPosition, int yPosition, 
+							int xZoom, int yZoom, boolean fixed, int xOffset, int yOffset)
+	{
+		for(int y = yOffset; y < yOffset + renderHeight; y++)
+			for(int x = xOffset; x < xOffset + renderWidth; x++)
 				for(int yZoomPosition = 0; yZoomPosition < yZoom; yZoomPosition++)
 					for(int xZoomPosition = 0; xZoomPosition < xZoom; xZoomPosition++)
-						setPixel(renderPixels[x + y * renderWidth], (x * xZoom) + xPosition + xZoomPosition, ((y * yZoom) + yPosition + yZoomPosition), fixed);
+						setPixel(renderPixels[x + y * imageWidth], ((x - xOffset) * xZoom) + xPosition + xZoomPosition, (((y - yOffset) * yZoom) + yPosition + yZoomPosition), fixed);
 	}
+
 
 	private void setPixel(int pixel, int x, int y, boolean fixed) {
 		
-		int pixelIndex = -1;
+		int pixelIndex = 0;
 		if(!fixed) {
 			if(x >= camera.x && y >= camera.y && x <= camera.x + camera.w && y <= camera.y + camera.h){
 				pixelIndex = (x - camera.x) + (y - camera.y) * view.getWidth();
@@ -108,15 +160,23 @@ public class RenderHandler {
 				pixelIndex = x + y * view.getWidth();
 			}
 		}
-		if(pixelIndex > 0) {
+		//if(pixelIndex > 0) {
 			if(pixels.length > pixelIndex && pixel != Game.alpha) {
 				pixels[pixelIndex] = pixel;
 			}
-		}
+		//}
 	}
 
 	public Rectangle getCamera() {
 		return camera;
+	}
+	
+	public int getMaxScreenWidth() {
+		return maxScreenWidth;
+	}
+	
+	public int getMaxScreenHeight() {
+		return maxScreenHeight;
 	}
 
 	public void clear(){

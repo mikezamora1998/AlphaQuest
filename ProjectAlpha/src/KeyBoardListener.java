@@ -50,12 +50,12 @@ public class KeyBoardListener implements KeyListener, FocusListener{
 	
 	@Override
 	public void keyTyped(KeyEvent event) {
-		//blank
+
 	}
 	
 	@Override
 	public void focusGained(FocusEvent event) {
-		//blank
+
 	}
 	
 	public boolean up() {
