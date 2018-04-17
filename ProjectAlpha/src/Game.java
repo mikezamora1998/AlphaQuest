@@ -1,5 +1,4 @@
 import java.awt.Canvas;
-import java.awt.Color;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.awt.Graphics;
@@ -15,6 +14,11 @@ import javax.imageio.ImageIO;
 
 import java.io.File;
 import java.io.IOException;
+
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+
+import javafx.embed.swing.JFXPanel;
 
 public class Game extends JFrame implements Runnable
 {
@@ -34,6 +38,7 @@ public class Game extends JFrame implements Runnable
 	private Tiles tiles;
 	private Map map;
 	private Background background;
+	private MediaPlayer mediaPlayer;
 	
 	private GameObject[] objects;
 	private KeyBoardListener keyListener = new KeyBoardListener(this);
@@ -108,6 +113,9 @@ public class Game extends JFrame implements Runnable
 		
 		//testRectangle.generateGraphics(3, 12234);
 	
+		//background music
+		backgroundMusic("C:/Users/pixel/Music/Music/AC_DC - Thunderstruck Lyrics.mp3");
+		
 		//Load Tiles
 		tiles = new Tiles(new File("bin/assets/Tiles.txt"), sheet);
 		//backgroundTiles = new BackgroundTiles(this, new File("bin/assets/BackgroundTiles.txt"));
@@ -280,7 +288,7 @@ public class Game extends JFrame implements Runnable
 		//renders test rectangle
 		//renderer.renderRectangle(testRectangle, 1, 1);
 		
-		//background.render(renderer, xZoom, yZoom);
+		background.render(renderer, xZoom, yZoom);
 		map.render(renderer, objects, xZoom, yZoom);
 		
 		//renders all objects in order of their position in the object array
@@ -352,4 +360,19 @@ public class Game extends JFrame implements Runnable
 	public int getYZoom() {
 		return yZoom;
 	}
+	
+	private void backgroundMusic(String path) {
+		  final JFXPanel fxPanel = new JFXPanel();
+		  try {
+		         File music = new File(path);
+		         Media play = new Media(music.toURI().toString());
+		         mediaPlayer = new MediaPlayer(play);
+		         mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+		         mediaPlayer.play();
+		  } catch(Exception ex) {
+		         ex.printStackTrace();
+		         System.out.println("Exception: " + ex.getMessage());
+		      }
+		 }
+	
 }

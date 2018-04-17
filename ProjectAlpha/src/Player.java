@@ -1,10 +1,9 @@
-
 public class Player implements GameObject{
 
 	private Rectangle playerRectangle;
 	private Rectangle collisionCheckRectangle;
 	private final int xCollisionOffset = 14;
-	private final int yCollisionOffset = 20;
+	private final int yCollisionOffset = 28;
 	private int layer = 0;
 	private boolean yCollision;
 	private boolean xCollision;
@@ -169,7 +168,7 @@ public class Player implements GameObject{
 				playerRectangle.y = collisionCheckRectangle.y - yCollisionOffset;
 			
 			
-			System.out.println("Player.y : " + playerRectangle.y);
+			//System.out.println("Player.y : " + playerRectangle.y);
 			yCollision = false;
 		}else {
 			playerRectangle.y = collisionCheckRectangle.y - yCollisionOffset;
@@ -177,7 +176,7 @@ public class Player implements GameObject{
 			
 		}
 		
-		System.out.println("Y collision : " + yCollision);
+		//System.out.println("Y collision : " + yCollision);
 		//System.out.println("MinY : " + minY);
 		//System.out.println("NewY : " + newMinY);
 		
@@ -191,12 +190,13 @@ public class Player implements GameObject{
 				newX = background.getWidth() - playerRectangle.w*game.xZoom;
 			}
 			playerRectangle.x = newX;
-			System.out.println("New X : " + newX);
+			//System.out.println("New X : " + newX);
 		}
 		
 		int newY;
-		if(yCollision) {
-			newY = playerRectangle.y -15;
+		  if(yCollision) {
+		   newY = playerRectangle.y - 1;
+		   minY = newY;
 		}else {
 			newY = (int) (playerRectangle.y + velocity.y);
 			
@@ -210,15 +210,13 @@ public class Player implements GameObject{
 			if(onGround && newY != minY) {
 				newY = minY - 1;
 			}
-			//if(yCollision == true)
+
 			playerRectangle.y = newY;
-			System.out.println("New Y : " + newY);
-		//}else {
-			if(yCollision) {
-			//int newY = playerRectangle.y;
-			//playerRectangle.y = newY;
-			//}
-		}
+			//System.out.println("New Y : " + newY);
+			if(!yCollision) {
+			    minY = 886;
+			}
+			
 		
 		updateCamera(background, game.getRenderer().getCamera());
 		
