@@ -73,12 +73,10 @@ public class GUI implements GameObject{
 		return stopChecking;
 	}
 	
-	//TODO collision
 	public int getLayer() {
 		return Integer.MAX_VALUE;
 	}
 	
-	//TODO collision
 	public Rectangle getRectangle() {
 		return rect;
 	}

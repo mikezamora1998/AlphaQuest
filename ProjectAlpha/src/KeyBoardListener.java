@@ -15,8 +15,6 @@ public class KeyBoardListener implements KeyListener, FocusListener{
 
 	@Override
 	public void keyPressed(KeyEvent event) { 
-		//prints key code
-		//System.out.println(event.getKeyCode());
 		
 		int keyCode = event.getKeyCode();
 		

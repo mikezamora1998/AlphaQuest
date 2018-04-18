@@ -10,5 +10,5 @@ Water-4-3
 Water2-4-4
 TreeTop-5-3
 TreeBottom-5-4
-stone-8-3-0
+stone-0-3-0
 roof-2-0

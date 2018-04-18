@@ -56,17 +56,10 @@ public class RenderHandler {
 				maxScreenHeight = graphicsDevices[i].getDisplayMode().getHeight();
 			}
 		}
-		
 		//Create a BufferedImage that will represent our view.
 		view = new BufferedImage(maxScreenWidth, maxScreenHeight, BufferedImage.TYPE_INT_RGB);
-
-		camera = new Rectangle(0, 0, width, height);
-
-
 		//Camera is an object of rectangle class
-		//camera.x = 0;
-		//camera.y = 0;
-		
+		camera = new Rectangle(0, 0, width, height);
 		//Create an array for pixels
 		pixels = ((DataBufferInt) view.getRaster().getDataBuffer()).getData();
 
@@ -74,14 +67,8 @@ public class RenderHandler {
 
 	//Render our array of pixels to the screen
 	public void render(Graphics graphics){
-		
-		//GraphicScaling graphicScale = new GraphicScaling(graphics);
-		//Graphics2D graphics2D = graphicScale.setGraphics2D();
-		
 		//Renders to screen
 		graphics.drawImage(view.getSubimage(0, 0, camera.w, camera.h), 0, 0, camera.w, camera.h, null);
-
-		//graphics.drawString("GRASSSSSS TILLLLLLE!!!!!!!!!!!!!!", 960, 540);
 	}
 
 	//Render our image to our array of pixels.
@@ -113,16 +100,10 @@ public class RenderHandler {
 
 	public void renderArray(int[] renderPixels, int renderWidth, int renderHeight, int xPosition, int yPosition, int xZoom, int yZoom, boolean fixed) 
 	{
-		renderArray(renderPixels, renderWidth, renderHeight, renderWidth, renderHeight, xPosition, yPosition, 
-					xZoom, yZoom, fixed, 0, 0);
-		// for(int y = 0; y < renderHeight; y++)
-		// 	for(int x = 0; x < renderWidth; x++)
-		// 		for(int yZoomPosition = 0; yZoomPosition < yZoom; yZoomPosition++)
-		// 			for(int xZoomPosition = 0; xZoomPosition < xZoom; xZoomPosition++)
-		// 				setPixel(renderPixels[x + y * renderWidth], (x * xZoom) + xPosition + xZoomPosition, ((y * yZoom) + yPosition + yZoomPosition), fixed);
+		renderArray(renderPixels, renderWidth, renderHeight, renderWidth, renderHeight, xPosition, yPosition, xZoom, yZoom, fixed, 0, 0);
 	}
 
-	/*
+	/**
 		renderPixels = pixels to render
 		imageWidth = width of entire image
 		imageHeight = height of entire image
@@ -160,11 +141,9 @@ public class RenderHandler {
 				pixelIndex = x + y * view.getWidth();
 			}
 		}
-		//if(pixelIndex > 0) {
-			if(pixels.length > pixelIndex && pixel != Game.alpha) {
+		if(pixels.length > pixelIndex && pixel != Game.alpha) {
 				pixels[pixelIndex] = pixel;
-			}
-		//}
+		}
 	}
 
 	public Rectangle getCamera() {

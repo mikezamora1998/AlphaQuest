@@ -37,12 +37,10 @@ public abstract class GUIButtons implements GameObject{
 
 	public abstract void activate();
 	
-	//TODO collision
 	public int getLayer() {
 		return Integer.MAX_VALUE;
 	}
 
-	//TODO collision
 	public Rectangle getRectangle() {
 		return region;
 	}

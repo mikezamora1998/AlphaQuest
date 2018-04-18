@@ -42,7 +42,6 @@ public class SDKButton extends GUIButtons{
 	}
 	
 	public void activate() {
-		System.out.println("clicked");
 		game.changeTile(tileID);
 	}
 }

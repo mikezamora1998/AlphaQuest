@@ -2,34 +2,33 @@ public class Player implements GameObject {
 
 	private Rectangle playerRectangle;
 	private Rectangle collisionCheckRectangle;
-	private final int xCollisionOffset = 14;
-	private final int yCollisionOffset = 20;
-	private int layer = 0;
-	private boolean yCollision;
-	private boolean xCollision;
-	boolean onGround;
-	private int minY = 886;
-	private int newMinY;
-
-	// controls the speed of the player
-	// private int speed = 16;
+	Rectangle background;
 	private Sprite sprite;
 	private AnimatedSprite animatedSprite = null;
+	
+	private boolean yCollision;
+	private boolean xCollision;
+	private boolean onGround;
+	
+	private final int xCollisionOffset = 14;
+	private final int yCollisionOffset = 20;
+	private final int minimumY = 886;
+	private int minY = minimumY;
+	private int layer = 0;
+	private int xZoom;
+	private int yZoom;
+	
+	private int backgroundHeight = 1280;
 	// 0 = right, 1 = left, 2 = up, 3 = down
 	private int direction = 0;
-
-	// platformer movement
-	private int speed = 5;
-	private int jumpSpeed = 25;
-	private Vector2 velocity = new Vector2();
-	private float gravtity = 1.5f;
-
-	private int backgroundHeight = 1280;
 	private int playerHeight = 26;
 	private int playerWidth = 20;
 
-	private int xZoom;
-	private int yZoom;
+	// controls the speed of the player
+	private int speed = 5;
+	private int jumpSpeed = 25;
+	private float gravtity = 1.5f;
+	private Vector2 velocity = new Vector2();
 
 	public Player(Sprite sprite, int xZoom, int yZoom) {
 		this.sprite = sprite;
@@ -40,14 +39,8 @@ public class Player implements GameObject {
 			animatedSprite = (AnimatedSprite) sprite;
 		}
 		updateDirection();
-		playerRectangle = new Rectangle(0, backgroundHeight - (playerHeight * xZoom), playerWidth, playerHeight);// equation
-																													// sets
-																													// player
-																													// to
-																													// bottom
-																													// of
-																													// the
-																													// screen
+		// equation sets player to bottom of the screen
+		playerRectangle = new Rectangle(0, backgroundHeight - (playerHeight * xZoom), playerWidth, playerHeight);
 		playerRectangle.generateGraphics(3, 0xff923459);
 		collisionCheckRectangle = new Rectangle(0, 0, 10 * xZoom, 15 * yZoom);
 	}
@@ -73,7 +66,8 @@ public class Player implements GameObject {
 	@Override
 	public void update(Game game) {
 		KeyBoardListener keyListener = game.getKeyListener();
-
+		background = game.getRectangleBackground();
+		
 		xCollision = false;
 		yCollision = false;
 		onGround = false;
@@ -83,9 +77,9 @@ public class Player implements GameObject {
 		collisionCheckRectangle.x = playerRectangle.x;
 		collisionCheckRectangle.y = playerRectangle.y;
 
-		if (playerRectangle.y < minY) {
+		if (playerRectangle.y < minY)
 			velocity.y += gravtity;
-		} else {
+		else {
 			velocity.y = 0;
 			playerRectangle.y = minY;
 			velocity.x = 0;
@@ -100,7 +94,6 @@ public class Player implements GameObject {
 			velocity.x = -speed;
 
 			collisionCheckRectangle.x -= speed;
-
 		}
 		if (keyListener.right()) {
 			// playerRectangle.x += speed;
@@ -109,16 +102,13 @@ public class Player implements GameObject {
 			velocity.x = speed;
 
 			collisionCheckRectangle.x += speed;
-
 		}
 		if (keyListener.up()) {
 			// playerRectangle.y -= speed;
 			// newDirection = 2;
-
-			if (onGround || yCollision == true) {
+			if (onGround || yCollision)
 				velocity.y -= jumpSpeed;
-			}
-
+			
 			didMove = true;
 		}
 		if (keyListener.down()) {
@@ -132,12 +122,10 @@ public class Player implements GameObject {
 			updateDirection();
 		}
 
-		if (!didMove) {
+		if (!didMove)
 			animatedSprite.reset();
-		}
-		if (didMove) {
+		if (didMove)
 			animatedSprite.update(game);
-		}
 
 		collisionCheckRectangle.x += xCollisionOffset;
 		collisionCheckRectangle.y += yCollisionOffset;
@@ -148,13 +136,12 @@ public class Player implements GameObject {
 		// Check the X axis
 		if (!game.getMap().checkCollision(axisCheck, layer, game.getXZoom(), game.getYZoom())
 				&& !game.getMap().checkCollision(axisCheck, layer + 1, game.getXZoom(), game.getYZoom())) {
-			
+
 			playerRectangle.x = collisionCheckRectangle.x - xCollisionOffset;
 
 			xCollision = false;
-		} else {
+		} else
 			xCollision = true;
-		}
 
 		axisCheck.x = playerRectangle.x + xCollisionOffset;
 		axisCheck.y = collisionCheckRectangle.y + yCollisionOffset;
@@ -163,66 +150,51 @@ public class Player implements GameObject {
 
 		// Check the Y axis
 		if (!game.getMap().checkCollision(axisCheck, layer, game.getXZoom(), game.getYZoom())
-				&& !game.getMap().checkCollision(axisCheck, layer + 1, game.getXZoom(), game.getYZoom())) {
-
-			playerRectangle.y = collisionCheckRectangle.y - yCollisionOffset;
-
+				&& !game.getMap().checkCollision(axisCheck, layer + 1, game.getXZoom(), game.getYZoom()))
 			yCollision = false;
-		} else {
-			playerRectangle.y = collisionCheckRectangle.y - yCollisionOffset;
+			// playerRectangle.y = collisionCheckRectangle.y - yCollisionOffset;
+		else
 			yCollision = true;
 
-		}
-
-		Rectangle background = game.getRectangleBackground();
 
 		if (!xCollision) {
 			int newX = (int) (playerRectangle.x + velocity.x);
-			if (newX < 0) {
+
+			if (newX < 0)
 				newX = 0;
-			}
-			if (newX > background.w - playerRectangle.w * game.xZoom) {
+
+			if (newX > background.w - playerRectangle.w * game.xZoom)
 				newX = background.w - playerRectangle.w * game.xZoom;
-			}
+
 			playerRectangle.x = newX;
-			
-		} else if (xCollision) {
-			if (playerRectangle.y < minY)
-				playerRectangle.y += 1;
-		}
+
+		} else if (xCollision && playerRectangle.y < minY)
+			playerRectangle.y += 1;
 
 		int newY;
 
 		if (yCollision) {
 			newY = playerRectangle.y;
-		} else {
-			newY = (int) (playerRectangle.y + velocity.y);
-		}
-		if (yCollision) {
 			minY = newY;
-			if (keyListener.up()) {
+			if (keyListener.up())
 				playerRectangle.y -= speed;
-			}
-		}
-		if (newY < 0) {
-			newY = 0;
-		}
-		if (newY > background.h - playerRectangle.h * game.yZoom) {
-			newY = background.h - playerRectangle.h * game.yZoom;
-		}
-		if (onGround && newY != minY) {
-			newY = minY - 1;
-		}
+		} else
+			newY = (int) (playerRectangle.y + velocity.y);
 
-		if (yCollision != true) {
-			playerRectangle.y = newY;
-		}
-		if (!yCollision) {
-			minY = 886;
-		} else {
-			minY = newY;
-		}
+		if (newY < 0)
+			newY = 0;
+		if (newY > background.h - playerRectangle.h * game.yZoom)
+			newY = background.h - playerRectangle.h * game.yZoom;
+		if (onGround && newY != minY)
+			newY = minY - 1;
+
 		
+		if (!yCollision) {
+			playerRectangle.y = newY;
+			minY = minimumY;
+		} else
+			minY = newY;
+
 		updateCamera(background, game.getRenderer().getCamera());
 	}
 
@@ -232,21 +204,18 @@ public class Player implements GameObject {
 
 	public void updateCamera(Rectangle background, Rectangle camera) {
 		int x = playerRectangle.x - (camera.w / 2);
-		if (x < 0) {
+		if (x < 0)
 			x = 0;
-		}
-		if (x + camera.w > background.w) {
+		if (x + camera.w > background.w)
 			x = background.w - camera.w;
-		}
+		
 		camera.x = x;
 
 		int y = playerRectangle.y - (camera.h / 2) - 125;
-		if (y < 0) {
+		if (y < 0)
 			y = 0;
-		}
-		if (y + camera.h > background.h) {
+		if (y + camera.h > background.h)
 			y = background.h - camera.h;
-		}
 
 		camera.y = y;
 		// camera.x = playerRectangle.x - (camera.w / 2);

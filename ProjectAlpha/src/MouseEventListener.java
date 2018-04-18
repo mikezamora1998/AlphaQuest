@@ -11,35 +11,22 @@ public class MouseEventListener implements MouseListener, MouseMotionListener {
 	}
 
 	@Override
-	public void mouseClicked(MouseEvent event) {
-		
-	}
+	public void mouseClicked(MouseEvent event) {}
 	
 	@Override
-	public void mouseDragged(MouseEvent event) {
-
-	}
+	public void mouseDragged(MouseEvent event) {}
 
 	@Override
-	public void mouseEntered(MouseEvent event) {
-		
-	}
+	public void mouseEntered(MouseEvent event) {}
 
 	@Override
-	public void mouseExited(MouseEvent event) {
-		
-	}
+	public void mouseExited(MouseEvent event) {}
 
 	@Override
-	public void mouseMoved(MouseEvent event) {
-		
-	}
+	public void mouseMoved(MouseEvent event) {}
 	
 	@Override
 	public void mousePressed(MouseEvent event) {
-		//Prints x and y position of mouse
-		//System.out.println(event.getX() + ", "+ event.getY());
-		
 		if(event.getButton() == MouseEvent.BUTTON1) {
 			game.leftClick(event.getX(), event.getY());
 		}
@@ -49,7 +36,5 @@ public class MouseEventListener implements MouseListener, MouseMotionListener {
 	}
 
 	@Override
-	public void mouseReleased(MouseEvent event) {
-		
-	}
+	public void mouseReleased(MouseEvent event) {}
 }

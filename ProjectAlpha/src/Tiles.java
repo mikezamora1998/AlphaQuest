@@ -24,8 +24,7 @@ public class Tiles {
 					Tile tile = new Tile(tileName, spriteSheet.getSprite(spriteX, spriteY));
 					
 					System.out.println(tileName);
-					
-					//TODO collision
+
 					if(splitString.length >= 4) {
 						tile.collidable = true;
 						tile.collisionType = Integer.parseInt(splitString[3]);
@@ -61,7 +60,6 @@ public class Tiles {
 		return sprites;
 	}
 	
-	//TODO collision
 	public int collisionType(int tileID) 
 	{
 		if(tileID >= 0 && tilesList.size() > tileID)
@@ -87,6 +85,4 @@ public class Tiles {
 			
 		}
 	}
-	//Tiles.txt format
-	//TileName-SpriteX, SpriteY
 }

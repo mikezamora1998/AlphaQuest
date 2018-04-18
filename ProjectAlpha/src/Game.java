@@ -29,10 +29,6 @@ public class Game extends JFrame implements Runnable
 	private RenderHandler renderer;
 	private SpriteSheet sheet;
 	private SpriteSheet playerSheet;
-	
-	private BufferedImage testImage;
-	private Sprite testSprite;
-	private Rectangle testRectangle = new Rectangle(960, 540, 100, 100);
 
 	private Tiles tiles;
 	private Map map;
@@ -45,9 +41,9 @@ public class Game extends JFrame implements Runnable
 	private MouseEventListener mouseListener = new MouseEventListener(this);
 	
 	//Zooms in on an image
-	//1 to 1 ratio
 	public final int xZoom = 3;
 	public final int yZoom = 3;
+	
 	private int TILESIZE = 16;
 	private int selectedTileID = 0;
 	private int selectedLayer = 0;
@@ -56,12 +52,7 @@ public class Game extends JFrame implements Runnable
 	{
 		//Make our program shutdown when we exit out.
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-		//Set the position and size of our frame.
-		//setBounds(0,0, 1280, 720);
 		
-		
-
 		canvas.setBounds(0, 0, 1280, 720);
 
 		//Add our graphics component
@@ -74,9 +65,6 @@ public class Game extends JFrame implements Runnable
 	
 		//Put our frame in the center of the screen.
 		setLocationRelativeTo(null);
-
-		//Add our graphics component
-		//add(canvas);
 
 		//Make our frame visible.
 		setVisible(true);
@@ -93,35 +81,19 @@ public class Game extends JFrame implements Runnable
 		
 		BufferedImage sheetImage = loadImage("assets/Tiles1.png");
 		
-		sheet = new SpriteSheet(sheetImage);
 		//size of the blocks in the sprite sheet. (x, y) 16px by 16px default
+		sheet = new SpriteSheet(sheetImage);
 		sheet.loadSprites(16, 16);
-		//retrieves the sprite from a grid (size defined above)
-		//testSprite = sheet.getSprite(4, 4);
-		
-		//C:\Users\pixel\git\ProjectAlpha\ProjectAlpha\bin
-		//C:\Users\pixel\git\ProjectAlpha\assets
 		
 		BufferedImage playerSheetImage = loadImage("assets/Player.png");
 		playerSheet = new SpriteSheet(playerSheetImage);
 		playerSheet.loadSprites(20, 26);
-		
-		/*Rectangle[] spritePositions = new Rectangle[8];
-		for(int i = 0; i < spritePositions.length; i++) {
-			spritePositions[i] = new Rectangle(i*20, 0, 20, 26);
-		}									//i times the width
-		*/
-		//testImage = loadImage("assets/GrassTile.png");
-		//testImage = loadImage("assets/bRODY.jpg");
-		
-		//testRectangle.generateGraphics(3, 12234);
 	
 		//background music
 		backgroundMusic("bin/assets/dz.mp3");
 		
 		//Load Tiles
 		tiles = new Tiles(new File("bin/assets/Tiles.txt"), sheet);
-		//backgroundTiles = new BackgroundTiles(this, new File("bin/assets/BackgroundTiles.txt"));
 		
 		//Load Map
 		map = new Map(new File("bin/assets/Map.txt"), tiles);
@@ -146,11 +118,6 @@ public class Game extends JFrame implements Runnable
 		player = new Player(playerAnimations, xZoom, yZoom);
 		objects[0] = player;
 		objects[1] = gui;
-
-		//testing animated sprites
-		/*BufferedImage[] animatedSpriteImages = new BufferedImage[2];
-		animTest = new AnimatedSprite(playerSheet, 5);*/
-		//objects[1] = animTest;
 		
 		//Add Listeners
 		canvas.addKeyListener(keyListener);
@@ -238,14 +205,6 @@ public class Game extends JFrame implements Runnable
 			y = (int) Math.floor((y + renderer.getCamera().y)/(16.0 * yZoom));
 			//(x, y, TileID)
 			map.setTile(selectedLayer, x, y, selectedTileID);
-			
-			//TODO collision
-			//map.setTile(selectedLayer, x, y, selectedTileID);
-			
-			//for background
-			//x = (int) Math.floor((x + renderer.getCamera().x));
-			//y = (int) Math.floor((y + renderer.getCamera().y));
-			//map.setTile(x, y, selectedTileID, xZoom, yZoom);
 		}
 	}
 	
@@ -255,14 +214,6 @@ public class Game extends JFrame implements Runnable
 		x = (int) Math.floor((x + renderer.getCamera().x)/(16.0 * xZoom));
 		y = (int) Math.floor((y + renderer.getCamera().y)/(16.0 * yZoom));
 		map.removeTile(selectedLayer, x, y);
-		
-		//TODO collision
-		//map.removeTile(selectedLayer, x, y);
-		
-		//for background
-		//x = (int) Math.floor((x + renderer.getCamera().x));
-		//y = (int) Math.floor((y + renderer.getCamera().y));
-		//map.removeTile(x, y, xZoom, yZoom);
 	}
 	
 	public void changeTile(int tileID) {
@@ -287,11 +238,6 @@ public class Game extends JFrame implements Runnable
 		//renderer.renderRectangle(testRectangle, 1, 1);
 		
 		map.render(renderer, objects, xZoom, yZoom);
-		
-		//renders all objects in order of their position in the object array
-		/*for(int i = 0; i < objects.length; i++) {
-			objects[i].render(renderer, xZoom, yZoom);
-		}*/
 		
 		//renderer.renderSprite(animTest, 30, 30, xZoom, yZoom);
 		
@@ -359,18 +305,13 @@ public class Game extends JFrame implements Runnable
 	}
 	
 	private void backgroundMusic(String path) {
-		  final JFXPanel fxPanel = new JFXPanel();
-		  try {
-		         File music = new File(path);
-		         Media play = new Media(music.toURI().toString());
-		         mediaPlayer = new MediaPlayer(play);
-		         mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
-		         mediaPlayer.play();
-		         System.out.println("helo");
-		  } catch(Exception ex) {
-		         ex.printStackTrace();
-		         System.out.println("Exception: " + ex.getMessage());
-		      }
-		 }
-	
+		final JFXPanel fxPanel = new JFXPanel();
+		try {
+			mediaPlayer = new MediaPlayer(new Media(new File(path).toURI().toString()));
+			mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+			mediaPlayer.play();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
 }

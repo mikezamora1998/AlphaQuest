@@ -58,8 +58,7 @@ public class Map {
 	 * @see #Map(File mapFile, Tiles tileSet)
 	 */
 	private File mapFile;
-	
-	//TODO collision
+
 	private Block[][] blocks;
 	private int blockStartX, blockStartY;
 
@@ -70,7 +69,6 @@ public class Map {
 	
 	private int numLayers;
 	
-	//TODO collision
 	/**
 	 * Map constructor.
 	 * <p>
@@ -79,37 +77,29 @@ public class Map {
 	 * @param tileSet <b>Tiles</b>
 	 * @see Map
 	 */
-	public Map(File mapFile, Tiles tileSet)
-	{
+	public Map(File mapFile, Tiles tileSet) {
 		this.mapFile = mapFile;
 		this.tileSet = tileSet;
 		int minX = Integer.MAX_VALUE;
 		int minY = Integer.MAX_VALUE;
 		int maxX = Integer.MIN_VALUE;
 		int maxY = Integer.MIN_VALUE;
-		try 
-		{
+		try {
 			Scanner scanner = new Scanner(mapFile);
 			int currentLine = 0;
-			while(scanner.hasNextLine()) 
-			{
+			while(scanner.hasNextLine()) {
 				String line = scanner.nextLine();
-				if(!line.startsWith("//"))
-				{
-					if(line.contains(":")) 
-					{
+				if(!line.startsWith("//")) {
+					if(line.contains(":")) {
 						String[] splitString = line.split(":");
-						if(splitString[0].equalsIgnoreCase("Fill"))
-						{
+						if(splitString[0].equalsIgnoreCase("Fill")) {
 							fillTileID = Integer.parseInt(splitString[1]);
 							continue;
 						}
 					}
 
-
 					String[] splitString = line.split(",");
-					if(splitString.length >= 4)
-					{
+					if(splitString.length >= 4) {
 						MappedTile mappedTile = new MappedTile(Integer.parseInt(splitString[0]),
 															   Integer.parseInt(splitString[1]),
 															   Integer.parseInt(splitString[2]),
@@ -126,12 +116,9 @@ public class Map {
 						if(numLayers <= mappedTile.layer)
 							numLayers = mappedTile.layer + 1;
 
-
 						mappedTiles.add(mappedTile);
 					}
-				}
-				else
-				{
+				} else {
 					comments.put(currentLine, line);
 				}
 				currentLine++;
@@ -163,14 +150,11 @@ public class Map {
 				blocks[blockX][blockY].addTile(mappedTile);
 			}
 
-		}
-		catch(FileNotFoundException e)
-		{
+		} catch(FileNotFoundException e) {
 			e.printStackTrace();
 		}
 	}
-	
-	//TODO collision
+
 	public MappedTile getTile(int layer, int tileX, int tileY) {
 		int blockX = (tileX - blockStartX)/blockWidth;
 		int blockY = (tileY - blockStartY)/blockHeight;
@@ -186,7 +170,6 @@ public class Map {
 		return block.getTile(layer, tileX, tileY);
 	}
 	
-	//TODO collision
 	public boolean checkCollision(Rectangle rect, int layer, int xZoom, int yZoom) {
 		int tileWidth = 16 * xZoom;
 		int tileHeight = 16 * yZoom;
@@ -235,16 +218,11 @@ public class Map {
 						if(tileRectangle.intersects(rect))
 							return true;
 					}
-
-
-
 				}
 			}
-
 		return false;
 	}
 	
-	//TODO collision
 	/**
 	 * Sets a <b>tileID</b> at a specific <b>X</b> and <b>Y</b> position.
 	 * @param tileX <b>int</b>
@@ -254,13 +232,11 @@ public class Map {
 	 * <p>
 	 * {@link MappedTile}
 	 */	
-	public void setTile(int layer, int tileX, int tileY, int tileID)
-	{
+	public void setTile(int layer, int tileX, int tileY, int tileID) {
 		if(layer >= numLayers)
 			numLayers = layer + 1;
 
-		for(int i = 0; i < mappedTiles.size(); i++)
-		{
+		for(int i = 0; i < mappedTiles.size(); i++) {
 			MappedTile mappedTile = mappedTiles.get(i);
 			if(mappedTile.x == tileX && mappedTile.y == tileY) {
 				mappedTile.id = tileID;
@@ -274,30 +250,25 @@ public class Map {
 		//Add to blocks
 		int blockX = (tileX - blockStartX)/blockWidth;
 		int blockY = (tileY - blockStartY)/blockHeight;
-		if(blockX >= 0 && blockY >= 0 && blockX < blocks.length && blockY < blocks[0].length) 
-		{
+		if(blockX >= 0 && blockY >= 0 && blockX < blocks.length && blockY < blocks[0].length) {
 			if(blocks[blockX][blockY] == null)
 				blocks[blockX][blockY] = new Block();
 
 			blocks[blockX][blockY].addTile(mappedTile);
-		} 
-		else 
-		{
+		} else {
 			int newMinX = blockStartX;
 			int newMinY = blockStartY;
 			int newLengthX = blocks.length;
 			int newLengthY = blocks[0].length;
 
-			if(blockX < 0) 
-			{
+			if(blockX < 0) {
 				int increaseAmount = blockX * -1;
 				newMinX = blockStartX - blockWidth*increaseAmount;
 				newLengthX = newLengthX + increaseAmount;
 			} else if(blockX >= blocks.length)
 				newLengthX = blocks.length + blockX;
 
-			if(blockY < 0) 
-			{
+			if(blockY < 0) {
 				int increaseAmount = blockY * -1;
 				newMinY = blockStartY - blockHeight*increaseAmount;
 				newLengthY = newLengthY + increaseAmount;
@@ -308,8 +279,7 @@ public class Map {
 
 			for(int x = 0; x < blocks.length; x++)
 				for(int y = 0; y < blocks[0].length; y++)
-					if(blocks[x][y] != null) 
-					{
+					if(blocks[x][y] != null) {
 						newBlocks[x + (blockStartX - newMinX)/blockWidth][y + (blockStartY - newMinY)/blockHeight] = blocks[x][y];
 					}
 
@@ -324,17 +294,14 @@ public class Map {
 		}
 	}
 	
-	//TODO collision
 	/**
 	 * Removes a tileID at a specific <b>X</b> and <b>Y</b> position.
 	 * @param tileX <b>int</b>
 	 * @param tileY <b>int</b>
 	 * @see #setTile(int tileX, int tileY, int tileID)
 	 */
-	public void removeTile(int layer, int tileX, int tileY)
-	{
-		for(int i = 0; i < mappedTiles.size(); i++)
-		{
+	public void removeTile(int layer, int tileX, int tileY) {
+		for(int i = 0; i < mappedTiles.size(); i++) {
 			MappedTile mappedTile = mappedTiles.get(i);
 			if(mappedTile.layer == layer && mappedTile.x == tileX && mappedTile.y == tileY) {
 				mappedTiles.remove(i);
@@ -378,8 +345,6 @@ public class Map {
 				}
 				
 				MappedTile tile = mappedTiles.get(i);
-				//printWriter.println(tile.id + "," + tile.x + "," + tile.y);
-				//TODO collision
 				printWriter.println(tile.layer + "," + tile.id + "," + tile.x + "," + tile.y);
 				currentLine++;
 			}
@@ -390,33 +355,27 @@ public class Map {
 		}
 	}
 	
-	//TODO collision
 	/**
 	 * Renders map to the Jframe.
 	 * @param renderer <b>RenderHandler</b>
 	 * @param xZoom <b>int</b>
 	 * @param yZoom <b>int</b>
 	 */
-	public void render(RenderHandler renderer, GameObject[] objects, int xZoom, int yZoom)
-	{
+	public void render(RenderHandler renderer, GameObject[] objects, int xZoom, int yZoom) {
 		int tileWidth = 16 * xZoom;
 		int tileHeight = 16 * yZoom;
 
-		if(fillTileID >= 0)
-		{
+		if(fillTileID >= 0) {
 			Rectangle camera = renderer.getCamera();
 
-			for(int y = camera.y - tileHeight - (camera.y % tileHeight); y < camera.y + camera.h; y+= tileHeight)
-			{
-				for(int x = camera.x - tileWidth - (camera.x % tileWidth); x < camera.x + camera.w; x+= tileWidth)
-				{
+			for(int y = camera.y - tileHeight - (camera.y % tileHeight); y < camera.y + camera.h; y+= tileHeight) {
+				for(int x = camera.x - tileWidth - (camera.x % tileWidth); x < camera.x + camera.w; x+= tileWidth) {
 					tileSet.renderTile(fillTileID, renderer, x, y, xZoom, yZoom);
 				}
 			}
 		}
 
-		for(int layer = 0; layer < numLayers; layer++) 
-		{
+		for(int layer = 0; layer < numLayers; layer++) {
 			int topLeftX = renderer.getCamera().x;
 			int topLeftY = renderer.getCamera().y;
 			int bottomRightX = renderer.getCamera().x + renderer.getCamera().w;
@@ -428,11 +387,9 @@ public class Map {
 			int pixelX = topLeftX;
 			int pixelY = topLeftY;
 
-			while(pixelX < bottomRightX && pixelY < bottomRightY)
-			{
+			while(pixelX < bottomRightX && pixelY < bottomRightY) {
 
-				if(blockX >= 0 && blockY >= 0 && blockX < blocks.length && blockY < blocks[0].length) 
-				{
+				if(blockX >= 0 && blockY >= 0 && blockX < blocks.length && blockY < blocks[0].length) {
 					if(blocks[blockX][blockY] != null)
 						blocks[blockX][blockY].render(renderer, layer, tileWidth, tileHeight, xZoom, yZoom);
 				}
@@ -440,8 +397,7 @@ public class Map {
 				blockX++;
 				pixelX += blockPixelWidth;
 
-				if(pixelX > bottomRightX) 
-				{
+				if(pixelX > bottomRightX) {
 					pixelX = topLeftX;
 					blockX = leftBlockX;
 					blockY++;
@@ -454,8 +410,7 @@ public class Map {
 			for(int i = 0; i < objects.length; i++)
 				if(objects[i].getLayer() == layer)
 					objects[i].render(renderer, xZoom, yZoom);
-				else if(objects[i].getLayer() + 1 == layer) 
-				{
+				else if(objects[i].getLayer() + 1 == layer) {
 					Rectangle rect = objects[i].getRectangle();
 
 					int tileBelowX = rect.x/tileWidth;
@@ -476,27 +431,21 @@ public class Map {
 				objects[i].render(renderer, xZoom, yZoom);
 	}
 	
-	//TODO collision
 	//Block represents a 6/6 block of tiles
 	@SuppressWarnings("unchecked")
-	private class Block
-	{
+	private class Block {
 		public ArrayList<MappedTile>[] mappedTilesByLayer;
 
-		public Block() 
-		{
+		public Block() {
 			mappedTilesByLayer = new ArrayList[numLayers];
 			for(int i = 0; i < mappedTilesByLayer.length; i++)
 				mappedTilesByLayer[i] = new ArrayList<MappedTile>();
 		}
 
-		public void render(RenderHandler renderer, int layer, int tileWidth, int tileHeight, int xZoom, int yZoom)
-		 {
-			if(mappedTilesByLayer.length > layer) 
-			{
+		public void render(RenderHandler renderer, int layer, int tileWidth, int tileHeight, int xZoom, int yZoom) {
+			if(mappedTilesByLayer.length > layer) {
 				ArrayList<MappedTile> mappedTiles = mappedTilesByLayer[layer];
-				for(int tileIndex = 0; tileIndex < mappedTiles.size(); tileIndex++)
-				{
+				for(int tileIndex = 0; tileIndex < mappedTiles.size(); tileIndex++) {
 					MappedTile mappedTile = mappedTiles.get(tileIndex);
 					tileSet.renderTile(mappedTile.id, renderer, mappedTile.x * tileWidth, mappedTile.y * tileHeight, xZoom, yZoom);
 				}
@@ -504,8 +453,7 @@ public class Map {
 		}
 
 		public void addTile(MappedTile tile) {
-			if(mappedTilesByLayer.length <= tile.layer) 
-			{
+			if(mappedTilesByLayer.length <= tile.layer) {
 				ArrayList<MappedTile>[] newTilesByLayer = new ArrayList[tile.layer + 1];
 
 				int i = 0;
@@ -523,10 +471,8 @@ public class Map {
 			mappedTilesByLayer[tile.layer].remove(tile);
 		}
 
-		public MappedTile getTile(int layer, int tileX, int tileY) 
-		{
-			for(MappedTile tile : mappedTilesByLayer[layer]) 
-			{
+		public MappedTile getTile(int layer, int tileX, int tileY) {
+			for(MappedTile tile : mappedTilesByLayer[layer]) {
 				if(tile.x == tileX && tile.y == tileY)
 					return tile;
 			}
@@ -551,9 +497,8 @@ public class Map {
 	 * <p>
 	 * <b>int </b> {@link #y}
 	 */
-	class MappedTile{
+	class MappedTile {
 		
-		//TODO collision
 		public int layer;
 		
 		/**
@@ -579,8 +524,7 @@ public class Map {
 		 * @see MappedTile
 		 */
 		public int y;
-		
-		//TODO collision
+
 		/**
 		 * MappedTile constructor.
 		 * @param id <b>int</b>
