@@ -1,2 +1,0 @@
-//Tile-FileName
-BasicPlatform-BasicPlatform.png

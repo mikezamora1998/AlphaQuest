@@ -33,11 +33,10 @@ public class Game extends JFrame implements Runnable
 	private BufferedImage testImage;
 	private Sprite testSprite;
 	private Rectangle testRectangle = new Rectangle(960, 540, 100, 100);
-	
-	private BackgroundTiles backgroundTiles;
+
 	private Tiles tiles;
 	private Map map;
-	private Background background;
+	private Rectangle background = new Rectangle(0,0,8000,1500);
 	private MediaPlayer mediaPlayer;
 	
 	private GameObject[] objects;
@@ -88,8 +87,9 @@ public class Game extends JFrame implements Runnable
 		renderer = new RenderHandler(canvas.getWidth(), canvas.getHeight());
 		
 		//prints the file path to assets folder
-		System.out.println("GrassTile.png location. = " + Game.class.getResource("assets/GrassTile.png"));
-		System.out.println("Tiles.txt location. = " + Game.class.getResource("assets/Tiles.txt"));
+		//System.out.println("GrassTile.png location. = " + Game.class.getResource("assets/GrassTile.png"));
+		//System.out.println("Tiles.txt location. = " + Game.class.getResource("assets/Tiles.txt"));
+		//System.out.println(Game.class.getClassLoader().getResource("").getPath());
 		
 		BufferedImage sheetImage = loadImage("assets/Tiles1.png");
 		
@@ -98,6 +98,9 @@ public class Game extends JFrame implements Runnable
 		sheet.loadSprites(16, 16);
 		//retrieves the sprite from a grid (size defined above)
 		//testSprite = sheet.getSprite(4, 4);
+		
+		//C:\Users\pixel\git\ProjectAlpha\ProjectAlpha\bin
+		//C:\Users\pixel\git\ProjectAlpha\assets
 		
 		BufferedImage playerSheetImage = loadImage("assets/Player.png");
 		playerSheet = new SpriteSheet(playerSheetImage);
@@ -114,7 +117,7 @@ public class Game extends JFrame implements Runnable
 		//testRectangle.generateGraphics(3, 12234);
 	
 		//background music
-		backgroundMusic("C:/Users/pixel/Music/Music/AC_DC - Thunderstruck Lyrics.mp3");
+		backgroundMusic("bin/assets/dz.mp3");
 		
 		//Load Tiles
 		tiles = new Tiles(new File("bin/assets/Tiles.txt"), sheet);
@@ -122,10 +125,6 @@ public class Game extends JFrame implements Runnable
 		
 		//Load Map
 		map = new Map(new File("bin/assets/Map.txt"), tiles);
-		
-		//first image is the background - the second image is for platforms (not used at the moment) txt file references list of background objects to render 
-		background = new Background(new Sprite(loadImage("assets/CloudBackground.png")), new Sprite(loadImage("assets/Platforms.png")), backgroundTiles, new File("bin/assets/BackgroundMap.txt"));
-		boolean hasBackground = false;
 		
 		//player animation sprites
 		AnimatedSprite playerAnimations = new AnimatedSprite(playerSheet, 5);
@@ -179,12 +178,11 @@ public class Game extends JFrame implements Runnable
 				renderer.getCamera().w = newWidth;
 				
 				int newHeight = canvas.getHeight();
-				if(hasBackground == false) {
-					if(newHeight > renderer.getMaxScreenHeight()) {
-						newHeight = renderer.getMaxScreenHeight();
-					}
-					renderer.getCamera().h = newHeight;
+				if(newHeight > renderer.getMaxScreenHeight()) {
+					newHeight = renderer.getMaxScreenHeight();
 				}
+				renderer.getCamera().h = newHeight;
+				
 				canvas.setSize(newWidth, newHeight);
 				pack();
 			}
@@ -288,7 +286,6 @@ public class Game extends JFrame implements Runnable
 		//renders test rectangle
 		//renderer.renderRectangle(testRectangle, 1, 1);
 		
-		background.render(renderer, xZoom, yZoom);
 		map.render(renderer, objects, xZoom, yZoom);
 		
 		//renders all objects in order of their position in the object array
@@ -349,7 +346,7 @@ public class Game extends JFrame implements Runnable
 		return map;
 	}
 	
-	public Background getGameBackground() {
+	public Rectangle getRectangleBackground() {
 		return background;
 	}
 	
@@ -369,6 +366,7 @@ public class Game extends JFrame implements Runnable
 		         mediaPlayer = new MediaPlayer(play);
 		         mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
 		         mediaPlayer.play();
+		         System.out.println("helo");
 		  } catch(Exception ex) {
 		         ex.printStackTrace();
 		         System.out.println("Exception: " + ex.getMessage());
