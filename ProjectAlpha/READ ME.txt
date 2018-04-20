@@ -1,7 +1,0 @@
-READ ME
-
-For whatever reason, Eclipse is deleting the assets folder after importing our project, to fix this error
-please follow the following instructions.
-
-Before attempting to launch the game through Eclipse, ensure you drag the assets folder from the 
-Project Alpha main file into the bin folder after importing the file into Eclipse.

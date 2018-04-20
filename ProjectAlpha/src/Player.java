@@ -18,7 +18,7 @@ public class Player implements GameObject {
 	private int xZoom;
 	private int yZoom;
 	
-	private int backgroundHeight = 1280;
+	private int backgroundHeight = 1500;
 	// 0 = right, 1 = left, 2 = up, 3 = down
 	private int direction = 0;
 	private int playerHeight = 26;
@@ -106,8 +106,10 @@ public class Player implements GameObject {
 		if (keyListener.up()) {
 			// playerRectangle.y -= speed;
 			// newDirection = 2;
-			if (onGround || yCollision)
+			if (onGround || yCollision) {
 				velocity.y -= jumpSpeed;
+				Sound.jump.play();
+			}
 			
 			didMove = true;
 		}
@@ -116,16 +118,6 @@ public class Player implements GameObject {
 			// newDirection = 3;
 			// didMove = true;
 		}
-
-		if (newDirection != direction) {
-			direction = newDirection;
-			updateDirection();
-		}
-
-		if (!didMove)
-			animatedSprite.reset();
-		if (didMove)
-			animatedSprite.update(game);
 
 		collisionCheckRectangle.x += xCollisionOffset;
 		collisionCheckRectangle.y += yCollisionOffset;
@@ -152,7 +144,7 @@ public class Player implements GameObject {
 		if (!game.getMap().checkCollision(axisCheck, layer, game.getXZoom(), game.getYZoom())
 				&& !game.getMap().checkCollision(axisCheck, layer + 1, game.getXZoom(), game.getYZoom()))
 			yCollision = false;
-			// playerRectangle.y = collisionCheckRectangle.y - yCollisionOffset;
+			//playerRectangle.y = collisionCheckRectangle.y - yCollisionOffset;
 		else
 			yCollision = true;
 
@@ -168,8 +160,8 @@ public class Player implements GameObject {
 
 			playerRectangle.x = newX;
 
-		} else if (xCollision && playerRectangle.y < minY)
-			playerRectangle.y += 1;
+		} //else if (xCollision && playerRectangle.y < minY)
+			//playerRectangle.y += 1;
 
 		int newY;
 
@@ -185,8 +177,8 @@ public class Player implements GameObject {
 			newY = 0;
 		if (newY > background.h - playerRectangle.h * game.yZoom)
 			newY = background.h - playerRectangle.h * game.yZoom;
-		if (onGround && newY != minY)
-			newY = minY - 1;
+		//if (onGround && newY != minY)
+			//newY = minY - 1;
 
 		
 		if (!yCollision) {
@@ -194,6 +186,16 @@ public class Player implements GameObject {
 			minY = minimumY;
 		} else
 			minY = newY;
+		
+		if (newDirection != direction) {
+			direction = newDirection;
+			updateDirection();
+		}
+
+		if (!didMove)
+			animatedSprite.reset();
+		if (didMove)
+			animatedSprite.update(game);
 
 		updateCamera(background, game.getRenderer().getCamera());
 	}

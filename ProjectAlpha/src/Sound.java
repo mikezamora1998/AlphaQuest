@@ -1,0 +1,37 @@
+import java.applet.Applet;
+import java.applet.AudioClip;
+
+public class Sound {
+	
+	public static final Sound backGround = new Sound("/dz.wav", 0);
+	public static final Sound jump = new Sound("/jump.wav", 1);
+	
+	private AudioClip clip;
+	private int type;
+	
+    Sound(String path, int type){
+    	this.type = type;
+    	try {
+    		System.out.println(Sound.class.getResource(path));
+    		clip = Applet.newAudioClip(Sound.class.getResource(path));
+    	}catch(Exception e){
+    		e.printStackTrace();
+    	}
+    }
+    
+    public void play() {
+    	try {
+    		new Thread() {
+    			public void run() {
+    				if(type == 1)
+    					clip.play();
+    				
+    				if(type == 0)
+    					clip.loop();
+    			}
+    		}.start();
+    	}catch(Exception e) {
+    		e.printStackTrace();
+    	}
+    }
+}

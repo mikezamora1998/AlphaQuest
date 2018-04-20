@@ -15,13 +15,61 @@ import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
 
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
-
-import javafx.embed.swing.JFXPanel;
-
-public class Game extends JFrame implements Runnable
-{
+/**
+ * Creates a new GameTread that will run the game.
+ * <p>
+ * @see <b>{@literal Constructor: }</b>
+ * <p> 
+ * {@link #Game()}
+ * <p>
+ * <b>{@literal Methods: }</b>
+ * <p>
+ * {@link #backgroundMusic(String path)}
+ * <p>
+ * {@link #changeTile(int tileID)}
+ * <p>
+ * {@link #getKeyListener()}
+ * <p>
+ * {@link #getMap()}
+ * <p>
+ * {@link #getMouseListener()}
+ * <p>
+ * {@link #getRectangleBackground()}
+ * <p>
+ * {@link #getRenderer()}
+ * <p>
+ * {@link #getSelectedTile()}
+ * <p>
+ * {@link #getXZoom()}
+ * <p>
+ * {@link #getYZoom()}
+ * <p>
+ * {@link #handleCTRL(boolean[] keys)}
+ * <p>
+ * {@link #leftClick(int x, int y)}
+ * <p>
+ * {@link #loadImage(String path)}
+ * <p>
+ * {@link #loadSprite(String path)}
+ * <p>
+ * {@link #render()}
+ * <p>
+ * {@link #rightClick(int x, int y)}
+ * <p>
+ * {@link #run()}
+ * <p>
+ * {@link #update()}
+ * <p>
+ * <b>{@literal Public Variables: }</b>
+ * <p>
+ * <b>final int</b> {@link #xZoom}
+ * <p>
+ * <b>final int</b> {@link #yZoom}
+ * <p>
+ * @author Michael, David, Brandon
+ */
+@SuppressWarnings("serial")
+public class Game extends JFrame implements Runnable {
 	//alpha color			0xFF FF00DC	
 	public static int alpha = 0xFFFF00DC;
 	
@@ -33,7 +81,7 @@ public class Game extends JFrame implements Runnable
 	private Tiles tiles;
 	private Map map;
 	private Rectangle background = new Rectangle(0,0,8000,1500);
-	private MediaPlayer mediaPlayer;
+	//private BufferedImage testImage;
 	
 	private GameObject[] objects;
 	private KeyBoardListener keyListener = new KeyBoardListener(this);
@@ -48,8 +96,7 @@ public class Game extends JFrame implements Runnable
 	private int selectedTileID = 0;
 	private int selectedLayer = 0;
 	
-	public Game() 
-	{
+	public Game() {
 		//Make our program shutdown when we exit out.
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
@@ -79,24 +126,26 @@ public class Game extends JFrame implements Runnable
 		//System.out.println("Tiles.txt location. = " + Game.class.getResource("assets/Tiles.txt"));
 		//System.out.println(Game.class.getClassLoader().getResource("").getPath());
 		
-		BufferedImage sheetImage = loadImage("assets/Tiles1.png");
+		//testImage = loadImage("/bRODY.jpg");
+		
+		BufferedImage sheetImage = loadImage("/Tiles1.png");
 		
 		//size of the blocks in the sprite sheet. (x, y) 16px by 16px default
 		sheet = new SpriteSheet(sheetImage);
 		sheet.loadSprites(16, 16);
 		
-		BufferedImage playerSheetImage = loadImage("assets/Player.png");
+		BufferedImage playerSheetImage = loadImage("/Player.png");
 		playerSheet = new SpriteSheet(playerSheetImage);
 		playerSheet.loadSprites(20, 26);
 	
 		//background music
-		backgroundMusic("bin/assets/dz.mp3");
+		Sound.backGround.play();
 		
 		//Load Tiles
-		tiles = new Tiles(new File("bin/assets/Tiles.txt"), sheet);
+		tiles = new Tiles(new File("assets/Tiles.txt"), sheet);
 		
 		//Load Map
-		map = new Map(new File("bin/assets/Map.txt"), tiles);
+		map = new Map(new File("assets/Map.txt"), tiles);
 		
 		//player animation sprites
 		AnimatedSprite playerAnimations = new AnimatedSprite(playerSheet, 5);
@@ -157,7 +206,6 @@ public class Game extends JFrame implements Runnable
 		canvas.requestFocus();
 	}
 
-	
 	public void update() {
 		for(int i = 0; i < objects.length; i++) {
 			objects[i].update(this);
@@ -231,7 +279,10 @@ public class Game extends JFrame implements Runnable
 		
 		//renders in linear order. Newest will be rendered over older
 		//renders test image
-		//renderer.renderImage(testImage, (getWidth()/2) - (testImage.getWidth()/2)*xZoom, (getHeight()/2) - (testImage.getHeight()/2)*yZoom, xZoom, yZoom);
+		//int bgX = (int) (((player.getRectangle().x)-(testImage.getWidth()/2)*xZoom) * .1);
+		//int bgY = (int) (((player.getRectangle().y) - (testImage.getHeight()/2)*yZoom) *.8);
+		//renderer.renderImage(testImage, bgX, bgY, xZoom, yZoom, false);
+
 		//renders test sprite from sprite sheet
 		//renderer.renderSprite(testSprite, (getWidth()/2) - (testSprite.getWidth()/2)*xZoom, (getHeight()/2) - (testSprite.getHeight()/2)*yZoom, xZoom, yZoom);
 		//renders test rectangle
@@ -268,8 +319,7 @@ public class Game extends JFrame implements Runnable
 		}
 	}
 
-	public static void main(String[] args) 
-	{
+	public static void main(String[] args) {
 		//Creates "game" object
 		Game game = new Game();
 		Thread gameThread = new Thread(game);
@@ -302,16 +352,5 @@ public class Game extends JFrame implements Runnable
 	
 	public int getYZoom() {
 		return yZoom;
-	}
-	
-	private void backgroundMusic(String path) {
-		final JFXPanel fxPanel = new JFXPanel();
-		try {
-			mediaPlayer = new MediaPlayer(new Media(new File(path).toURI().toString()));
-			mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
-			mediaPlayer.play();
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
 	}
 }
