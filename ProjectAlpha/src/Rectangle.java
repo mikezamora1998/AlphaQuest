@@ -68,6 +68,7 @@ public class Rectangle {
 		this(0,0,0,0);
 	}
 	
+	//TODO: Talking Points
 	public boolean intersects(Rectangle otherRectangle) {
 		if(x > otherRectangle.x + otherRectangle.w || otherRectangle.x > x + w) {
 			return false;

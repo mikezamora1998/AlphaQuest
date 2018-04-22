@@ -73,7 +73,8 @@ public class RenderHandler {
 
 	//Render our image to our array of pixels.
 	public void renderImage(BufferedImage image, int xPosition, int yPosition, int xZoom, int yZoom, boolean fixed){
-		int[] imagePixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
+		int[] imagePixels = new int[image.getWidth() * image.getHeight()];
+		imagePixels = image.getRGB(0, 0, image.getWidth(), image.getHeight(), imagePixels, 0, image.getWidth());
 		renderArray(imagePixels, image.getWidth(), image.getHeight(), xPosition, yPosition, xZoom, yZoom, fixed);
 	}
 

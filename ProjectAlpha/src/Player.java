@@ -12,7 +12,7 @@ public class Player implements GameObject {
 	
 	private final int xCollisionOffset = 14;
 	private final int yCollisionOffset = 20;
-	private final int minimumY = 886;
+	private final int minimumY = (19*16*3) - 26;
 	private int minY = minimumY;
 	private int layer = 0;
 	private int xZoom;

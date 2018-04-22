@@ -68,7 +68,7 @@ public class Map {
 	private int blockPixelHeight = blockHeight * 16;
 	
 	private int numLayers;
-	
+	//TODO: Talking Points
 	/**
 	 * Map constructor.
 	 * <p>
@@ -170,6 +170,7 @@ public class Map {
 		return block.getTile(layer, tileX, tileY);
 	}
 	
+	//TODO: Talking Points
 	public boolean checkCollision(Rectangle rect, int layer, int xZoom, int yZoom) {
 		int tileWidth = 16 * xZoom;
 		int tileHeight = 16 * yZoom;
@@ -223,6 +224,7 @@ public class Map {
 		return false;
 	}
 	
+	//TODO: Talking Points Editor
 	/**
 	 * Sets a <b>tileID</b> at a specific <b>X</b> and <b>Y</b> position.
 	 * @param tileX <b>int</b>
@@ -243,7 +245,7 @@ public class Map {
 				return;
 			}
 		}
-
+		
 		MappedTile mappedTile = new MappedTile(layer, tileID, tileX, tileY);
 		mappedTiles.add(mappedTile);
 
@@ -294,6 +296,7 @@ public class Map {
 		}
 	}
 	
+	//TODO: Talking Points Editor
 	/**
 	 * Removes a tileID at a specific <b>X</b> and <b>Y</b> position.
 	 * @param tileX <b>int</b>

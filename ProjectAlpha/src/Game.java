@@ -79,9 +79,9 @@ public class Game extends JFrame implements Runnable {
 	private SpriteSheet playerSheet;
 
 	private Tiles tiles;
+	private Sprite[] spriteButton;
 	private Map map;
 	private Rectangle background = new Rectangle(0,0,8000,1500);
-	//private BufferedImage testImage;
 	
 	private GameObject[] objects;
 	private KeyBoardListener keyListener = new KeyBoardListener(this);
@@ -95,6 +95,15 @@ public class Game extends JFrame implements Runnable {
 	private int TILESIZE = 16;
 	private int selectedTileID = 0;
 	private int selectedLayer = 0;
+
+	private boolean gameStart;
+
+	private Rectangle startScreenRect = new Rectangle(500,500,500,500);
+
+	private BufferedImage bgLayer1;
+	private BufferedImage bgLayer2;
+	private BufferedImage bgLayer3;
+	private BufferedImage bgLayer4;
 	
 	public Game() {
 		//Make our program shutdown when we exit out.
@@ -117,7 +126,7 @@ public class Game extends JFrame implements Runnable {
 		setVisible(true);
 
 		//Create our object for buffer strategy.
-		canvas.createBufferStrategy(3);
+		canvas.createBufferStrategy(2);
 
 		renderer = new RenderHandler(canvas.getWidth(), canvas.getHeight());
 		
@@ -126,7 +135,8 @@ public class Game extends JFrame implements Runnable {
 		//System.out.println("Tiles.txt location. = " + Game.class.getResource("assets/Tiles.txt"));
 		//System.out.println(Game.class.getClassLoader().getResource("").getPath());
 		
-		//testImage = loadImage("/bRODY.jpg");
+		bgLayer1 = loadImage("/background C layer1.png");
+		bgLayer2 = loadImage("/background C layer4.png");
 		
 		BufferedImage sheetImage = loadImage("/Tiles1.png");
 		
@@ -162,11 +172,19 @@ public class Game extends JFrame implements Runnable {
 		
 		GUI gui = new GUI(buttons, 5, 5, true);
 		
+		GUIButtons[] startButtons = new GUIButtons[tiles.size()];
+		for(int i = 0; i < startButtons.length; i++) {
+			Rectangle tileRectangle = new Rectangle(100, i * (tileSprites[i].getWidth() * xZoom + guiSpacing), tileSprites[i].getWidth() * xZoom, tileSprites[i].getHeight() * yZoom);
+			startButtons[i] = new SDKButton(this, i,tileSprites[i], tileRectangle);
+		}
+		GUI startButton = new GUI(startButtons, 5, 5, true);
+
 		//Load Objects
 		objects = new GameObject[2];
 		player = new Player(playerAnimations, xZoom, yZoom);
 		objects[0] = player;
 		objects[1] = gui;
+		//objects[2] = startButton;
 		
 		//Add Listeners
 		canvas.addKeyListener(keyListener);
@@ -246,7 +264,6 @@ public class Game extends JFrame implements Runnable {
 			}
 		}
 		
-		
 		if(!stopChecking) {
 			//Divide by tile size default is 16
 			x = (int) Math.floor((x + renderer.getCamera().x)/(16.0 * xZoom));
@@ -278,18 +295,20 @@ public class Game extends JFrame implements Runnable {
 		super.paint(graphics);
 		
 		//renders in linear order. Newest will be rendered over older
-		//renders test image
-		//int bgX = (int) (((player.getRectangle().x)-(testImage.getWidth()/2)*xZoom) * .1);
-		//int bgY = (int) (((player.getRectangle().y) - (testImage.getHeight()/2)*yZoom) *.8);
-		//renderer.renderImage(testImage, bgX, bgY, xZoom, yZoom, false);
-
-		//renders test sprite from sprite sheet
-		//renderer.renderSprite(testSprite, (getWidth()/2) - (testSprite.getWidth()/2)*xZoom, (getHeight()/2) - (testSprite.getHeight()/2)*yZoom, xZoom, yZoom);
-		//renders test rectangle
-		//renderer.renderRectangle(testRectangle, 1, 1);
+		//renders background images image
+		int bgX = 0;
+		int bgY = 0;
+		renderer.renderImage(bgLayer1, bgX, bgY, 2, 2, true);
+		renderer.renderImage(bgLayer2, bgX, bgY, 2, 2, false);
 		
-		map.render(renderer, objects, xZoom, yZoom);
+		bgX = bgLayer2.getWidth()*2;
+		bgY = 0;
+		renderer.renderImage(bgLayer2, bgX, bgY, 2, 2, false);
 		
+		//if(gameStart)
+			map.render(renderer, objects, xZoom, yZoom);
+		//else
+			//renderer.renderRectangle(startScreenRect , 1, 1, true);
 		//renderer.renderSprite(animTest, 30, 30, xZoom, yZoom);
 		
 		renderer.render(graphics);
