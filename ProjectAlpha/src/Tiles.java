@@ -13,6 +13,7 @@ public class Tiles {
 		this.spriteSheet = spriteSheet;
 		try {
 			Scanner scanner = new Scanner(tilesFile);
+			int i = 0;
 			while(scanner.hasNextLine()){
 				//read each line and create a tile
 				String line = scanner.nextLine();
@@ -22,15 +23,16 @@ public class Tiles {
 					int spriteX = Integer.parseInt(splitString[1]);
 					int spriteY = Integer.parseInt(splitString[2]);
 					Tile tile = new Tile(tileName, spriteSheet.getSprite(spriteX, spriteY));
-					
-					System.out.println(tileName);
 
 					if(splitString.length >= 4) {
 						tile.collidable = true;
 						tile.collisionType = Integer.parseInt(splitString[3]);
-						System.out.println(tile.collisionType);
+						System.out.println("TileID: " + i + ", TileName: " + tileName + ", SpriteX: " + spriteX + ", SpriteY: " + spriteY + ", Collision Type: " + tile.collisionType);
+					}else {
+						System.out.println("TileID: " + i + ", TileName: " + tileName + ", SpriteX: " + spriteX + ", SpriteY: " + spriteY);
 					}
 					tilesList.add(tile);
+					i++;
 				}
 			}
 		}catch(FileNotFoundException e){

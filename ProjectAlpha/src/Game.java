@@ -2,6 +2,8 @@ import java.awt.Canvas;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.awt.Graphics;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.KeyEvent;
@@ -9,7 +11,7 @@ import java.lang.Runnable;
 import java.lang.Thread;
 
 import javax.swing.JFrame;
-
+import javax.swing.Timer;
 import javax.imageio.ImageIO;
 
 import java.io.File;
@@ -76,11 +78,14 @@ public class Game extends JFrame implements Runnable {
 	private Canvas canvas = new Canvas();
 	private RenderHandler renderer;
 	private SpriteSheet sheet;
+	private SpriteSheet textSheet;
 	private SpriteSheet playerSheet;
 
 	private Tiles tiles;
+	private Tiles textTiles;
 	private Sprite[] spriteButton;
 	private Map map;
+	private Map textMap;
 	private Rectangle background = new Rectangle(0,0,8000,1500);
 	
 	private GameObject[] objects;
@@ -98,18 +103,18 @@ public class Game extends JFrame implements Runnable {
 
 	private boolean gameStart;
 
-	private Rectangle startScreenRect = new Rectangle(500,500,500,500);
-
 	private BufferedImage bgLayer1;
 	private BufferedImage bgLayer2;
-	private BufferedImage bgLayer3;
-	private BufferedImage bgLayer4;
+
+	private GameObject[] startObjects;
+
+	private Tiles startTiles;
 	
 	public Game() {
 		//Make our program shutdown when we exit out.
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		canvas.setBounds(0, 0, 1280, 720);
+		canvas.setBounds(0, 0, 1800, 1000);
 
 		//Add our graphics component
 		add(canvas);
@@ -134,28 +139,35 @@ public class Game extends JFrame implements Runnable {
 		//System.out.println("GrassTile.png location. = " + Game.class.getResource("assets/GrassTile.png"));
 		//System.out.println("Tiles.txt location. = " + Game.class.getResource("assets/Tiles.txt"));
 		//System.out.println(Game.class.getClassLoader().getResource("").getPath());
+		gameStart = true;
+		
+		//Opening music
+		Sound.opening.play();
 		
 		bgLayer1 = loadImage("/background C layer1.png");
 		bgLayer2 = loadImage("/background C layer4.png");
-		
-		BufferedImage sheetImage = loadImage("/Tiles1.png");
-		
+				
 		//size of the blocks in the sprite sheet. (x, y) 16px by 16px default
+		BufferedImage sheetImage = loadImage("/Tiles1.png");
 		sheet = new SpriteSheet(sheetImage);
 		sheet.loadSprites(16, 16);
+		
+		BufferedImage textSheetImage = loadImage("/font sheet.png");
+		textSheet = new SpriteSheet(textSheetImage);
+		textSheet.loadSprites(20, 20);
 		
 		BufferedImage playerSheetImage = loadImage("/Player.png");
 		playerSheet = new SpriteSheet(playerSheetImage);
 		playerSheet.loadSprites(20, 26);
-	
-		//background music
-		Sound.backGround.play();
 		
 		//Load Tiles
+		startTiles = new Tiles(new File("assets/StartTiles.txt"), textSheet);
 		tiles = new Tiles(new File("assets/Tiles.txt"), sheet);
+		//textTiles = new Tiles(new File("assets/TextTiles.txt"), textSheet);
 		
 		//Load Map
 		map = new Map(new File("assets/Map.txt"), tiles);
+		//textMap = new Map(new File("assets/TextMap.txt"), textTiles);
 		
 		//player animation sprites
 		AnimatedSprite playerAnimations = new AnimatedSprite(playerSheet, 5);
@@ -172,12 +184,29 @@ public class Game extends JFrame implements Runnable {
 		
 		GUI gui = new GUI(buttons, 5, 5, true);
 		
-		GUIButtons[] startButtons = new GUIButtons[tiles.size()];
+		
+		GUIButtons[] startButtons = new GUIButtons[startTiles.size()];
+		Sprite[] textTileSprites = startTiles.getSprite();
 		for(int i = 0; i < startButtons.length; i++) {
-			Rectangle tileRectangle = new Rectangle(100, i * (tileSprites[i].getWidth() * xZoom + guiSpacing), tileSprites[i].getWidth() * xZoom, tileSprites[i].getHeight() * yZoom);
-			startButtons[i] = new SDKButton(this, i,tileSprites[i], tileRectangle);
+			Rectangle textTileRectangle = new Rectangle((i * (textTileSprites[i].getWidth() * xZoom + guiSpacing)) + 50, 100, textTileSprites[i].getWidth() * xZoom, textTileSprites[i].getHeight() * yZoom);
+			startButtons[i] = new StartButton(this, i,textTileSprites[i], textTileRectangle);
 		}
 		GUI startButton = new GUI(startButtons, 5, 5, true);
+		
+//		GUIButtons[] startButtons = new GUIButtons[textTiles.size()];
+//		Sprite[] textTileSprites = textTiles.getSprite();
+//		for(int i = 0; i < startButtons.length; i++) {
+//			Rectangle textTileRectangle;
+//			if(i < 18) {
+//				textTileRectangle = new Rectangle((i * (textTileSprites[i].getWidth() * xZoom + guiSpacing)) + 50, 0, textTileSprites[i].getWidth() * xZoom, textTileSprites[i].getHeight() * yZoom);
+//			}else if(i < 36) {
+//				textTileRectangle = new Rectangle(((i-18) * (textTileSprites[i].getWidth() * xZoom + guiSpacing)) + 50, (textTileSprites[i].getWidth() * xZoom + guiSpacing), textTileSprites[i].getWidth() * xZoom, textTileSprites[i].getHeight() * yZoom);
+//			}else {
+//				textTileRectangle = new Rectangle(((i-36) * (textTileSprites[i].getWidth() * xZoom + guiSpacing)) + 50, (textTileSprites[i].getWidth() * xZoom + guiSpacing) * 2, textTileSprites[i].getWidth() * xZoom, textTileSprites[i].getHeight() * yZoom);
+//			}
+//			startButtons[i] = new StartButton(this, i,textTileSprites[i], textTileRectangle);
+//		}
+//		GUI startButton = new GUI(startButtons, 5, 5, true);
 
 		//Load Objects
 		objects = new GameObject[2];
@@ -185,6 +214,9 @@ public class Game extends JFrame implements Runnable {
 		objects[0] = player;
 		objects[1] = gui;
 		//objects[2] = startButton;
+		
+		startObjects = new GameObject[1];
+		startObjects[0] = startButton;
 		
 		//Add Listeners
 		canvas.addKeyListener(keyListener);
@@ -225,8 +257,12 @@ public class Game extends JFrame implements Runnable {
 	}
 
 	public void update() {
+		if(!gameStart) {
 		for(int i = 0; i < objects.length; i++) {
 			objects[i].update(this);
+		}
+		}else {
+			startObjects[0].update(this);
 		}
 	}
 	
@@ -254,31 +290,47 @@ public class Game extends JFrame implements Runnable {
 	}
 	
 	public void leftClick(int x, int y) {
-		
 		Rectangle mouseRectangle = new Rectangle(x, y, 1, 1);
-		boolean stopChecking = false;
-		
-		for(int i = 0; i < objects.length; i++) {
-			if(!stopChecking) {
-				stopChecking = objects[i].handleMouseClick(mouseRectangle, renderer.getCamera(), xZoom, yZoom);
+		if(!gameStart) {
+			boolean stopChecking = false;
+			
+			for(int i = 0; i < objects.length; i++) {
+				if(!stopChecking) {
+					stopChecking = objects[i].handleMouseClick(mouseRectangle, renderer.getCamera(), xZoom, yZoom);
+				}
 			}
-		}
-		
-		if(!stopChecking) {
-			//Divide by tile size default is 16
-			x = (int) Math.floor((x + renderer.getCamera().x)/(16.0 * xZoom));
-			y = (int) Math.floor((y + renderer.getCamera().y)/(16.0 * yZoom));
-			//(x, y, TileID)
-			map.setTile(selectedLayer, x, y, selectedTileID);
+			
+			if(!stopChecking) {
+				//Divide by tile size default is 16
+				x = (int) Math.floor((x + renderer.getCamera().x)/(16.0 * xZoom));
+				y = (int) Math.floor((y + renderer.getCamera().y)/(16.0 * yZoom));
+				//(x, y, TileID)
+				map.setTile(selectedLayer, x, y, selectedTileID);
+			}
+		}else {
+			gameStart = startObjects[0].handleMouseClick(mouseRectangle, renderer.getCamera(), xZoom, yZoom);
+			Sound.start.play();
+			Sound.opening.stop();
+			Timer timer = new Timer(1500, new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent arg0) {
+					changeStart(false);
+					Sound.backGround.play();
+				}
+			});
+			timer.setRepeats(false); // Only execute once
+			timer.start();
 		}
 	}
 	
 	public void rightClick(int x, int y) {
 		//Divide by tile size default is 16
-		System.out.println(x + ", " + y);
-		x = (int) Math.floor((x + renderer.getCamera().x)/(16.0 * xZoom));
-		y = (int) Math.floor((y + renderer.getCamera().y)/(16.0 * yZoom));
-		map.removeTile(selectedLayer, x, y);
+		if(!gameStart) {
+			System.out.println(x + ", " + y);
+			x = (int) Math.floor((x + renderer.getCamera().x)/(16.0 * xZoom));
+			y = (int) Math.floor((y + renderer.getCamera().y)/(16.0 * yZoom));
+			map.removeTile(selectedLayer, x, y);
+		}
 	}
 	
 	public void changeTile(int tileID) {
@@ -305,12 +357,13 @@ public class Game extends JFrame implements Runnable {
 		bgY = 0;
 		renderer.renderImage(bgLayer2, bgX, bgY, 2, 2, false);
 		
-		//if(gameStart)
+		if(!gameStart) {
 			map.render(renderer, objects, xZoom, yZoom);
-		//else
-			//renderer.renderRectangle(startScreenRect , 1, 1, true);
-		//renderer.renderSprite(animTest, 30, 30, xZoom, yZoom);
-		
+		}else {
+			//textMap.render(renderer, objects, xZoom, yZoom);
+			startObjects[0].render(renderer, xZoom, yZoom);
+		}
+			
 		renderer.render(graphics);
 		
 		graphics.dispose();
@@ -371,5 +424,9 @@ public class Game extends JFrame implements Runnable {
 	
 	public int getYZoom() {
 		return yZoom;
+	}
+
+	public void changeStart(boolean start) {
+		gameStart = start;
 	}
 }

@@ -213,7 +213,7 @@ public class Player implements GameObject {
 		
 		camera.x = x;
 
-		int y = playerRectangle.y - (camera.h / 2) - 125;
+		int y = playerRectangle.y - (camera.h / 2) - 250;
 		if (y < 0)
 			y = 0;
 		if (y + camera.h > background.h)

@@ -4,7 +4,9 @@ import java.applet.AudioClip;
 public class Sound {
 	
 	public static final Sound backGround = new Sound("/dz.wav", 0);
+	public static final Sound opening = new Sound("/Opening.wav", 0);
 	public static final Sound jump = new Sound("/jump.wav", 1);
+	public static final Sound start = new Sound("/start.wav", 1);
 	
 	private AudioClip clip;
 	private int type;
@@ -33,5 +35,9 @@ public class Sound {
     	}catch(Exception e) {
     		e.printStackTrace();
     	}
+    }
+    
+    public void stop() {
+    	clip.stop();
     }
 }
