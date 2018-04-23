@@ -1,3 +1,17 @@
+import java.io.File;
+
+/**
+ * Handles player movements and collision.
+ * <p>
+ * @see <b>{@literal Constructor: }</b>
+ * <p> 
+ * {@link #}
+ * <p>
+ * <b>{@literal Methods: }</b>
+ * <p>
+ * {@link #}
+ * @author Michael, David, Brandon
+ */
 public class Player implements GameObject {
 
 	private Rectangle playerRectangle;

@@ -1,3 +1,4 @@
 //Fill Tile
 //Fill:0
 //Layer,TileID,X,Y
+0,5,10,10

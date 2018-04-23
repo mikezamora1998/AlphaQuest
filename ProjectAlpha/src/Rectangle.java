@@ -1,5 +1,5 @@
 /**
- * Rectangle Class. Handles Rectangle rendering.
+ * Rectangle Class. Handles Rectangle rendering and Intersection.
  * @see {@literal Constructors: }
  * <p>
  * {@link #Rectangle(int x, int y, int w, int h)}

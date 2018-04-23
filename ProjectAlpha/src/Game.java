@@ -82,10 +82,9 @@ public class Game extends JFrame implements Runnable {
 	private SpriteSheet playerSheet;
 
 	private Tiles tiles;
-	private Tiles textTiles;
-	private Sprite[] spriteButton;
+	//private Tiles textTiles;
 	private Map map;
-	private Map textMap;
+	//private Map textMap;
 	private Rectangle background = new Rectangle(0,0,8000,1500);
 	
 	private GameObject[] objects;
@@ -105,6 +104,8 @@ public class Game extends JFrame implements Runnable {
 
 	private BufferedImage bgLayer1;
 	private BufferedImage bgLayer2;
+	private BufferedImage bgLayer3;
+	private BufferedImage bgLayer4;
 
 	private GameObject[] startObjects;
 
@@ -131,7 +132,7 @@ public class Game extends JFrame implements Runnable {
 		setVisible(true);
 
 		//Create our object for buffer strategy.
-		canvas.createBufferStrategy(2);
+		canvas.createBufferStrategy(3);
 
 		renderer = new RenderHandler(canvas.getWidth(), canvas.getHeight());
 		
@@ -145,12 +146,14 @@ public class Game extends JFrame implements Runnable {
 		Sound.opening.play();
 		
 		bgLayer1 = loadImage("/background C layer1.png");
-		bgLayer2 = loadImage("/background C layer4.png");
+		bgLayer2 = loadImage("/background C layer2 p1.png");
+		bgLayer3 = loadImage("/background C layer2 p2.png");
+		bgLayer4 = loadImage("/background C layer2 p3.png");
 				
 		//size of the blocks in the sprite sheet. (x, y) 16px by 16px default
 		BufferedImage sheetImage = loadImage("/Tiles1.png");
 		sheet = new SpriteSheet(sheetImage);
-		sheet.loadSprites(16, 16);
+		sheet.loadSprites(TILESIZE, TILESIZE);
 		
 		BufferedImage textSheetImage = loadImage("/font sheet.png");
 		textSheet = new SpriteSheet(textSheetImage);
@@ -186,34 +189,34 @@ public class Game extends JFrame implements Runnable {
 		
 		
 		GUIButtons[] startButtons = new GUIButtons[startTiles.size()];
-		Sprite[] textTileSprites = startTiles.getSprite();
+		Sprite[] startTileSprites = startTiles.getSprite();
 		for(int i = 0; i < startButtons.length; i++) {
-			Rectangle textTileRectangle = new Rectangle((i * (textTileSprites[i].getWidth() * xZoom + guiSpacing)) + 50, 100, textTileSprites[i].getWidth() * xZoom, textTileSprites[i].getHeight() * yZoom);
-			startButtons[i] = new StartButton(this, i,textTileSprites[i], textTileRectangle);
+			Rectangle startTileRectangle = new Rectangle((i * (startTileSprites[i].getWidth() * xZoom + guiSpacing)) + 50, 100, startTileSprites[i].getWidth() * xZoom, startTileSprites[i].getHeight() * yZoom);
+			startButtons[i] = new StartButton(this, i,startTileSprites[i], startTileRectangle);
 		}
 		GUI startButton = new GUI(startButtons, 5, 5, true);
 		
-//		GUIButtons[] startButtons = new GUIButtons[textTiles.size()];
-//		Sprite[] textTileSprites = textTiles.getSprite();
-//		for(int i = 0; i < startButtons.length; i++) {
-//			Rectangle textTileRectangle;
-//			if(i < 18) {
-//				textTileRectangle = new Rectangle((i * (textTileSprites[i].getWidth() * xZoom + guiSpacing)) + 50, 0, textTileSprites[i].getWidth() * xZoom, textTileSprites[i].getHeight() * yZoom);
-//			}else if(i < 36) {
-//				textTileRectangle = new Rectangle(((i-18) * (textTileSprites[i].getWidth() * xZoom + guiSpacing)) + 50, (textTileSprites[i].getWidth() * xZoom + guiSpacing), textTileSprites[i].getWidth() * xZoom, textTileSprites[i].getHeight() * yZoom);
-//			}else {
-//				textTileRectangle = new Rectangle(((i-36) * (textTileSprites[i].getWidth() * xZoom + guiSpacing)) + 50, (textTileSprites[i].getWidth() * xZoom + guiSpacing) * 2, textTileSprites[i].getWidth() * xZoom, textTileSprites[i].getHeight() * yZoom);
-//			}
-//			startButtons[i] = new StartButton(this, i,textTileSprites[i], textTileRectangle);
-//		}
-//		GUI startButton = new GUI(startButtons, 5, 5, true);
+		
+		/*GUIButtons[] textButtons = new GUIButtons[textTiles.size()];
+		Sprite[] textTileSprites = textTiles.getSprite();
+		for(int i = 0; i < startButtons.length; i++) {
+			Rectangle textTileRectangle;
+			if(i < 18) {
+				textTileRectangle = new Rectangle((i * (textTileSprites[i].getWidth() * xZoom + guiSpacing)) + 50, 0, textTileSprites[i].getWidth() * xZoom, textTileSprites[i].getHeight() * yZoom);
+			}else if(i < 36) {
+				textTileRectangle = new Rectangle(((i-18) * (textTileSprites[i].getWidth() * xZoom + guiSpacing)) + 50, (textTileSprites[i].getWidth() * xZoom + guiSpacing), textTileSprites[i].getWidth() * xZoom, textTileSprites[i].getHeight() * yZoom);
+			}else {
+				textTileRectangle = new Rectangle(((i-36) * (textTileSprites[i].getWidth() * xZoom + guiSpacing)) + 50, (textTileSprites[i].getWidth() * xZoom + guiSpacing) * 2, textTileSprites[i].getWidth() * xZoom, textTileSprites[i].getHeight() * yZoom);
+			}
+			textButtons[i] = new TextButton(this, i,textTileSprites[i], textTileRectangle);
+		}
+		GUI textGUI = new GUI(textButtons, 5, 5, true);*/
 
 		//Load Objects
 		objects = new GameObject[2];
 		player = new Player(playerAnimations, xZoom, yZoom);
 		objects[0] = player;
 		objects[1] = gui;
-		//objects[2] = startButton;
 		
 		startObjects = new GameObject[1];
 		startObjects[0] = startButton;
@@ -326,7 +329,6 @@ public class Game extends JFrame implements Runnable {
 	public void rightClick(int x, int y) {
 		//Divide by tile size default is 16
 		if(!gameStart) {
-			System.out.println(x + ", " + y);
 			x = (int) Math.floor((x + renderer.getCamera().x)/(16.0 * xZoom));
 			y = (int) Math.floor((y + renderer.getCamera().y)/(16.0 * yZoom));
 			map.removeTile(selectedLayer, x, y);
@@ -350,12 +352,41 @@ public class Game extends JFrame implements Runnable {
 		//renders background images image
 		int bgX = 0;
 		int bgY = 0;
-		renderer.renderImage(bgLayer1, bgX, bgY, 2, 2, true);
-		renderer.renderImage(bgLayer2, bgX, bgY, 2, 2, false);
 		
+		renderer.renderImage(bgLayer1, bgX, bgY, 2, 2, true);
+		
+		if(player.getRectangle().x<2860)
+			renderer.renderImage(bgLayer2, bgX, bgY, 2, 2, false);
+
+		bgX = bgLayer2.getWidth()*2;
+		if(player.getRectangle().x>960 && player.getRectangle().x<4720)
+			renderer.renderImage(bgLayer3, bgX, bgY, 2, 2, false);
+		
+		bgX = bgLayer2.getWidth()*2*2;
+		if(player.getRectangle().x>2820 && player.getRectangle().x<6720)
+			renderer.renderImage(bgLayer4, bgX, bgY, 2, 2, false);
+		
+		bgX = bgLayer2.getWidth()*2*3;
+		if(player.getRectangle().x>4620 && player.getRectangle().x<8620)
+			renderer.renderImage(bgLayer2, bgX, bgY, 2, 2, false);
+		
+		bgX = bgLayer2.getWidth()*2*4;
+		if(player.getRectangle().x>6720)
+			renderer.renderImage(bgLayer3, bgX, bgY, 2, 2, false);
+		
+		/*if(player.getRectangle().x<3780)
+			renderer.renderImage(bgLayer2, bgX, bgY, 2, 2, false);
+
 		bgX = bgLayer2.getWidth()*2;
 		bgY = 0;
-		renderer.renderImage(bgLayer2, bgX, bgY, 2, 2, false);
+		if(player.getRectangle().x>1880 && player.getRectangle().x<6660)
+			renderer.renderImage(bgLayer2, bgX, bgY, 2, 2, false);
+		
+		bgX = bgLayer2.getWidth()*2*2;
+		bgY = 0;
+		//width of background * xZoom = 2 - 1800 camera width 
+		if(player.getRectangle().x>4860)
+			renderer.renderImage(bgLayer2, bgX, bgY, 2, 2, false);*/
 		
 		if(!gameStart) {
 			map.render(renderer, objects, xZoom, yZoom);

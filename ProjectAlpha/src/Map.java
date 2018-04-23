@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Scanner;
 
 /**
- * Handles Map functions.
+ * Handles Map functions, Collisions, and Tiles.
  * <p>
  * @see <b>{@literal Constructor: }</b>
  * <p> 
@@ -66,6 +66,7 @@ public class Map {
 	private int blockHeight = 6;
 	private int blockPixelWidth = blockWidth * 16;
 	private int blockPixelHeight = blockHeight * 16;
+	private int end =0;
 	
 	private int numLayers;
 	//TODO: Talking Points
@@ -185,14 +186,20 @@ public class Map {
 		for(int x = topLeftX; x < bottomRightX; x++)
 			for(int y = topLeftY; y < bottomRightY; y++) {
 				MappedTile tile = getTile(layer, x, y);
+
 				if(tile != null) {
 					int collisionType = tileSet.collisionType(tile.id);
 
 					//Full tile collision
 					if(collisionType == 0) {
 						Rectangle tileRectangle = new Rectangle(tile.x*tileWidth, tile.y*tileHeight, tileWidth, tileWidth);
-						if(tileRectangle.intersects(rect))
+						if(tileRectangle.intersects(rect)) {
+							if(tile.id == 7 && end != 1) {
+								Sound.end.play();
+								end++;
+							}
 							return true;
+						}
 
 					//Top of tile collision
 					} else if(collisionType == 1) {
