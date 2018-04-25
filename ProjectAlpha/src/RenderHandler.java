@@ -21,7 +21,7 @@ import java.awt.image.DataBufferInt;
  * {@link #renderSprite(Sprite sprite, int xPosition, int yPosition, int xZoom, int yZoom, boolean fixed)}
  * <p>
  * {@link #renderRectangle(Rectangle rectangle, int xZoom, int yZoom, boolean fixed)}
- *  <p>
+ * <p>
  * {@link #renderRectangle(Rectangle rectangle, Rectangle offset, int xZoom, int yZoom, boolean fixed)}
  * <p>
  * {@link #renderArray(int[] renderPixels, int renderWidth, int renderHeight, int xPosition, int yPosition, int xZoom, int yZoom, boolean fixed)}

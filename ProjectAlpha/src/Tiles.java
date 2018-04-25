@@ -3,6 +3,10 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+/**
+ * Handles Tiles functions, reads and stores tiles objects from the sprite sheet and tiles.txt file.
+ * @author Michael, David, Brandon
+ */
 public class Tiles {
 	
 	private SpriteSheet spriteSheet;

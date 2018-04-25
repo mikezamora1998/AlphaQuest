@@ -1,4 +1,7 @@
-
+/**
+ * Handles Vector functions, used as a physics engine.
+ * @author Michael, David, Brandon
+ */
 public class Vector2 {
 
 	public float x, y;

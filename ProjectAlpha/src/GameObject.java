@@ -1,4 +1,7 @@
-
+/**
+ * Game object interface that is used to be able to call on all game object quickly and easily.
+ * @author Michael, David, Brandon
+ */
 public interface GameObject {
 	//called every time possible
 	public void render(RenderHandler renderer, int xZoom, int yZoom);

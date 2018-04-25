@@ -1,5 +1,3 @@
-import java.io.File;
-
 /**
  * Handles player movements and collision.
  * <p>

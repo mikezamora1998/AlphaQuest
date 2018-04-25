@@ -1,4 +1,7 @@
-
+/**
+ * Handles Start Button functions, represents the start button user interface.
+ * @author Michael, David, Brandon
+ */
 public class StartButton extends GUIButtons{
 	
 	private Game game;

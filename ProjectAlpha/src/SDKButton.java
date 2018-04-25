@@ -1,4 +1,7 @@
-
+/**
+ * Object that represents the user interface for placing and removing tiles.
+ * @author Michael, David, Brandon
+ */
 public class SDKButton extends GUIButtons{
 	
 	private Game game;

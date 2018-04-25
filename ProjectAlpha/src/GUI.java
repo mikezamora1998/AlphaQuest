@@ -1,4 +1,7 @@
-
+/**
+ * Handles GUI functions, renders and updates user interface.
+ * @author Michael, David, Brandon
+ */
 public class GUI implements GameObject{
 
 	private Sprite backgroundSprite;

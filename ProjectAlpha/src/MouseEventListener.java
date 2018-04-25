@@ -2,6 +2,10 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
+/**
+ * Handles Mouse Event functions, checks for when the mouse is clicked (left or right button).
+ * @author Michael, David, Brandon
+ */
 public class MouseEventListener implements MouseListener, MouseMotionListener {
 
 	private Game game;

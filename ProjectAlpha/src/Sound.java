@@ -1,6 +1,10 @@
 import java.applet.Applet;
 import java.applet.AudioClip;
 
+/**
+ * Handles Sound functions, stores static objects of sound files that can be called at any time.
+ * @author Michael, David, Brandon
+ */
 public class Sound {
 	
 	public static final Sound backGround = new Sound("/dz.wav", 0);
@@ -15,7 +19,7 @@ public class Sound {
     Sound(String path, int type){
     	this.type = type;
     	try {
-    		System.out.println(Sound.class.getResource(path));
+    		//System.out.println(Sound.class.getResource(path));
     		clip = Applet.newAudioClip(Sound.class.getResource(path));
     	}catch(Exception e){
     		e.printStackTrace();

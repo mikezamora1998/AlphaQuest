@@ -1,5 +1,9 @@
 import java.awt.image.BufferedImage;
 
+/**
+ * Handles Sprite functions, used to store a single sprite as a sprite Object.
+ * @author Michael, David, Brandon
+ */
 public class Sprite {
 	protected int width, height;
 	protected int[] pixels;

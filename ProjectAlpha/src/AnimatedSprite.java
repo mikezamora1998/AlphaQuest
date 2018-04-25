@@ -1,5 +1,9 @@
 import java.awt.image.BufferedImage;
 
+/**
+ * Handles Animated Sprite functions, stores arrays of images taken from a sprite sheet.
+ * @author Michael, David, Brandon
+ */
 public class AnimatedSprite extends Sprite implements GameObject{
 
 	private Sprite[] sprites;

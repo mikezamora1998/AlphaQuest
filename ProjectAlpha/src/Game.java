@@ -100,22 +100,20 @@ public class Game extends JFrame implements Runnable {
 	private int selectedTileID = 0;
 	private int selectedLayer = 0;
 
-	private boolean gameStart;
-
 	private BufferedImage bgLayer1;
 	private BufferedImage bgLayer2;
 	private BufferedImage bgLayer3;
 	private BufferedImage bgLayer4;
 
 	private GameObject[] startObjects;
-
+	private boolean gameStart;
 	private Tiles startTiles;
 	
 	public Game() {
 		//Make our program shutdown when we exit out.
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		canvas.setBounds(0, 0, 1800, 1000);
+		canvas.setBounds(0, 0, 1000, 750);
 
 		//Add our graphics component
 		add(canvas);

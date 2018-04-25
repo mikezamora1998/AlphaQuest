@@ -1,4 +1,8 @@
-
+/**
+ * Handles textButton functions, used to represent the normal text user interface.
+ * @author Michael, David, Brandon
+ * @deprecated This method has not yet been implemented.
+ */
 public class TextButton extends GUIButtons{
 	
 	private Game game;

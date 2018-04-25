@@ -1,4 +1,7 @@
-
+/**
+ * Determines which button is active in the GUI.
+ * @author Michael, David, Brandon
+ */
 public abstract class GUIButtons implements GameObject{
 
 	protected Sprite sprite;

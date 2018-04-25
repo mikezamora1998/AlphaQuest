@@ -3,6 +3,10 @@ import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+/**
+ * Handles Keyboard event functions, checks for certain inputs and returns a boolean.
+ * @author Michael, David, Brandon
+ */
 public class KeyBoardListener implements KeyListener, FocusListener{
 
 	public boolean[] keys = new boolean[120];
