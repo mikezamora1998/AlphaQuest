@@ -52,7 +52,7 @@ public class Player implements GameObject {
 		}
 		updateDirection();
 		// equation sets player to bottom of the screen
-		playerRectangle = new Rectangle(0, backgroundHeight - (playerHeight * xZoom), playerWidth, playerHeight);
+		playerRectangle = new Rectangle(75, backgroundHeight - (playerHeight * xZoom), playerWidth, playerHeight);
 		playerRectangle.generateGraphics(3, 0xff923459);
 		collisionCheckRectangle = new Rectangle(0, 0, 10 * xZoom, 15 * yZoom);
 	}

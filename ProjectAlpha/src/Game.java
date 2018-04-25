@@ -68,7 +68,7 @@ import java.io.IOException;
  * <p>
  * <b>final int</b> {@link #yZoom}
  * <p>
- * @author Michael, David, Brandon
+ * @author Brandon Carlsen, David Lichliter, Michael Zamora
  */
 @SuppressWarnings("serial")
 public class Game extends JFrame implements Runnable {
