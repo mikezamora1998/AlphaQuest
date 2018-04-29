@@ -421,7 +421,7 @@ public class Game extends JFrame implements Runnable {
 		//Create our object for buffer strategy.
 		createBufferStrategy(3);
 		
-		System.out.println(getWidth() + " h" + getHeight());
+		//System.out.println(getWidth() + " h" + getHeight());
 		renderer = new RenderHandler(getWidth(), getHeight());
     }
 	

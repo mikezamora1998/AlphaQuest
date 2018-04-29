@@ -387,15 +387,10 @@ public class Map {
 
 		for(int layer = 0; layer < numLayers; layer++) {
 			//System.out.println("camX: "+renderer.getCamera().x+ ", camY: "+renderer.getCamera().y+", camW: "+renderer.getCamera().w+", camH: "+renderer.getCamera().h);
-			
-			//renderer.getCamera().y= 261;
-			int camW = renderer.getCamera().w;
-			if(renderer.getCamera().w == 1920) {
-				camW = 1919;
-			}
+
 			int topLeftX = renderer.getCamera().x;
 			int topLeftY = renderer.getCamera().y;
-			int bottomRightX = renderer.getCamera().x + camW;
+			int bottomRightX = renderer.getCamera().x + renderer.getCamera().w;
 			int bottomRightY = renderer.getCamera().y + renderer.getCamera().h;
 
 			int leftBlockX = (topLeftX/tileWidth - blockStartX - 16)/blockWidth;
@@ -404,7 +399,7 @@ public class Map {
 			int pixelX = topLeftX;
 			int pixelY = topLeftY;
 
-			while(pixelX < bottomRightX && pixelY < bottomRightY) {
+			while(pixelX <= bottomRightX && pixelY < bottomRightY) {
 				
 				//System.out.println("BlockX: " + blockX + ", BlockY: " + blockY + ", BlocksLength: " + blocks.length + ", [0]: " + blocks[0].length);
 				if(blockX >= 0 && blockY >= 0 && blockX < blocks.length && blockY < blocks[0].length) {
