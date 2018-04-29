@@ -44,20 +44,20 @@ public class RenderHandler {
 
 	public RenderHandler(int width, int height) {
 		
-//		GraphicsDevice[] graphicsDevices = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
+		GraphicsDevice[] graphicsDevices = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
 		
-//		maxScreenWidth = 0;
-//		maxScreenHeight = 0;
-//		for(int i = 0; i < graphicsDevices.length; i++) {
-//			if(maxScreenWidth < graphicsDevices[i].getDisplayMode().getWidth()) {
-//				maxScreenWidth = graphicsDevices[i].getDisplayMode().getWidth();
-//			}
-//			if(maxScreenHeight < graphicsDevices[i].getDisplayMode().getHeight()) {
-//				maxScreenHeight = graphicsDevices[i].getDisplayMode().getHeight();
-//			}
-//		}
+		maxScreenWidth = 0;
+		maxScreenHeight = 0;
+		for(int i = 0; i < graphicsDevices.length; i++) {
+			if(maxScreenWidth < graphicsDevices[i].getDisplayMode().getWidth()) {
+				maxScreenWidth = graphicsDevices[i].getDisplayMode().getWidth();
+			}
+			if(maxScreenHeight < graphicsDevices[i].getDisplayMode().getHeight()) {
+				maxScreenHeight = graphicsDevices[i].getDisplayMode().getHeight();
+			}
+		}
 		//Create a BufferedImage that will represent our view.
-		view = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+		view = new BufferedImage(maxScreenWidth, maxScreenHeight, BufferedImage.TYPE_INT_RGB);
 		//Camera is an object of rectangle class
 		camera = new Rectangle(0, 0, width, height);
 		//Create an array for pixels
