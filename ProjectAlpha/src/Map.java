@@ -386,7 +386,9 @@ public class Map {
 		}
 
 		for(int layer = 0; layer < numLayers; layer++) {
-			System.out.println("camX: "+renderer.getCamera().x+ ", camY: "+renderer.getCamera().y+",camW: "+renderer.getCamera().w+", camH: "+renderer.getCamera().h);
+			//System.out.println("camX: "+renderer.getCamera().x+ ", camY: "+renderer.getCamera().y+", camW: "+renderer.getCamera().w+", camH: "+renderer.getCamera().h);
+			
+			//renderer.getCamera().y= 261;
 			int camW = renderer.getCamera().w;
 			if(renderer.getCamera().w == 1920) {
 				camW = 1919;
@@ -403,9 +405,11 @@ public class Map {
 			int pixelY = topLeftY;
 
 			while(pixelX < bottomRightX && pixelY < bottomRightY) {
+				
 				//System.out.println("BlockX: " + blockX + ", BlockY: " + blockY + ", BlocksLength: " + blocks.length + ", [0]: " + blocks[0].length);
 				if(blockX >= 0 && blockY >= 0 && blockX < blocks.length && blockY < blocks[0].length) {
 					if(blocks[blockX][blockY] != null)
+						//System.out.println("render"+ layer);
 						blocks[blockX][blockY].render(renderer, layer, tileWidth, tileHeight, xZoom, yZoom);
 				}
 
@@ -458,11 +462,11 @@ public class Map {
 		}
 
 		public void render(RenderHandler renderer, int layer, int tileWidth, int tileHeight, int xZoom, int yZoom) {
-			if(mappedTilesByLayer.length > layer) {
+			if(mappedTilesByLayer.length > -1) {
 				ArrayList<MappedTile> mappedTiles = mappedTilesByLayer[layer];
 				for(int tileIndex = 0; tileIndex < mappedTiles.size(); tileIndex++) {
-					//System.out.println("render"+ tileIndex);
 					MappedTile mappedTile = mappedTiles.get(tileIndex);
+					//System.out.println("render"+ tileIndex);
 					tileSet.renderTile(mappedTile.id, renderer, mappedTile.x * tileWidth, mappedTile.y * tileHeight, xZoom, yZoom);
 				}
 			}

@@ -230,7 +230,6 @@ public class Player implements GameObject {
 			y = 0;
 		if (y + camera.h > background.h)
 			y = background.h - camera.h;
-
 		//System.out.println("B: " + camera.y);
 		camera.y = y;
 		//System.out.println("A: " + camera.y);
