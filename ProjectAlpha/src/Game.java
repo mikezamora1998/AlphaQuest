@@ -1,7 +1,11 @@
 import java.awt.Canvas;
+import java.awt.Container;
+import java.awt.DisplayMode;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.awt.Graphics;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
@@ -109,30 +113,12 @@ public class Game extends JFrame implements Runnable {
 	private boolean gameStart;
 	private Tiles startTiles;
 	
-	public Game() {
-		//Make our program shutdown when we exit out.
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
-		canvas.setBounds(0, 0, 1000, 750);
-
-		//Add our graphics component
-		add(canvas);
-		pack();
-		
-		//set the window to full screen and removes tool bar.
-		//setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
-		//setUndecorated(true);
+	private boolean isFullScreen = false;
+	private GraphicsDevice device;
+    private DisplayMode originalDM;
 	
-		//Put our frame in the center of the screen.
-		setLocationRelativeTo(null);
-
-		//Make our frame visible.
-		setVisible(true);
-
-		//Create our object for buffer strategy.
-		canvas.createBufferStrategy(3);
-
-		renderer = new RenderHandler(canvas.getWidth(), canvas.getHeight());
+	public Game(GraphicsDevice device) {
+		super(device.getDefaultConfiguration());
 		
 		//prints the file path to assets folder
 		//System.out.println("GrassTile.png location. = " + Game.class.getResource("assets/GrassTile.png"));
@@ -219,42 +205,7 @@ public class Game extends JFrame implements Runnable {
 		startObjects = new GameObject[1];
 		startObjects[0] = startButton;
 		
-		//Add Listeners
-		canvas.addKeyListener(keyListener);
-		canvas.addFocusListener(keyListener);
-		canvas.addMouseListener(mouseListener);
-		canvas.addMouseMotionListener(mouseListener);
 		
-		addComponentListener(new ComponentListener() {
-
-			@Override
-			public void componentHidden(ComponentEvent e) {}
-
-			@Override
-			public void componentMoved(ComponentEvent e) {}
-
-			@Override
-			public void componentShown(ComponentEvent e) {}
-			
-			@Override
-			public void componentResized(ComponentEvent e) {
-				int newWidth = canvas.getWidth();
-				if(newWidth > renderer.getMaxScreenWidth()) {
-					newWidth = renderer.getMaxScreenWidth();
-				}
-				renderer.getCamera().w = newWidth;
-				
-				int newHeight = canvas.getHeight();
-				if(newHeight > renderer.getMaxScreenHeight()) {
-					newHeight = renderer.getMaxScreenHeight();
-				}
-				renderer.getCamera().h = newHeight;
-				
-				canvas.setSize(newWidth, newHeight);
-				pack();
-			}
-		});
-		canvas.requestFocus();
 	}
 
 	public void update() {
@@ -342,7 +293,7 @@ public class Game extends JFrame implements Runnable {
 	}
 	
 	public void render() {
-		BufferStrategy bufferStrategy = canvas.getBufferStrategy();
+		BufferStrategy bufferStrategy = getBufferStrategy();
 		Graphics graphics = bufferStrategy.getDrawGraphics();
 		super.paint(graphics);
 		
@@ -397,7 +348,8 @@ public class Game extends JFrame implements Runnable {
 		
 		graphics.dispose();
 		bufferStrategy.show();
-		renderer.clear();
+		
+		//renderer.clear();
 	}
 
 	public void run() {
@@ -419,10 +371,72 @@ public class Game extends JFrame implements Runnable {
 			lastTime = now;
 		}
 	}
+	
+	public void begin(GraphicsDevice device, Container c) {
+		setContentPane(c);
+		
+		originalDM = device.getDisplayMode();
+        this.device = device;
+		
+        isFullScreen = device.isFullScreenSupported();
+        setUndecorated(isFullScreen);
+        setResizable(!isFullScreen);
+        if (isFullScreen) {
+            // Full-screen mode
+            device.setFullScreenWindow(this);
+            validate();
+        } else {
+            // Windowed mode
+            pack();
+            setVisible(true);
+        }
+        
+		//Make our program shutdown when we exit out.
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		//canvas.setBounds(0, 0, getWidth(), getHeight());
 
+		//Add our graphics component
+		//add(canvas);
+		//pack();
+		
+		//Add Listeners
+		addKeyListener(keyListener);
+		addFocusListener(keyListener);
+		addMouseListener(mouseListener);
+		addMouseMotionListener(mouseListener);
+		
+		
+		
+		//set the window to full screen and removes tool bar.
+		//setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
+		//setUndecorated(true);
+	
+		//Put our frame in the center of the screen.
+		//setLocationRelativeTo(null);
+
+		//Make our frame visible.
+		//canvas.setVisible(true);
+		requestFocus();
+		//Create our object for buffer strategy.
+		createBufferStrategy(3);
+		
+		System.out.println(getWidth() + " h" + getHeight());
+		renderer = new RenderHandler(getWidth(), getHeight());
+    }
+	
 	public static void main(String[] args) {
-		//Creates "game" object
-		Game game = new Game();
+		
+		GraphicsEnvironment env = GraphicsEnvironment.
+            getLocalGraphicsEnvironment();
+        GraphicsDevice[] devices = env.getScreenDevices();
+        
+        Game game = new Game(devices[1]);
+        // REMIND : Multi-monitor full-screen mode not yet supported
+        for (int i = 0; i < 1 /* devices.length */; i++) {
+        	game.begin(devices[i], game.getContentPane()); 
+        }
+        //Creates "game" object
 		Thread gameThread = new Thread(game);
 		gameThread.start();
 	}
