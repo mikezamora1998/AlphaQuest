@@ -1,6 +1,4 @@
-import java.awt.Canvas;
 import java.awt.Container;
-import java.awt.DisplayMode;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.awt.Graphics;
@@ -8,8 +6,6 @@ import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 import java.awt.event.KeyEvent;
 import java.lang.Runnable;
 import java.lang.Thread;
@@ -79,7 +75,6 @@ public class Game extends JFrame implements Runnable {
 	//alpha color			0xFF FF00DC	
 	public static int alpha = 0xFFFF00DC;
 	
-	private Canvas canvas = new Canvas();
 	private RenderHandler renderer;
 	private SpriteSheet sheet;
 	private SpriteSheet textSheet;
@@ -113,10 +108,6 @@ public class Game extends JFrame implements Runnable {
 	private boolean gameStart;
 	private Tiles startTiles;
 	
-	private boolean isFullScreen = false;
-	private GraphicsDevice device;
-    private DisplayMode originalDM;
-	
 	public Game(GraphicsDevice device) {
 		super(device.getDefaultConfiguration());
 		
@@ -127,7 +118,14 @@ public class Game extends JFrame implements Runnable {
 		gameStart = true;
 		
 		//Opening music
-		Sound.opening.play();
+		Timer timer = new Timer(1500, new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				Sound.opening.play();
+			}
+		});
+		timer.setRepeats(false); // Only execute once
+		timer.start();
 		
 		bgLayer1 = loadImage("/background C layer1.png");
 		bgLayer2 = loadImage("/background C layer2 p1.png");
@@ -204,8 +202,6 @@ public class Game extends JFrame implements Runnable {
 		
 		startObjects = new GameObject[1];
 		startObjects[0] = startButton;
-		
-		
 	}
 
 	public void update() {
@@ -238,6 +234,9 @@ public class Game extends JFrame implements Runnable {
 	public void handleCTRL(boolean[] keys) {
 		if(keys[KeyEvent.VK_S]) {
 			map.saveMap();
+		}
+		if(keys[KeyEvent.VK_Q]) {
+			System.exit(0);
 		}
 	}
 	
@@ -298,57 +297,53 @@ public class Game extends JFrame implements Runnable {
 		super.paint(graphics);
 		
 		//renders in linear order. Newest will be rendered over older
-		//renders background images image
+		//renders background images
 		int bgX = 0;
 		int bgY = 0;
-		
-		renderer.renderImage(bgLayer1, bgX, bgY, 2, 2, true);
-		
-		if(player.getRectangle().x<2860)
-			renderer.renderImage(bgLayer2, bgX, bgY, 2, 2, false);
 
-		bgX = bgLayer2.getWidth()*2;
-		if(player.getRectangle().x>860 && player.getRectangle().x<4820)
-			renderer.renderImage(bgLayer3, bgX, bgY, 2, 2, false);
-		
-		bgX = bgLayer2.getWidth()*2*2;
-		if(player.getRectangle().x>2820 && player.getRectangle().x<6720)
-			renderer.renderImage(bgLayer4, bgX, bgY, 2, 2, false);
-		
-		bgX = bgLayer2.getWidth()*2*3;
-		if(player.getRectangle().x>4620 && player.getRectangle().x<8620)
-			renderer.renderImage(bgLayer2, bgX, bgY, 2, 2, false);
-		
-		bgX = bgLayer2.getWidth()*2*4;
-		if(player.getRectangle().x>6720)
-			renderer.renderImage(bgLayer3, bgX, bgY, 2, 2, false);
-		
-		/*if(player.getRectangle().x<3780)
-			renderer.renderImage(bgLayer2, bgX, bgY, 2, 2, false);
-
-		bgX = bgLayer2.getWidth()*2;
-		bgY = 0;
-		if(player.getRectangle().x>1880 && player.getRectangle().x<6660)
-			renderer.renderImage(bgLayer2, bgX, bgY, 2, 2, false);
-		
-		bgX = bgLayer2.getWidth()*2*2;
-		bgY = 0;
-		//width of background * xZoom = 2 - 1800 camera width 
-		if(player.getRectangle().x>4860)
-			renderer.renderImage(bgLayer2, bgX, bgY, 2, 2, false);*/
-		
 		if(!gameStart) {
+			renderer.renderImage(bgLayer1, bgX, bgY, 2, 2, true);
+			
+			if(player.getRectangle().x<2860)
+				renderer.renderImage(bgLayer2, bgX, bgY, 2, 2, false);
+
+			bgX = bgLayer2.getWidth()*2;
+			if(player.getRectangle().x>860 && player.getRectangle().x<4820)
+				renderer.renderImage(bgLayer3, bgX, bgY, 2, 2, false);
+			
+			bgX = bgLayer2.getWidth()*2*2;
+			if(player.getRectangle().x>2820 && player.getRectangle().x<6720)
+				renderer.renderImage(bgLayer4, bgX, bgY, 2, 2, false);
+			
+			bgX = bgLayer2.getWidth()*2*3;
+			if(player.getRectangle().x>4620 && player.getRectangle().x<8620)
+				renderer.renderImage(bgLayer2, bgX, bgY, 2, 2, false);
+			
+			bgX = bgLayer2.getWidth()*2*4;
+			if(player.getRectangle().x>6720)
+				renderer.renderImage(bgLayer3, bgX, bgY, 2, 2, false);
+			
 			map.render(renderer, objects, xZoom, yZoom);
 		}else {
+			
+			renderer.renderImage(bgLayer1, bgX, bgY, 2, 2, true);
+			
+			if(renderer.getCamera().x<2860)
+				renderer.renderImage(bgLayer2, bgX, bgY, 2, 2, false);
+
+			bgX = bgLayer2.getWidth()*2;
+			if(renderer.getCamera().x + 950 >860 && renderer.getCamera().x<4820)
+				renderer.renderImage(bgLayer3, bgX, bgY, 2, 2, false);
+			
 			//textMap.render(renderer, objects, xZoom, yZoom);
 			startObjects[0].render(renderer, xZoom, yZoom);
+			if(renderer.getCamera().x < 1900)
+			renderer.getCamera().x +=1;
 		}
 			
 		renderer.render(graphics);
-		
 		graphics.dispose();
 		bufferStrategy.show();
-		
 		renderer.clear();
 	}
 
@@ -374,10 +369,8 @@ public class Game extends JFrame implements Runnable {
 	
 	public void begin(GraphicsDevice device, Container c) {
 		setContentPane(c);
-		
-		originalDM = device.getDisplayMode();
-        this.device = device;
-		
+		boolean isFullScreen = false;
+
         isFullScreen = device.isFullScreenSupported();
         setUndecorated(isFullScreen);
         setResizable(!isFullScreen);
@@ -393,45 +386,28 @@ public class Game extends JFrame implements Runnable {
         
 		//Make our program shutdown when we exit out.
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
-		//canvas.setBounds(0, 0, getWidth(), getHeight());
 
-		//Add our graphics component
-		//add(canvas);
-		//pack();
-		
 		//Add Listeners
 		addKeyListener(keyListener);
 		addFocusListener(keyListener);
 		addMouseListener(mouseListener);
 		addMouseMotionListener(mouseListener);
-		
-		
-		
-		//set the window to full screen and removes tool bar.
-		//setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
-		//setUndecorated(true);
-	
-		//Put our frame in the center of the screen.
-		//setLocationRelativeTo(null);
 
-		//Make our frame visible.
-		//canvas.setVisible(true);
 		requestFocus();
 		//Create our object for buffer strategy.
-		createBufferStrategy(3);
+		createBufferStrategy(2);
 		
 		//System.out.println(getWidth() + " h" + getHeight());
 		renderer = new RenderHandler(getWidth(), getHeight());
     }
 	
 	public static void main(String[] args) {
-		
+		System.setProperty("sun.java2d.xrender", "true");
 		GraphicsEnvironment env = GraphicsEnvironment.
             getLocalGraphicsEnvironment();
         GraphicsDevice[] devices = env.getScreenDevices();
         
-        Game game = new Game(devices[1]);
+        Game game = new Game(devices[0]);
         // REMIND : Multi-monitor full-screen mode not yet supported
         for (int i = 0; i < 1 /* devices.length */; i++) {
         	game.begin(devices[i], game.getContentPane()); 

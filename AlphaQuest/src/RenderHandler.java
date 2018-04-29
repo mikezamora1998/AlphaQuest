@@ -1,6 +1,7 @@
 import java.awt.Graphics;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 
@@ -69,6 +70,7 @@ public class RenderHandler {
 	public void render(Graphics graphics){
 		//Renders to screen
 		graphics.drawImage(view.getSubimage(0, 0, camera.w, camera.h), 0, 0, camera.w, camera.h, null);
+		Toolkit.getDefaultToolkit().sync();
 	}
 
 	//Render our image to our array of pixels.
