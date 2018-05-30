@@ -30,6 +30,10 @@ public class KeyBoardListener implements KeyListener, FocusListener{
 		if(keys[KeyEvent.VK_CONTROL]) {
 			game.handleCTRL(keys);
 		}
+		
+		if(keys[KeyEvent.VK_ESCAPE]) {
+			game.handleEsc(keys);
+		}
 	}
 	
 	@Override
