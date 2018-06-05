@@ -1,14 +1,14 @@
 /**
- * Handles Start Button functions, represents the start button user interface.
+ * Object that represents the user interface for placing and removing tiles.
  * @author Michael, David, Brandon
  */
-public class StartButton extends GUIButtons{
+public class PauseButton extends GUIButtons{
 	
 	private Game game;
 	private int tileID;
 	private boolean isSelected = false;
 	
-	public StartButton(Game game, int tileID, Sprite tileSprite, Rectangle rect) {
+	public PauseButton(Game game, int tileID, Sprite tileSprite, Rectangle rect) {
 		super(tileSprite, rect, true);
 		this.game = game;
 		this.tileID = tileID;
@@ -30,7 +30,7 @@ public class StartButton extends GUIButtons{
 	
 	@Override
 	public void update(Game game) {
-		if(tileID != game.getSelectedTile()) {
+		if(tileID != game.getSelectedOption()) {
 			if(!isSelected) {
 				region.generateGraphics(0x67FF3D);
 				isSelected = true;
@@ -45,6 +45,6 @@ public class StartButton extends GUIButtons{
 	}
 	
 	public void activate() {
-		game.changeTile(tileID);
+		game.changeOption(tileID);
 	}
 }

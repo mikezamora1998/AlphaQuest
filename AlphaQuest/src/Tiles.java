@@ -1,4 +1,3 @@
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -14,33 +13,6 @@ public class Tiles {
 	private ArrayList<Tile> tilesList = new ArrayList<Tile>();
 	
 	//This will only work assuming the sprites in the spriteSheet have been loaded
-	public Tiles(BufferedReader bufferedReader, SpriteSheet spriteSheet) {
-		this.spriteSheet = spriteSheet;
-			Scanner scanner = new Scanner(bufferedReader);
-			int i = 0;
-			while(scanner.hasNextLine()){
-				//read each line and create a tile
-				String line = scanner.nextLine();
-				if(!line.startsWith("//")) {
-					String[] splitString = line.split("-");
-					String tileName = splitString[0];
-					int spriteX = Integer.parseInt(splitString[1]);
-					int spriteY = Integer.parseInt(splitString[2]);
-					Tile tile = new Tile(tileName, spriteSheet.getSprite(spriteX, spriteY));
-
-					if(splitString.length >= 4) {
-						tile.collidable = true;
-						tile.collisionType = Integer.parseInt(splitString[3]);
-						System.out.println("TileID: " + i + ", TileName: " + tileName + ", SpriteX: " + spriteX + ", SpriteY: " + spriteY + ", Collision Type: " + tile.collisionType);
-					}else {
-						System.out.println("TileID: " + i + ", TileName: " + tileName + ", SpriteX: " + spriteX + ", SpriteY: " + spriteY);
-					}
-					tilesList.add(tile);
-					i++;
-				}
-			}
-	}
-	
 	public Tiles(File tilesFile, SpriteSheet spriteSheet) {
 		this.spriteSheet = spriteSheet;
 		try {

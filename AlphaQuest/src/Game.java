@@ -77,6 +77,7 @@ import java.io.InputStreamReader;
  */
 @SuppressWarnings("serial")
 public class Game extends JFrame implements Runnable {
+	GraphicsDevice[] devices;
 	//alpha color			0xFF FF00DC	
 	public static int alpha = 0xFFFF00DC;
 	
@@ -117,14 +118,29 @@ public class Game extends JFrame implements Runnable {
 	private boolean pause = false;
 
 	private GUI pauseButton;
+	private GameObject[] pauseObjects;
+	
+	private String assetsPath = "/assets";
+
+	private int screenWidth;
+
+	private int screenHeight;
+	private Rectangle box;
+	private int selectedOption = 0;
+	private Tiles textTiles;
 	
 	public Game(GraphicsDevice device) {
 		super(device.getDefaultConfiguration());
+		System.setProperty("sun.java2d.xrender", "true");
+		GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        devices = env.getScreenDevices();
+
+        begin(devices[0], getContentPane()); 
 		
 		//prints the file path to assets folder
 		//System.out.println("GrassTile.png location. = " + Game.class.getResource("assets/GrassTile.png"));
 		//System.out.println("Tiles.txt location. = " + Game.class.getResource("assets/Tiles.txt"));
-		//System.out.println(Game.class.getClassLoader().getResource("").getPath());
+		System.out.println("Main class Location: " + Game.class.getClassLoader().getResource("").getPath());
 		gameStart = true;
 		
 		//Opening music
@@ -136,24 +152,6 @@ public class Game extends JFrame implements Runnable {
 		});
 		timer.setRepeats(false); // Only execute once
 		timer.start();
-		/*String url = getClass().getResource("/" + getClass().getName().replaceAll("\\.", "/") + ".class").toString();
-        url = url.substring(4).replaceFirst("/[^/]+\\.jar!.*$", "/");
-        try {
-            File dir = new File(new URL(url).toURI());
-            url = dir.getAbsolutePath();
-        } catch (MalformedURLException mue) {
-            url = null;
-        } catch (URISyntaxException ue) {
-            url = null;
-        }*/
-		
-		/*Game.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile().getPath()) +  
-        File.separator + 
-        "assets" + 
-        File.separator + 
-        "assets/background C layer1.png"*/
-		
-		
 		
 		bgLayer1 = loadImage("/background C layer1.png");
 		bgLayer2 = loadImage("/background C layer2 p1.png");
@@ -174,27 +172,18 @@ public class Game extends JFrame implements Runnable {
 		playerSheet.loadSprites(20, 26);
 
 		//Load Tiles
-		//TODO: Use these for exe creation
-		startTiles = new Tiles(new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/StartTiles.txt"))), textSheet);
-		tiles = new Tiles(new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/Tiles.txt"))), sheet);
-		
-		try {
-			//startTiles = new Tiles(new File(getClass().getResource("/StartTiles.txt").toURI()), textSheet);
-			//tiles = new Tiles(new File(getClass().getResource("/Tiles.txt").toURI()), sheet);
-			map = new Map(new File(getClass().getResource("/Map.txt").toURI()), tiles);
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
-		}
-
+		//TODO: Use these for EXE Testing
+		//tiles = new Tiles(new File(filePathString("/Tiles.txt")), sheet);
+		//startTiles = new Tiles(new File(filePathString("/StartTiles.txt")), textSheet);
+		//map = new Map(new File(filePathString("/Map.txt")), tiles);
+			
 		//TODO: Use these for eclipse testing
-		//startTiles = new Tiles(new File("assets/StartTiles.txt"), textSheet);
-		//tiles = new Tiles(new File("assets/Tiles.txt"), sheet);
-		//map = new Map("assets/Map.txt", tiles);
+		startTiles = new Tiles(new File("assets/StartTiles.txt"), textSheet);
+		tiles = new Tiles(new File("assets/Tiles.txt"), sheet);
+		map = new Map(new File("assets/Map.txt"), tiles);
 		
-		
-		//textTiles = new Tiles(new File("assets/TextTiles.txt"), textSheet);
-		
-		//Load Map
+		//TODO: Implement Later
+		textTiles = new Tiles(new File("assets/TextTiles.txt"), textSheet);
 		//textMap = new Map(new File("assets/TextMap.txt"), textTiles);
 		
 		//player animation sprites
@@ -217,17 +206,29 @@ public class Game extends JFrame implements Runnable {
 		Sprite[] startTileSprites = startTiles.getSprite();
 		for(int i = 0; i < startButtons.length; i++) {
 			Rectangle startTileRectangle = new Rectangle((i * (startTileSprites[i].getWidth() * xZoom + guiSpacing)) + 50, 100, startTileSprites[i].getWidth() * xZoom, startTileSprites[i].getHeight() * yZoom);
-			startButtons[i] = new StartButton(this, i,startTileSprites[i], startTileRectangle);
+			startButtons[i] = new SDKButton(this, i,startTileSprites[i], startTileRectangle);
 		}
 		GUI startButton = new GUI(startButtons, 5, 5, true);
 		
-
+		//System.out.println(screenWidth);
 		//TODO: Escape test buttons
 		GUIButtons[] pauseButtons = new GUIButtons[startTiles.size()]; //array length = number of options in start menu
 		Sprite[] pauseTileSprites = startTiles.getSprite();
 		for(int i = 0; i < pauseButtons.length; i++) {
-			Rectangle pauseTileRectangle = new Rectangle(((xZoom* getWidth())/2) + ((startTileSprites[i].getWidth() * xZoom)/2), ((yZoom* getHeight())/2) + ((i * 50)/2) + (pauseTileSprites[i].getHeight() * yZoom)+ guiSpacing, startTileSprites[i].getWidth() * xZoom, pauseTileSprites[i].getHeight() * yZoom);
-			pauseButtons[i] = new StartButton(this, i,pauseTileSprites[i], pauseTileRectangle);
+			int rw = 100;
+			int rh = 200;
+			int rx = (screenWidth/2) - (rw * xZoom /2);
+			int ry = (screenHeight/2) - (rh * yZoom /2);
+			box = new Rectangle(rx, ry, rw, rh);
+			
+			int x = (box.x + (box.w * xZoom/2) - (pauseTileSprites[i].getWidth() * xZoom/2));
+			int y = (box.y + (pauseTileSprites[i].getHeight() * yZoom/2) + i * ((pauseTileSprites[i].getHeight() + guiSpacing)  * yZoom));
+			int w = startTileSprites[i].getWidth() * xZoom;
+			int h = pauseTileSprites[i].getHeight() * yZoom;
+			
+			//System.out.println("X: " + x + ", Y: " + y + ", W: " + w + ", H:" + h);
+			Rectangle pauseTileRectangle = new Rectangle(x, y, w, h);
+			pauseButtons[i] = new PauseButton(this, i, pauseTileSprites[i], pauseTileRectangle);
 		}
 		pauseButton = new GUI(pauseButtons, 5, 5, true);
 		
@@ -254,13 +255,23 @@ public class Game extends JFrame implements Runnable {
 		
 		startObjects = new GameObject[1];
 		startObjects[0] = startButton;
+		
+		pauseObjects = new GameObject[1];
+		//pauseObjects = new GameObject[objects.length+1];
+		/*for(int i = 0; i < objects.length; i++) {
+			pauseObjects[i] = objects[i];
+		}*/
+		pauseObjects[0] = pauseButton;
 	}
 
 	public void update() {
 		if(!gameStart) {
-		for(int i = 0; i < objects.length; i++) {
-			objects[i].update(this);
-		}
+			if(pause)
+				//for(int i = 0; i < pauseObjects.length; i++)
+					pauseObjects[0].update(this);
+			else
+				for(int i = 0; i < objects.length; i++)
+					objects[i].update(this);
 		}else {
 			startObjects[0].update(this);
 		}
@@ -268,7 +279,12 @@ public class Game extends JFrame implements Runnable {
 	
 	public BufferedImage loadImage(String path) {
 		try {
+			//TODO: Use these for EXE Testing
+			//BufferedImage loadedImage = ImageIO.read(filePathURL(path));
+			
+			//TODO: Use these for eclipse testing
 			BufferedImage loadedImage = ImageIO.read(Game.class.getResource(path));
+			
 			BufferedImage formattedImage = new BufferedImage(loadedImage.getWidth(), loadedImage.getHeight(), BufferedImage.TYPE_INT_RGB);
 			formattedImage.getGraphics().drawImage(loadedImage ,0 ,0 , null);
 			
@@ -278,21 +294,21 @@ public class Game extends JFrame implements Runnable {
 			return null;
 		}
 	}
-
+	
 	public URL filePathURL(String path) {
-		String url = getClass().getResource("/" + getClass().getName().replaceAll("\\.", "/") + ".class").toString();
-        url = url.substring(4).replaceFirst("/[^/]+\\.jar!.*$", "/");
+		String dir = getClass().getResource("/" + getClass().getName().replaceAll("\\.", "/") + ".class").toString();
+		dir = dir.substring(4).replaceFirst("/[^/]+\\.exe!.*$", "/");
+		dir = dir + assetsPath + path;
         try {
-            return new URL(url);
-        } catch (MalformedURLException mue) {
-            url = null;
-        }
+            return new URL(dir);
+        } catch (MalformedURLException e) {}
         return null;
 	}
 	
 	public String filePathString(String path) {
 		String url = getClass().getResource("/" + getClass().getName().replaceAll("\\.", "/") + ".class").toString();
-        url = url.substring(4).replaceFirst("/[^/]+\\.jar!.*$", "/");
+        url = url.substring(4).replaceFirst("/[^/]+\\.exe!.*$", "/");
+        url = url + assetsPath + path;
         try {
             File dir = new File(new URL(url).toURI());
             url = dir.getAbsolutePath();
@@ -330,18 +346,28 @@ public class Game extends JFrame implements Runnable {
 		if(!gameStart) {
 			boolean stopChecking = false;
 			
-			for(int i = 0; i < objects.length; i++) {
+			if(pause) {
 				if(!stopChecking) {
-					stopChecking = objects[i].handleMouseClick(mouseRectangle, renderer.getCamera(), xZoom, yZoom);
+					stopChecking = pauseObjects[0].handleMouseClick(mouseRectangle, renderer.getCamera(), xZoom, yZoom);
 				}
-			}
+				System.out.println(pause);
+			}else
+				for(int i = 0; i < objects.length; i++) {
+					if(!stopChecking) {
+						stopChecking = objects[i].handleMouseClick(mouseRectangle, renderer.getCamera(), xZoom, yZoom);
+					}
+				}
 			
 			if(!stopChecking) {
-				//Divide by tile size default is 16
-				x = (int) Math.floor((x + renderer.getCamera().x)/(16.0 * xZoom));
-				y = (int) Math.floor((y + renderer.getCamera().y)/(16.0 * yZoom));
-				//(x, y, TileID)
-				map.setTile(selectedLayer, x, y, selectedTileID);
+				if(pause) {
+					
+				}else {
+					//Divide by tile size default is 16
+					x = (int) Math.floor((x + renderer.getCamera().x)/(16.0 * xZoom));
+					y = (int) Math.floor((y + renderer.getCamera().y)/(16.0 * yZoom));
+					//(x, y, TileID)
+					map.setTile(selectedLayer, x, y, selectedTileID);
+				}
 			}
 		}else {
 			gameStart = startObjects[0].handleMouseClick(mouseRectangle, renderer.getCamera(), xZoom, yZoom);
@@ -361,6 +387,7 @@ public class Game extends JFrame implements Runnable {
 	
 	public void rightClick(int x, int y) {
 		//Divide by tile size default is 16
+		if(!pause)
 		if(!gameStart) {
 			x = (int) Math.floor((x + renderer.getCamera().x)/(16.0 * xZoom));
 			y = (int) Math.floor((y + renderer.getCamera().y)/(16.0 * yZoom));
@@ -389,7 +416,8 @@ public class Game extends JFrame implements Runnable {
 		renderer.renderImage(bgLayer1, bgX, bgY, 2, 2, true);
 		
 		if(!gameStart) {
-
+			
+			
 			if(player.getRectangle().x<2860)
 				renderer.renderImage(bgLayer2, bgX, bgY, 2, 2, false);
 
@@ -410,14 +438,13 @@ public class Game extends JFrame implements Runnable {
 				renderer.renderImage(bgLayer3, bgX, bgY, 2, 2, false);
 			
 			if(pause) {
-				GameObject[] pauseObjects = new GameObject[objects.length+1];
-				for(int i = 0; i < objects.length; i++) {
-					pauseObjects[i] = objects[i];
-				}
-				pauseObjects[objects.length] = pauseButton;
+				box.generateGraphics(20, 0xFFFFFFFF);
+				renderer.renderRectangle(box, xZoom, yZoom, true);
+				
 				map.render(renderer, pauseObjects, xZoom, yZoom);
+				
 			}else
-			map.render(renderer, objects, xZoom, yZoom);
+				map.render(renderer, objects, xZoom, yZoom);
 			
 		}else {
 			
@@ -498,20 +525,14 @@ public class Game extends JFrame implements Runnable {
 		//Create our object for buffer strategy.
 		createBufferStrategy(2);
 		
-		//System.out.println(getWidth() + " h" + getHeight());
+		screenWidth = getWidth();
+		screenHeight = getHeight();
+		System.out.println("Screen Width: " + getWidth() + ", Screen Height: " + getHeight());
 		renderer = new RenderHandler(getWidth(), getHeight());
     }
 	
 	public static void main(String[] args) {
-		System.setProperty("sun.java2d.xrender", "true");
-		GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        GraphicsDevice[] devices = env.getScreenDevices();
-        
-        Game game = new Game(devices[0]);
-        // REMIND : Multi-monitor full-screen mode not yet supported
-        for (int i = 0; i < 1 /* devices.length */; i++) {
-        	game.begin(devices[i], game.getContentPane()); 
-        }
+        Game game = new Game(GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()[0]);
         //Creates "game" object
 		Thread gameThread = new Thread(game);
 		gameThread.start();
@@ -547,5 +568,18 @@ public class Game extends JFrame implements Runnable {
 
 	public void changeStart(boolean start) {
 		gameStart = start;
+	}
+
+	public void changeOption(int tileID) {
+		selectedOption = tileID;
+		
+		//if(selectedOption == 1)
+			//pause = false;
+		if(selectedOption == 4)
+			System.exit(0);
+	}
+
+	public int getSelectedOption() {
+		return selectedOption;
 	}
 }

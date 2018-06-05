@@ -1,5 +1,7 @@
 import java.applet.Applet;
 import java.applet.AudioClip;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 /**
  * Handles Sound functions, stores static objects of sound files that can be called at any time.
@@ -15,16 +17,32 @@ public class Sound {
 	
 	private AudioClip clip;
 	private int type;
+	private String assetsPath = "/assets";
 	
     Sound(String path, int type){
     	this.type = type;
     	try {
-    		//System.out.println(Sound.class.getResource(path));
+    		System.out.println("Sound: " + path.replace("/", "").replace(".wav", "") + ", Type: " + type);
+    		
+    		//TODO: Use this for EXE Testing
+    		//clip = Applet.newAudioClip(filePathURL(path));
+    		
+    		//TODO: Use this for eclipse testing
     		clip = Applet.newAudioClip(Sound.class.getResource(path));
     	}catch(Exception e){
     		e.printStackTrace();
     	}
     }
+    
+    public URL filePathURL(String path) {
+		String dir = getClass().getResource("/" + getClass().getName().replaceAll("\\.", "/") + ".class").toString();
+		dir = dir.substring(4).replaceFirst("/[^/]+\\.exe!.*$", "/");
+		dir = dir + assetsPath  + path;
+        try {
+            return new URL(dir);
+        } catch (MalformedURLException e) {}
+        return null;
+	}
     
     public void play() {
     	try {
