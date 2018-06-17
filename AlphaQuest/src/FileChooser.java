@@ -21,8 +21,8 @@ public class FileChooser extends JFrame{
 		//JFileChooser c = new JFileChooser(FileSystemView.getFileSystemView());
 		//JFileChooser c = new JFileChooser(new File(getClass().getResource(getClass().getName() + ".class").toString()));
 		
-		FileFilter imageFilter = new FileNameExtensionFilter("Image dykes", ImageIO.getReaderFileSuffixes());
-	    c.setFileFilter(imageFilter);
+		//FileFilter imageFilter = new FileNameExtensionFilter("Image dykes", ImageIO.getReaderFileSuffixes());
+	    //c.setFileFilter(imageFilter);
 		
 		// Demonstrate "Save" dialog:
 		int rVal = c.showSaveDialog(FileChooser.this);
