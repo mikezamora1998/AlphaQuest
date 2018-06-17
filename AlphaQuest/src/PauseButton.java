@@ -30,7 +30,7 @@ public class PauseButton extends GUIButtons{
 	
 	@Override
 	public void update(Game game) {
-		if(tileID != game.getSelectedOption()) {
+		if(tileID != game.getSelectedPauseOption()) {
 			if(!isSelected) {
 				region.generateGraphics(0x67FF3D);
 				isSelected = true;
@@ -45,6 +45,6 @@ public class PauseButton extends GUIButtons{
 	}
 	
 	public void activate() {
-		game.changeOption(tileID);
+		game.setPauseOption(tileID);
 	}
 }

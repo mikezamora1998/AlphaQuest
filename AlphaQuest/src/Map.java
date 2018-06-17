@@ -66,9 +66,12 @@ public class Map {
 	private int blockHeight = 6;
 	private int blockPixelWidth = blockWidth * 16;
 	private int blockPixelHeight = blockHeight * 16;
-	private int end =0;
 	
 	private int numLayers;
+
+	private Level level;
+
+	private Game game;
 	//TODO: Talking Points
 	/**
 	 * Map constructor.
@@ -78,7 +81,9 @@ public class Map {
 	 * @param tileSet <b>Tiles</b>
 	 * @see Map
 	 */
-	public Map(File mapFile, Tiles tileSet) {
+	public Map(File mapFile, Tiles tileSet, Level level, Game game) {
+		this.level = level;
+		this.game = game;
 		this.mapFile = mapFile;
 		this.tileSet = tileSet;
 		int minX = Integer.MAX_VALUE;
@@ -171,7 +176,6 @@ public class Map {
 		return block.getTile(layer, tileX, tileY);
 	}
 	
-	//TODO: Talking Points
 	public boolean checkCollision(Rectangle rect, int layer, int xZoom, int yZoom) {
 		int tileWidth = 16 * xZoom;
 		int tileHeight = 16 * yZoom;
@@ -194,10 +198,6 @@ public class Map {
 					if(collisionType == 0) {
 						Rectangle tileRectangle = new Rectangle(tile.x*tileWidth, tile.y*tileHeight, tileWidth, tileWidth);
 						if(tileRectangle.intersects(rect)) {
-							if(tile.id == 7 && end != 1) {
-								Sound.end.play();
-								end++;
-							}
 							return true;
 						}
 
@@ -225,6 +225,14 @@ public class Map {
 						Rectangle tileRectangle = new Rectangle(tile.x*tileWidth + tileWidth - 16, tile.y*tileHeight, 16, tileHeight);
 						if(tileRectangle.intersects(rect))
 							return true;
+						
+					//Ends Level
+					} else if (collisionType == 5) {
+						Rectangle tileRectangle = new Rectangle(tile.x*tileWidth, tile.y*tileHeight, tileWidth, tileWidth);
+						if(tileRectangle.intersects(rect)) {
+							level.endLevel();
+							return true;
+						}
 					}
 				}
 			}
@@ -330,14 +338,20 @@ public class Map {
 	 * @see #mappedTiles
 	 */
 	public void saveMap() {
+		String[] file = game.saveMap();
+		String filePath = file[1] + "\\" + file[0];
+		System.out.println(filePath);
+		
+		File newMap = new File(filePath);
+		
 		try {
 			int currentLine = 0;
-			if(mapFile.exists()) {
-				mapFile.delete();
+			if(newMap.exists()) {
+				newMap.delete();
 			}
-			mapFile.createNewFile();
+			newMap.createNewFile();
 			
-			PrintWriter printWriter = new PrintWriter(mapFile);
+			PrintWriter printWriter = new PrintWriter(newMap);
 			
 			if(fillTileID >= 0) {
 				

@@ -7,7 +7,7 @@ StoneLeft-4-1-0
 StoneMid-5-1-0
 StoneRight-6-1-0
 WindowTop-8-3
-Chest-6-2-0
+Chest-6-2-5
 TreeTop-5-3
 TreeBottom-5-4
 stone-0-3

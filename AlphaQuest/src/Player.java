@@ -138,8 +138,8 @@ public class Player implements GameObject {
 				collisionCheckRectangle.w, collisionCheckRectangle.h);
 
 		// Check the X axis
-		if (!game.getMap().checkCollision(axisCheck, layer, game.getXZoom(), game.getYZoom())
-				&& !game.getMap().checkCollision(axisCheck, layer + 1, game.getXZoom(), game.getYZoom())) {
+		if (!game.getMap().checkCollision(axisCheck, layer, game.xZoom, game.yZoom)
+				&& !game.getMap().checkCollision(axisCheck, layer + 1, game.xZoom, game.yZoom)) {
 
 			playerRectangle.x = collisionCheckRectangle.x - xCollisionOffset;
 
@@ -153,8 +153,8 @@ public class Player implements GameObject {
 		axisCheck.h = collisionCheckRectangle.h;
 
 		// Check the Y axis
-		if (!game.getMap().checkCollision(axisCheck, layer, game.getXZoom(), game.getYZoom())
-				&& !game.getMap().checkCollision(axisCheck, layer + 1, game.getXZoom(), game.getYZoom()))
+		if (!game.getMap().checkCollision(axisCheck, layer, game.xZoom, game.yZoom)
+				&& !game.getMap().checkCollision(axisCheck, layer + 1, game.xZoom, game.yZoom))
 			yCollision = false;
 			//playerRectangle.y = collisionCheckRectangle.y - yCollisionOffset;
 		else

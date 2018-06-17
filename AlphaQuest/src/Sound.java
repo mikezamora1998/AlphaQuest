@@ -25,10 +25,10 @@ public class Sound {
     		System.out.println("Sound: " + path.replace("/", "").replace(".wav", "") + ", Type: " + type);
     		
     		//TODO: Use this for EXE Testing
-    		//clip = Applet.newAudioClip(filePathURL(path));
+    		clip = Applet.newAudioClip(filePathURL(path));
     		
     		//TODO: Use this for eclipse testing
-    		clip = Applet.newAudioClip(Sound.class.getResource(path));
+    		//clip = Applet.newAudioClip(Sound.class.getResource(path));
     	}catch(Exception e){
     		e.printStackTrace();
     	}
@@ -36,6 +36,10 @@ public class Sound {
     
     public URL filePathURL(String path) {
 		String dir = getClass().getResource("/" + getClass().getName().replaceAll("\\.", "/") + ".class").toString();
+		
+		if(!dir.contains(".exe"))
+			return Sound.class.getResource(path);
+			
 		dir = dir.substring(4).replaceFirst("/[^/]+\\.exe!.*$", "/");
 		dir = dir + assetsPath  + path;
         try {
