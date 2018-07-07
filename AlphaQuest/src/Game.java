@@ -1,11 +1,22 @@
-import java.awt.Container;
-import java.awt.image.BufferStrategy;
-import java.awt.Graphics;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
-import java.lang.Runnable;
-import java.lang.Thread;
-import javax.swing.JFrame;
+import static org.lwjgl.glfw.GLFW.glfwCreateWindow;
+import static org.lwjgl.glfw.GLFW.glfwGetPrimaryMonitor;
+import static org.lwjgl.glfw.GLFW.glfwGetVideoMode;
+import static org.lwjgl.glfw.GLFW.glfwInit;
+import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
+import static org.lwjgl.glfw.GLFW.glfwPollEvents;
+import static org.lwjgl.glfw.GLFW.glfwShowWindow;
+import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
+import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
+import static org.lwjgl.glfw.GLFW.glfwSetWindowPos;
+import static org.lwjgl.glfw.GLFW.glfwSetKeyCallback;
+import static org.lwjgl.system.MemoryUtil.NULL;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_SPACE;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL13.*;
+
+
+import org.lwjgl.glfw.GLFWVidMode;
+import org.lwjgl.opengl.GL;
 
 /**
  * Creates a new GameTread that will run the game.
@@ -61,7 +72,7 @@ import javax.swing.JFrame;
  * @author Brandon Carlsen, David Lichliter, Michael Zamora
  */
 @SuppressWarnings("serial")
-public class Game extends JFrame implements Runnable {
+public class Game implements Runnable {
 	//alpha color			0xFF FF00DC	
 	public static int alpha = 0xFFFF00DC;
 	
@@ -79,19 +90,28 @@ public class Game extends JFrame implements Runnable {
 	private Level[] level;
 	private int currentLevel;
 	
+	private long window;
+	
+	public boolean running = false;
+
+	private boolean hasWindow = false;
+	
+	private Thread gameThread;
+	
 	public static void main(String[] args) {
-        Game game = new Game();
+        new Game().start();
         //Creates "game" object
-		Thread gameThread = new Thread(game);
+	}
+	
+	public void start() {
+		running = true;
+		
+		gameThread = new Thread(this, "Game Thread");
 		gameThread.start();
 	}
 	
-	public Game() {
-		super(GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()[0].getDefaultConfiguration());
-		System.setProperty("sun.java2d.xrender", "true");
-        configureJFrame(GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()[0], getContentPane()); 
-
-        level = new Level[4];
+	public void onStart() {
+		level = new Level[4];
         level[0] = new StartScreen(this);
         level[1] = new Level_1(this);
         level[2] = new Level_2(this);
@@ -100,35 +120,45 @@ public class Game extends JFrame implements Runnable {
 		currentLevel = 0;
 		
 		for(int i = 0; i < level.length; i++) {
-			System.out.print("Level: " + i);
+			System.out.println("Level: " + i);
 			level[i].setupLevel();
 		}
 	}
 
 	public void update() {
-		level[currentLevel].updateLevel();
+		//level[currentLevel].updateLevel();
+		
+		glfwPollEvents();
+		if(Input.keys[GLFW_KEY_SPACE]) {
+			System.out.println("Pressed: SPACE");
+		}
 	}
 	
 	public void render() {
-		BufferStrategy bufferStrategy = getBufferStrategy();
+		/*BufferStrategy bufferStrategy = getBufferStrategy();
 		Graphics graphics = bufferStrategy.getDrawGraphics();
-		super.paint(graphics);
+		super.paint(graphics);*/
 		
 		//renders in linear order. Newest will be rendered over older
-		level[currentLevel].renderLevel();
+		//level[currentLevel].renderLevel();
 		
-		renderer.render(graphics);
-		graphics.dispose();
-		bufferStrategy.show();
-		renderer.clear();
+		//renderer.render();
+		//renderer.clear();
+		
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		
+		if(hasWindow)
+			glfwSwapBuffers(window);
 	}
 
 	public void run() {
+		configureOpenGL();
+		
 		long lastTime = System.nanoTime(); //long 2^63
 		double nanoSecondConversion = 1000000000.0 / 60; //60 frames per second
 		double changeInSeconds = 0;
 
-		while(true) {
+		while(running) {
 			long now = System.nanoTime();
 
 			changeInSeconds += (now - lastTime) / nanoSecondConversion;
@@ -139,6 +169,10 @@ public class Game extends JFrame implements Runnable {
 
 			render();
 			lastTime = now;
+			if(hasWindow)
+			if(glfwWindowShouldClose(window)){
+		        running = false;
+		    }
 		}
 	}
 
@@ -163,49 +197,59 @@ public class Game extends JFrame implements Runnable {
 	}
 	
 	public void setLevel(int incrementor) {
-		if(currentLevel + incrementor < level.length)
+		if(currentLevel + incrementor < level.length) {
+			System.out.println("Level change from level " + currentLevel + ", to level" + currentLevel + incrementor);
 			currentLevel += incrementor;
-		level[currentLevel].startLevel();
+			level[currentLevel].startLevel();
+		}else
+			System.out.print("Attempted Level change from Level "+ currentLevel + ", to level" + currentLevel + incrementor);
 	}
 	
 	public void setPauseOption(int tileID) {
 		level[currentLevel].setPauseOption(tileID);
 	}
 	
-	public void configureJFrame(GraphicsDevice device, Container c) {
-		setContentPane(c);
-		boolean isFullScreen = false;
-
-        isFullScreen = device.isFullScreenSupported();
-        setUndecorated(isFullScreen);
-        setResizable(!isFullScreen);
-        if (isFullScreen) {
-            // Full-screen mode
-            device.setFullScreenWindow(this);
-            validate();
-        } else {
-            // Windowed mode
-            pack();
-            setVisible(true);
-        }
-        
-		//Make our program shutdown when we exit out.
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-		//Add Listeners
-		addKeyListener(keyListener);
-		addFocusListener(keyListener);
-		addMouseListener(mouseListener);
-		addMouseMotionListener(mouseListener);
-
-		requestFocus();
-		//Create our object for buffer strategy.
-		createBufferStrategy(2);
+	public void configureOpenGL() {
+		if(!glfwInit()){
+		      // Throw an error.
+		      System.err.println("GLFW initialization failed!");
+		}
 		
-		screenWidth = getWidth();
-		screenHeight = getHeight();
-		System.out.println("Screen Width: " + getWidth() + ", Screen Height: " + getHeight());
-		renderer = new RenderHandler(getWidth(), getHeight());
+		screenWidth = 800;//glfwGetVideoMode(glfwGetPrimaryMonitor()).width();
+		screenHeight = 600;//glfwGetVideoMode(glfwGetPrimaryMonitor()).height();
+		System.out.println("Screen Width: " + screenWidth + ", Screen Height: " + screenHeight);
+		//renderer = new RenderHandler(screenWidth, screenHeight);
+		
+	    window = glfwCreateWindow(screenWidth, screenHeight, "Alpha Quest", NULL, NULL);
+
+	    // This code performs the appropriate checks to ensure that the
+	    // window was successfully created. 
+	    // If not then it prints an error to the console
+	    if(window == NULL){
+	      // Throw an Error
+	      System.err.println("Could not create our Window!");
+	      return;
+	    }else {
+	    	hasWindow = true;
+	    }
+	    
+	    // creates a bytebuffer object 'vidmode' which then queries 
+	    // to see what the primary monitor is. 
+	    GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+	    
+	    glfwSetKeyCallback(window, new Input());
+	    // Sets the initial position of our game window. 
+	    glfwSetWindowPos(window, (vidmode.width() - screenWidth) /2, (vidmode.height() - screenHeight) /2);
+	    // Sets the context of GLFW, this is vital for our program to work.
+	    glfwMakeContextCurrent(window);
+	    // finally shows our created window in all it's glory.
+	    glfwShowWindow(window);
+	    
+	    GL.createCapabilities();
+	    
+	    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+	    glEnable(GL_DEPTH_TEST);
+	    System.out.println("OPENGL Version : " + glGetString(GL_VERSION));
     }
 	
 	public KeyBoardListener getKeyListener() {
@@ -238,7 +282,6 @@ public class Game extends JFrame implements Runnable {
 
 	public String[] saveMap() {
 		FileChooser c = new FileChooser();
-		setAutoRequestFocus(true);
 		String[] s = new String[2];
 		s[0] = c.getFileName();
 		s[1] = c.getFilePath();

@@ -67,10 +67,10 @@ public class RenderHandler {
 	}
 
 	//Render our array of pixels to the screen
-	public void render(Graphics graphics){
+	public void render(){
 		//Renders to screen
-		graphics.drawImage(view.getSubimage(0, 0, camera.w, camera.h), 0, 0, camera.w, camera.h, null);
-		Toolkit.getDefaultToolkit().sync();
+		//graphics.drawImage(view.getSubimage(0, 0, camera.w, camera.h), 0, 0, camera.w, camera.h, null);
+		//Toolkit.getDefaultToolkit().sync();
 	}
 
 	//Render our image to our array of pixels.
