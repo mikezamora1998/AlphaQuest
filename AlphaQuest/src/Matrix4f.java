@@ -1,7 +1,5 @@
 import java.nio.FloatBuffer;
 
-import org.lwjgl.BufferUtils;
-
 public class Matrix4f {
 
 	public static final int SIZE = 4 * 4;

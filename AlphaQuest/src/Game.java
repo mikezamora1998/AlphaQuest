@@ -12,7 +12,6 @@ import static org.lwjgl.glfw.GLFW.glfwSetKeyCallback;
 import static org.lwjgl.system.MemoryUtil.NULL;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_SPACE;
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL13.*;
 
 
 import org.lwjgl.glfw.GLFWVidMode;
@@ -98,6 +97,10 @@ public class Game implements Runnable {
 	
 	private Thread gameThread;
 	
+	private LevelOpenGL levelOpenGL;
+	
+	private int i = 0;
+	
 	public static void main(String[] args) {
         new Game().start();
         //Creates "game" object
@@ -146,6 +149,20 @@ public class Game implements Runnable {
 		//renderer.clear();
 		
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		
+		if (i % 2 == 1) {
+		levelOpenGL.render();
+		i=0;
+		System.out.println("frame: " + i);
+		}else {
+			i++;
+			System.out.println("frame: " + i);
+		}
+		
+		int error = glGetError();
+		if(error != GL_NO_ERROR) {
+			System.out.println(error);
+		}
 		
 		if(hasWindow)
 			glfwSwapBuffers(window);
@@ -215,8 +232,8 @@ public class Game implements Runnable {
 		      System.err.println("GLFW initialization failed!");
 		}
 		
-		screenWidth = 800;//glfwGetVideoMode(glfwGetPrimaryMonitor()).width();
-		screenHeight = 600;//glfwGetVideoMode(glfwGetPrimaryMonitor()).height();
+		screenWidth = 1280;//glfwGetVideoMode(glfwGetPrimaryMonitor()).width();
+		screenHeight = 720;//glfwGetVideoMode(glfwGetPrimaryMonitor()).height();
 		System.out.println("Screen Width: " + screenWidth + ", Screen Height: " + screenHeight);
 		//renderer = new RenderHandler(screenWidth, screenHeight);
 		
@@ -247,8 +264,19 @@ public class Game implements Runnable {
 	    
 	    GL.createCapabilities();
 	    
-	    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-	    glEnable(GL_DEPTH_TEST);
+	    Shader.loadAll();
+	    
+	    //projection matrix for a 16 by 9 monitor
+	    Shader.BACKGROUND.enable();
+	    Matrix4f pr_matrix = Matrix4f.orthographic(-10.0f, 10.0f, -10.0f * 9.0f / 16.0f, 10.0f * 9.0f / 16.0f, -1.0f, 1.0f);
+	    Shader.BACKGROUND.setUniformMat4f("pr_matrix", pr_matrix);
+	    Shader.BACKGROUND.disable();
+	    
+	    levelOpenGL = new LevelOpenGL();
+	    
+	    //tests
+	    //glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+	    //glEnable(GL_DEPTH_TEST);
 	    System.out.println("OPENGL Version : " + glGetString(GL_VERSION));
     }
 	
