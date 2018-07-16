@@ -1,15 +1,21 @@
+package org.alphaquest.java.gui;
+
+import org.alphaquest.java.Game;
+import org.alphaquest.java.game.Sprite;
+import org.alphaquest.java.math.Rectangle;
+import org.alphaquest.java.render.RenderHandler;
+
 /**
- * Handles textButton functions, used to represent the normal text user interface.
+ * Object that represents the user interface for placing and removing tiles.
  * @author Michael, David, Brandon
- * @deprecated This method has not yet been implemented.
  */
-public class TextButton extends GUIButtons{
+public class SDKButton extends GUIButtons{
 	
 	private Game game;
 	private int tileID;
 	private boolean isSelected = false;
 	
-	public TextButton(Game game, int tileID, Sprite tileSprite, Rectangle rect) {
+	public SDKButton(Game game, int tileID, Sprite tileSprite, Rectangle rect) {
 		super(tileSprite, rect, true);
 		this.game = game;
 		this.tileID = tileID;

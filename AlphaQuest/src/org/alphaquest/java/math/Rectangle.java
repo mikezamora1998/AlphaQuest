@@ -1,3 +1,7 @@
+package org.alphaquest.java.math;
+
+import org.alphaquest.java.Game;
+
 /**
  * Rectangle Class. Handles Rectangle rendering and Intersection.
  * @see {@literal Constructors: }
@@ -54,7 +58,7 @@ public class Rectangle {
 	 * @param h <b>int</b>
 	 * @see #Rectangle()
 	 */
-	Rectangle(int x, int y, int w, int h){
+	public Rectangle(int x, int y, int w, int h){
 		this.x = x;
 		this.y = y;
 		this.w = w;
@@ -64,7 +68,7 @@ public class Rectangle {
 	 * Blank Rectangle constructor that sets int <b>(x, y, w, h)</b> to 0.
 	 * @see #Rectangle(int x, int y, int w, int h)
 	 */
-	Rectangle(){
+	public Rectangle(){
 		this(0,0,0,0);
 	}
 	

@@ -1,9 +1,15 @@
+package org.alphaquest.java.render;
+
 import java.awt.Graphics;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
+
+import org.alphaquest.java.Game;
+import org.alphaquest.java.game.Sprite;
+import org.alphaquest.java.math.Rectangle;
 
 /**
  * Handles Rendering functions.

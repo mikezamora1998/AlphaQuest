@@ -1,3 +1,13 @@
+package org.alphaquest.java.game;
+
+import org.alphaquest.java.Game;
+import org.alphaquest.java.Toolkit.KeyBoardListener;
+import org.alphaquest.java.Toolkit.Sound;
+import org.alphaquest.java.delegate.GameObject;
+import org.alphaquest.java.math.Rectangle;
+import org.alphaquest.java.math.Vector2;
+import org.alphaquest.java.render.RenderHandler;
+
 /**
  * Handles player movements and collision.
  * <p>

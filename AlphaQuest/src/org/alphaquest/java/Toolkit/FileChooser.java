@@ -1,3 +1,5 @@
+package org.alphaquest.java.Toolkit;
+
 import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;

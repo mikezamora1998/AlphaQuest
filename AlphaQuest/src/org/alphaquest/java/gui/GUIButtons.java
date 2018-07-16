@@ -1,3 +1,11 @@
+package org.alphaquest.java.gui;
+
+import org.alphaquest.java.Game;
+import org.alphaquest.java.delegate.GameObject;
+import org.alphaquest.java.game.Sprite;
+import org.alphaquest.java.math.Rectangle;
+import org.alphaquest.java.render.RenderHandler;
+
 /**
  * Determines which button is active in the GUI.
  * @author Michael, David, Brandon

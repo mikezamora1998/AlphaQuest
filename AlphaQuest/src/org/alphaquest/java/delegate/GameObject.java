@@ -1,3 +1,9 @@
+package org.alphaquest.java.delegate;
+
+import org.alphaquest.java.Game;
+import org.alphaquest.java.math.Rectangle;
+import org.alphaquest.java.render.RenderHandler;
+
 /**
  * Game object interface that is used to be able to call on all game object quickly and easily.
  * @author Michael, David, Brandon

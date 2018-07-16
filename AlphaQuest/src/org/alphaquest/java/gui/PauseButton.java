@@ -1,14 +1,21 @@
+package org.alphaquest.java.gui;
+
+import org.alphaquest.java.Game;
+import org.alphaquest.java.game.Sprite;
+import org.alphaquest.java.math.Rectangle;
+import org.alphaquest.java.render.RenderHandler;
+
 /**
  * Object that represents the user interface for placing and removing tiles.
  * @author Michael, David, Brandon
  */
-public class SDKButton extends GUIButtons{
+public class PauseButton extends GUIButtons{
 	
 	private Game game;
 	private int tileID;
 	private boolean isSelected = false;
 	
-	public SDKButton(Game game, int tileID, Sprite tileSprite, Rectangle rect) {
+	public PauseButton(Game game, int tileID, Sprite tileSprite, Rectangle rect) {
 		super(tileSprite, rect, true);
 		this.game = game;
 		this.tileID = tileID;
@@ -30,7 +37,7 @@ public class SDKButton extends GUIButtons{
 	
 	@Override
 	public void update(Game game) {
-		if(tileID != game.getSelectedTile()) {
+		if(tileID != game.getSelectedPauseOption()) {
 			if(!isSelected) {
 				region.generateGraphics(0x67FF3D);
 				isSelected = true;
@@ -45,6 +52,6 @@ public class SDKButton extends GUIButtons{
 	}
 	
 	public void activate() {
-		game.changeTile(tileID);
+		game.setPauseOption(tileID);
 	}
 }

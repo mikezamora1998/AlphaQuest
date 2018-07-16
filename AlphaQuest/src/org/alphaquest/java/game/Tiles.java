@@ -1,7 +1,11 @@
+package org.alphaquest.java.game;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
+
+import org.alphaquest.java.render.RenderHandler;
 
 /**
  * Handles Tiles functions, reads and stores tiles objects from the sprite sheet and tiles.txt file.

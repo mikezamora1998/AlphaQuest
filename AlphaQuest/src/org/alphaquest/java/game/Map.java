@@ -1,9 +1,17 @@
+package org.alphaquest.java.game;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
+
+import org.alphaquest.java.Game;
+import org.alphaquest.java.delegate.GameObject;
+import org.alphaquest.java.delegate.Level;
+import org.alphaquest.java.math.Rectangle;
+import org.alphaquest.java.render.RenderHandler;
 
 /**
  * Handles Map functions, Collisions, and Tiles.

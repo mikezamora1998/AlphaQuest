@@ -1,7 +1,11 @@
+package org.alphaquest.java.Toolkit;
+
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+
+import org.alphaquest.java.Game;
 
 /**
  * Handles Keyboard event functions, checks for certain inputs and returns a boolean.

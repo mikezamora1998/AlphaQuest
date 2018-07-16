@@ -1,3 +1,9 @@
+package org.alphaquest.java.gui;
+
+import org.alphaquest.java.Game;
+import org.alphaquest.java.game.Sprite;
+import org.alphaquest.java.math.Rectangle;
+import org.alphaquest.java.render.RenderHandler;
 
 public class PauseMenu extends GUIButtons{
 

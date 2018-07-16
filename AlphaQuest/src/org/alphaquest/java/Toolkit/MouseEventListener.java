@@ -1,6 +1,10 @@
+package org.alphaquest.java.Toolkit;
+
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+
+import org.alphaquest.java.Game;
 
 /**
  * Handles Mouse Event functions, checks for when the mouse is clicked (left or right button).

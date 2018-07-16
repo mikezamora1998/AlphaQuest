@@ -1,4 +1,11 @@
+package org.alphaquest.java.game;
+
 import java.awt.image.BufferedImage;
+
+import org.alphaquest.java.Game;
+import org.alphaquest.java.delegate.GameObject;
+import org.alphaquest.java.math.Rectangle;
+import org.alphaquest.java.render.RenderHandler;
 
 /**
  * Handles Animated Sprite functions, stores arrays of images taken from a sprite sheet.

@@ -1,8 +1,28 @@
+package org.alphaquest.java.level;
+
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 
-public class Level_1 implements Level{
+import org.alphaquest.java.Game;
+import org.alphaquest.java.delegate.GameObject;
+import org.alphaquest.java.Toolkit.Sound;
+import org.alphaquest.java.Toolkit.ToolKit;
+import org.alphaquest.java.delegate.Level;
+import org.alphaquest.java.game.AnimatedSprite;
+import org.alphaquest.java.game.Map;
+import org.alphaquest.java.game.Player;
+import org.alphaquest.java.game.Sprite;
+import org.alphaquest.java.game.SpriteSheet;
+import org.alphaquest.java.game.Tiles;
+import org.alphaquest.java.gui.GUI;
+import org.alphaquest.java.gui.GUIButtons;
+import org.alphaquest.java.gui.PauseButton;
+import org.alphaquest.java.gui.SDKButton;
+import org.alphaquest.java.math.Rectangle;
+import org.alphaquest.java.render.RenderHandler;
+
+public class Level_2 implements Level{
 	
 	private Game game;
 	private RenderHandler renderer;
@@ -40,7 +60,7 @@ public class Level_1 implements Level{
 	private boolean pause;
 	private boolean isEnded;
 
-	public Level_1(Game game) {
+	public Level_2(Game game) {
 		this.game = game;
 		this.xZoom = game.xZoom;
 		this.yZoom = game.yZoom;
@@ -177,7 +197,7 @@ public class Level_1 implements Level{
 		int bgX = 0;
 		int bgY = 0;
 
-		renderer.renderImage(bgLayer[0], bgX, bgY, 2, 2, true);
+		//renderer.renderImage(bgLayer[0], bgX, bgY, 2, 2, true);
 		
 		if(player.getRectangle().x<2860)
 			renderer.renderImage(bgLayer[1], bgX, bgY, 2, 2, false);

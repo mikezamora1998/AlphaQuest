@@ -1,3 +1,5 @@
+package org.alphaquest.java.math;
+
 /**
  * Handles Vector functions, used as a physics engine.
  * @author Michael, David, Brandon
