@@ -8,7 +8,8 @@ import org.alphaquest.java.Game;
 import org.alphaquest.java.delegate.GameObject;
 import org.alphaquest.java.Toolkit.Sound;
 import org.alphaquest.java.Toolkit.ToolKit;
-import org.alphaquest.java.delegate.Level;
+import org.alphaquest.java.delegate.LevelElements;
+import org.alphaquest.java.delegate.LevelDeligate;
 import org.alphaquest.java.game.AnimatedSprite;
 import org.alphaquest.java.game.Map;
 import org.alphaquest.java.game.Player;
@@ -22,7 +23,7 @@ import org.alphaquest.java.gui.SDKButton;
 import org.alphaquest.java.math.Rectangle;
 import org.alphaquest.java.render.RenderHandler;
 
-public class Level_2 implements Level{
+public class Level_2 extends LevelDeligate{
 	
 	private Game game;
 	private RenderHandler renderer;
@@ -97,7 +98,7 @@ public class Level_2 implements Level{
 		
 		//Load Tiles
 		tiles = new Tiles(new File(tk.filePathString("/Tiles.txt")), sheet);
-		Level level = this;
+		LevelElements level = this;
 		map = new Map(new File(tk.filePathString("/Map.txt")), tiles, level, game);
 		startTiles = new Tiles(new File(tk.filePathString("/StartTiles.txt")), textSheet);
 
@@ -179,7 +180,6 @@ public class Level_2 implements Level{
 		Sound.backGround.play();
 	}
 	
-	@Override
 	public void updateLevel() {
 		if(!pause) {
 			for(int i = 0; i < objects.length; i++) {
@@ -374,5 +374,11 @@ public class Level_2 implements Level{
 	@Override
 	public Player getPlayer() {
 		return player;
+	}
+
+	@Override
+	public void updateLevel(GameObject[] o) {
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -9,7 +9,7 @@ import java.util.Scanner;
 
 import org.alphaquest.java.Game;
 import org.alphaquest.java.delegate.GameObject;
-import org.alphaquest.java.delegate.Level;
+import org.alphaquest.java.delegate.LevelElements;
 import org.alphaquest.java.math.Rectangle;
 import org.alphaquest.java.render.RenderHandler;
 
@@ -77,7 +77,7 @@ public class Map {
 	
 	private int numLayers;
 
-	private Level level;
+	private LevelElements level;
 
 	private Game game;
 	//TODO: Talking Points
@@ -89,7 +89,7 @@ public class Map {
 	 * @param tileSet <b>Tiles</b>
 	 * @see Map
 	 */
-	public Map(File mapFile, Tiles tileSet, Level level, Game game) {
+	public Map(File mapFile, Tiles tileSet, LevelElements level, Game game) {
 		this.level = level;
 		this.game = game;
 		this.mapFile = mapFile;

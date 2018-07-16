@@ -7,17 +7,16 @@ import org.alphaquest.java.game.Player;
 import org.alphaquest.java.game.Sprite;
 import org.alphaquest.java.math.Rectangle;
 
-public interface Level {
+public interface LevelElements {
 
 	public void setupLevel();
 	public void startLevel();
-	public void updateLevel();
+	public void updateLevel(GameObject[] o);
 	public void renderLevel();
 	public void endLevel();
 
 	public void handleKeyPressed(boolean[] keys);
 	public void handleCTRL(boolean[] keys);
-	public void handleEsc(boolean[] keys);
 	public void leftClick(int x, int y);
 	public void rightClick(int x, int y);
 	public void changeTile(int tileID);

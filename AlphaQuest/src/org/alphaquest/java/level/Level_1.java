@@ -8,7 +8,8 @@ import org.alphaquest.java.Game;
 import org.alphaquest.java.delegate.GameObject;
 import org.alphaquest.java.Toolkit.Sound;
 import org.alphaquest.java.Toolkit.ToolKit;
-import org.alphaquest.java.delegate.Level;
+import org.alphaquest.java.delegate.LevelElements;
+import org.alphaquest.java.delegate.LevelDeligate;
 import org.alphaquest.java.game.AnimatedSprite;
 import org.alphaquest.java.game.Map;
 import org.alphaquest.java.game.Player;
@@ -22,15 +23,12 @@ import org.alphaquest.java.gui.SDKButton;
 import org.alphaquest.java.math.Rectangle;
 import org.alphaquest.java.render.RenderHandler;
 
-public class Level_1 implements Level{
+public class Level_1 extends LevelDeligate {
 	
 	private Game game;
 	private RenderHandler renderer;
 	
-	private int xZoom;
-	private int yZoom;
-	private int screenWidth;
-	private int screenHeight;
+	
 	
 	private BufferedImage[] bgLayer;
 	private Rectangle background;
@@ -57,7 +55,6 @@ public class Level_1 implements Level{
 	private int selectedLayer;
 	private int selectedPauseOption;
 	
-	private boolean pause;
 	private boolean isEnded;
 
 	public Level_1(Game game) {
@@ -97,7 +94,7 @@ public class Level_1 implements Level{
 		
 		//Load Tiles
 		tiles = new Tiles(new File(tk.filePathString("/Tiles.txt")), sheet);
-		Level level = this;
+		LevelElements level = this;
 		map = new Map(new File(tk.filePathString("/Map.txt")), tiles, level, game);
 		startTiles = new Tiles(new File(tk.filePathString("/StartTiles.txt")), textSheet);
 
@@ -179,17 +176,17 @@ public class Level_1 implements Level{
 		Sound.backGround.play();
 	}
 	
-	@Override
-	public void updateLevel() {
-		if(!pause) {
-			for(int i = 0; i < objects.length; i++) {
-				objects[i].update(game);
-			}
-		}else {
-			for(int i = 0; i < pauseObjects.length; i++)
-				pauseObjects[i].update(game);
-		}
-	}
+//	@Override
+//	public void updateLevel() {
+//		if(!pause) {
+//			for(int i = 0; i < objects.length; i++) {
+//				objects[i].update(game);
+//			}
+//		}else {
+//			for(int i = 0; i < pauseObjects.length; i++)
+//				pauseObjects[i].update(game);
+//		}
+//	}
 
 	@Override
 	public void renderLevel() {
@@ -255,18 +252,13 @@ public class Level_1 implements Level{
 			map.saveMap();
 		}
 		if(keys[KeyEvent.VK_Q]) {
-			System.exit(0);
+			close();
 		}
 	}
 
 	@Override
 	public void handleEsc(boolean[] keys) {
-		
-		if(keys[KeyEvent.VK_ESCAPE] && !pause) {
-			pause = true;
-		}else {
-			pause = false;
-		}
+		//pause = handlePause(keys);
 	}
 
 	@Override
@@ -374,5 +366,11 @@ public class Level_1 implements Level{
 	@Override
 	public Player getPlayer() {
 		return player;
+	}
+
+	@Override
+	public void updateLevel(GameObject[] o) {
+		// TODO Auto-generated method stub
+		
 	}
 }

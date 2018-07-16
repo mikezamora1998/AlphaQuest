@@ -12,11 +12,13 @@ import javax.swing.JFrame;
 import org.alphaquest.java.Toolkit.FileChooser;
 import org.alphaquest.java.Toolkit.KeyBoardListener;
 import org.alphaquest.java.Toolkit.MouseEventListener;
-import org.alphaquest.java.delegate.Level;
+import org.alphaquest.java.delegate.LevelElements;
+import org.alphaquest.java.delegate.LevelDeligate;
 import org.alphaquest.java.game.Map;
 import org.alphaquest.java.level.Level_1;
 import org.alphaquest.java.level.Level_2;
 import org.alphaquest.java.level.Level_3;
+import org.alphaquest.java.level.Level_4;
 import org.alphaquest.java.level.StartScreen;
 import org.alphaquest.java.math.Rectangle;
 import org.alphaquest.java.render.RenderHandler;
@@ -90,7 +92,7 @@ public class Game extends JFrame implements Runnable {
 	public int screenWidth;
 	public int screenHeight;
 	
-	private Level[] level;
+	private LevelDeligate[] level;
 	private int currentLevel;
 	
 	public static void main(String[] args) {
@@ -105,22 +107,23 @@ public class Game extends JFrame implements Runnable {
 		System.setProperty("sun.java2d.xrender", "true");
         configureJFrame(GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()[0], getContentPane()); 
 
-        level = new Level[4];
+        level = new LevelDeligate[4];
         level[0] = new StartScreen(this);
-        level[1] = new Level_1(this);
-        level[2] = new Level_2(this);
-        level[3] = new Level_3(this);
+        //level[1] = new Level_1(this);
+        //level[2] = new Level_2(this);
+        //level[3] = new Level_3(this);
+        level[1] = new Level_4();
         
 		currentLevel = 0;
 		
 		for(int i = 0; i < level.length; i++) {
-			System.out.print("Level: " + i);
-			level[i].setupLevel();
+			System.out.println("Level: " + i);
+			level[i].setup(this);
 		}
 	}
 
 	public void update() {
-		level[currentLevel].updateLevel();
+		level[currentLevel].update();
 	}
 	
 	public void render() {
@@ -129,7 +132,7 @@ public class Game extends JFrame implements Runnable {
 		super.paint(graphics);
 		
 		//renders in linear order. Newest will be rendered over older
-		level[currentLevel].renderLevel();
+		level[currentLevel].render();
 		
 		renderer.render(graphics);
 		graphics.dispose();
@@ -165,11 +168,11 @@ public class Game extends JFrame implements Runnable {
 	}
 
 	public void leftClick(int x, int y) {
-		level[currentLevel].leftClick(x, y);
+		level[currentLevel].handleLeftClick(x, y);
 	}
 
 	public void rightClick(int x, int y) {
-		level[currentLevel].rightClick(x, y);
+		level[currentLevel].handleRightClick(x, y);
 	}
 
 	public void changeTile(int tileID) {

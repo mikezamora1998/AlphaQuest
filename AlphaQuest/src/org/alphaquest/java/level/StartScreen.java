@@ -14,7 +14,8 @@ import org.alphaquest.java.Toolkit.KeyBoardListener;
 import org.alphaquest.java.Toolkit.MouseEventListener;
 import org.alphaquest.java.Toolkit.Sound;
 import org.alphaquest.java.Toolkit.ToolKit;
-import org.alphaquest.java.delegate.Level;
+import org.alphaquest.java.delegate.LevelElements;
+import org.alphaquest.java.delegate.LevelDeligate;
 import org.alphaquest.java.game.Map;
 import org.alphaquest.java.game.Player;
 import org.alphaquest.java.game.Sprite;
@@ -26,7 +27,7 @@ import org.alphaquest.java.gui.SDKButton;
 import org.alphaquest.java.math.Rectangle;
 import org.alphaquest.java.render.RenderHandler;
 
-public class StartScreen implements Level{
+public class StartScreen extends LevelDeligate{
 
 	private Game game;
 	
@@ -206,7 +207,7 @@ public class StartScreen implements Level{
 	}
 
 	@Override
-	public void updateLevel() {
+	public void updateLevel(GameObject[] o) {
 		for(int i = 0; i < objects.length; i++)
 			objects[i].update(game);
 	}
