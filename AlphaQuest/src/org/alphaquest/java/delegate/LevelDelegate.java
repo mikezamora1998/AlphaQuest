@@ -15,21 +15,19 @@ import org.alphaquest.java.gui.PauseButton;
 import org.alphaquest.java.math.Rectangle;
 import org.alphaquest.java.render.RenderHandler;
 
-public abstract class LevelDeligate implements LevelElements{
+public abstract class LevelDelegate implements LevelElements, LoadingDelegate {
 	
 	private GUI pauseButton;
 	private GameObject[] pauseObjects;
-	protected int selectedPauseOption;
+	public int selectedPauseOption;
 	
 	public ToolKit tk;
 	private Tiles startTiles;
-	protected SpriteSheet textSheet;
+	public SpriteSheet textSheet;
 	private Rectangle box;
 	
 	public Game game;
-	protected RenderHandler renderer;
-	
-	public GameObject[] objects;
+	public RenderHandler renderer;
 	
 	public int xZoom;
 	public int yZoom;
@@ -38,12 +36,18 @@ public abstract class LevelDeligate implements LevelElements{
 	
 	public boolean pause = false;
 	
+	public LevelDelegate() {
+		
+	}
+	
 	public void setup(Game game) {
 		this.xZoom = game.xZoom;
 		this.yZoom = game.yZoom;
 		this.screenWidth = game.screenWidth;
 		this.screenHeight = game.screenHeight;
 		
+		
+		renderer = game.getRenderer();
 		tk = new ToolKit();
 		
 		BufferedImage textSheetImage = tk.loadImage("/font sheet.png");
@@ -78,7 +82,7 @@ public abstract class LevelDeligate implements LevelElements{
 		pauseObjects[0] = pauseButton;
 		
 		
-		setupLevel();
+		setup();
 	}
 	
 	public void close() {
@@ -123,7 +127,7 @@ public abstract class LevelDeligate implements LevelElements{
 		
 		GameObject[] o = null;
 		if(!pause)
-			o = objects;
+			o = getObjects();
 		else
 			o = pauseObjects;
 		
@@ -134,6 +138,10 @@ public abstract class LevelDeligate implements LevelElements{
 			System.err.println("NO OBJECTS TO UPDATE!");
 	}
 	
-	//public abstract void openPauseMenu();
-	
+	public void defaultPauseOptions(int tileID) {
+		selectedPauseOption = tileID;
+
+		if(selectedPauseOption == 4)
+			close();
+	}
 }

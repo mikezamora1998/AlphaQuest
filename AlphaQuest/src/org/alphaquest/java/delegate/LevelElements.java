@@ -9,11 +9,10 @@ import org.alphaquest.java.math.Rectangle;
 
 public interface LevelElements {
 
-	public void setupLevel();
 	public void startLevel();
+	public void endLevel();
 	public void updateLevel(GameObject[] o);
 	public void renderLevel();
-	public void endLevel();
 
 	public void handleKeyPressed(boolean[] keys);
 	public void handleCTRL(boolean[] keys);
@@ -26,10 +25,9 @@ public interface LevelElements {
 	public boolean hasLevelEnded();
 	public BufferedImage[] getBackgroundImages();
 	public Map getMap();
+	public GameObject[] getObjects();
+	public void setPauseOption(int tileID);
 	public Player getPlayer();
 	public Rectangle getRectangleBackground();
-	public GameObject[] getObjects();
-	public GameObject[] getPauseObjects();
 	public int getSelectedPauseOption();
-	public void setPauseOption(int tileID);
 }

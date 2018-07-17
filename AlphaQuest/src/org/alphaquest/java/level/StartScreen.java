@@ -15,7 +15,7 @@ import org.alphaquest.java.Toolkit.MouseEventListener;
 import org.alphaquest.java.Toolkit.Sound;
 import org.alphaquest.java.Toolkit.ToolKit;
 import org.alphaquest.java.delegate.LevelElements;
-import org.alphaquest.java.delegate.LevelDeligate;
+import org.alphaquest.java.delegate.LevelDelegate;
 import org.alphaquest.java.game.Map;
 import org.alphaquest.java.game.Player;
 import org.alphaquest.java.game.Sprite;
@@ -27,7 +27,7 @@ import org.alphaquest.java.gui.SDKButton;
 import org.alphaquest.java.math.Rectangle;
 import org.alphaquest.java.render.RenderHandler;
 
-public class StartScreen extends LevelDeligate{
+public class StartScreen extends LevelDelegate{
 
 	private Game game;
 	
@@ -65,6 +65,8 @@ public class StartScreen extends LevelDeligate{
 
 	private boolean isEnded;
 	
+	private boolean finished;
+	
 	public StartScreen(Game game) {
 		this.game = game;
 		this.xZoom = game.xZoom;
@@ -74,50 +76,6 @@ public class StartScreen extends LevelDeligate{
 		this.mouseListener = game.getMouseListener();
 		this.keyListener = game.getKeyListener();
 		this.renderer = game.getRenderer();
-	}
-
-	@Override
-	public void setupLevel() {
-		forward = false;
-		isEnded = false;
-		
-		background = new Rectangle(0,0,8000,1500);
-		//Opening music
-		Timer timer = new Timer(1500, new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				Sound.opening.play();
-			}
-		});
-		timer.setRepeats(false); // Only execute once
-		timer.start();
-		
-		ToolKit tk = new ToolKit();
-		bgLayer = new BufferedImage[4];
-		bgLayer[0] = tk.loadImage("/background C layer1.png");
-		bgLayer[1] = tk.loadImage("/background C layer2 p1.png");
-		bgLayer[2] = tk.loadImage("/background C layer2 p2.png");
-		bgLayer[3] = tk.loadImage("/background C layer2 p3.png");
-		
-		//load sprite sheets
-		BufferedImage textSheetImage = tk.loadImage("/font sheet.png");
-		textSheet = new SpriteSheet(textSheetImage);
-		textSheet.loadSprites(20, 20);
-		
-		//Load Tiles
-		startTiles = new Tiles(new File(tk.filePathString("/StartTiles.txt")), textSheet);
-
-		GUIButtons[] startButtons = new GUIButtons[startTiles.size()];
-		Sprite[] startTileSprites = startTiles.getSprite();
-		int guiSpacing = 5;
-		for(int i = 0; i < startButtons.length; i++) {
-			Rectangle startTileRectangle = new Rectangle((i * (startTileSprites[i].getWidth() * xZoom + guiSpacing)) + 50, 100, startTileSprites[i].getWidth() * xZoom, startTileSprites[i].getHeight() * yZoom);
-			startButtons[i] = new SDKButton(game, i,startTileSprites[i], startTileRectangle);
-		}
-		GUI startButton = new GUI(startButtons, 5, 5, true);
-		
-		objects = new GameObject[1];
-		objects[0] = startButton;
 	}
 	
 	@Override
@@ -185,9 +143,6 @@ public class StartScreen extends LevelDeligate{
 	public GameObject[] getObjects() {return objects;}
 
 	@Override
-	public GameObject[] getPauseObjects() {return null;}
-
-	@Override
 	public int getSelectedPauseOption() {return 0;}
 
 	@Override
@@ -239,5 +194,62 @@ public class StartScreen extends LevelDeligate{
 			renderer.getCamera().x -=1;
 			forward = false;
 		}
+	}
+
+	@Override
+	public void setup() {
+		finished = false;
+		forward = false;
+		isEnded = false;
+		
+		background = new Rectangle(0,0,8000,1500);
+		//Opening music
+		Timer timer = new Timer(1500, new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				Sound.opening.play();
+			}
+		});
+		timer.setRepeats(false); // Only execute once
+		timer.start();
+		
+		ToolKit tk = new ToolKit();
+		bgLayer = new BufferedImage[4];
+		bgLayer[0] = tk.loadImage("/background C layer1.png");
+		bgLayer[1] = tk.loadImage("/background C layer2 p1.png");
+		bgLayer[2] = tk.loadImage("/background C layer2 p2.png");
+		bgLayer[3] = tk.loadImage("/background C layer2 p3.png");
+		
+		//load sprite sheets
+		BufferedImage textSheetImage = tk.loadImage("/font sheet.png");
+		textSheet = new SpriteSheet(textSheetImage);
+		textSheet.loadSprites(20, 20);
+		
+		//Load Tiles
+		startTiles = new Tiles(new File(tk.filePathString("/StartTiles.txt")), textSheet);
+
+		GUIButtons[] startButtons = new GUIButtons[startTiles.size()];
+		Sprite[] startTileSprites = startTiles.getSprite();
+		int guiSpacing = 5;
+		for(int i = 0; i < startButtons.length; i++) {
+			Rectangle startTileRectangle = new Rectangle((i * (startTileSprites[i].getWidth() * xZoom + guiSpacing)) + 50, 100, startTileSprites[i].getWidth() * xZoom, startTileSprites[i].getHeight() * yZoom);
+			startButtons[i] = new SDKButton(game, i,startTileSprites[i], startTileRectangle);
+		}
+		GUI startButton = new GUI(startButtons, 5, 5, true);
+		
+		objects = new GameObject[1];
+		objects[0] = startButton;
+		
+		setFinishedLoading(true);
+	}
+	
+	@Override
+	public void setFinishedLoading(boolean b) {
+		finished = b;
+	}
+
+	@Override
+	public boolean isFinishedLoading() {
+		return finished;
 	}
 }

@@ -12,13 +12,10 @@ import javax.swing.JFrame;
 import org.alphaquest.java.Toolkit.FileChooser;
 import org.alphaquest.java.Toolkit.KeyBoardListener;
 import org.alphaquest.java.Toolkit.MouseEventListener;
-import org.alphaquest.java.delegate.LevelElements;
-import org.alphaquest.java.delegate.LevelDeligate;
+import org.alphaquest.java.delegate.LevelDelegate;
 import org.alphaquest.java.game.Map;
 import org.alphaquest.java.level.Level_1;
 import org.alphaquest.java.level.Level_2;
-import org.alphaquest.java.level.Level_3;
-import org.alphaquest.java.level.Level_4;
 import org.alphaquest.java.level.StartScreen;
 import org.alphaquest.java.math.Rectangle;
 import org.alphaquest.java.render.RenderHandler;
@@ -92,7 +89,7 @@ public class Game extends JFrame implements Runnable {
 	public int screenWidth;
 	public int screenHeight;
 	
-	private LevelDeligate[] level;
+	private LevelDelegate[] level;
 	private int currentLevel;
 	
 	public static void main(String[] args) {
@@ -107,19 +104,19 @@ public class Game extends JFrame implements Runnable {
 		System.setProperty("sun.java2d.xrender", "true");
         configureJFrame(GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()[0], getContentPane()); 
 
-        level = new LevelDeligate[4];
+        level = new LevelDelegate[3];
         level[0] = new StartScreen(this);
-        //level[1] = new Level_1(this);
-        //level[2] = new Level_2(this);
+        level[1] = new Level_1(this);
+        level[2] = new Level_2(this);
         //level[3] = new Level_3(this);
-        level[1] = new Level_4();
         
 		currentLevel = 0;
 		
-		for(int i = 0; i < level.length; i++) {
-			System.out.println("Level: " + i);
-			level[i].setup(this);
-		}
+		setLevel(currentLevel);
+		//for(int i = 0; i < level.length; i++) {
+			//System.out.println("Level: " + 0);
+			//level[0].setup(this);
+		//}
 	}
 
 	public void update() {
@@ -144,17 +141,19 @@ public class Game extends JFrame implements Runnable {
 		long lastTime = System.nanoTime(); //long 2^63
 		double nanoSecondConversion = 1000000000.0 / 60; //60 frames per second
 		double changeInSeconds = 0;
-
+		
 		while(true) {
+			
 			long now = System.nanoTime();
 
 			changeInSeconds += (now - lastTime) / nanoSecondConversion;
 			while(changeInSeconds >= 1) {
-				update();
+				if(level[currentLevel].isFinishedLoading())
+					update();
 				changeInSeconds--;
 			}
-
-			render();
+			if(level[currentLevel].isFinishedLoading())
+				render();
 			lastTime = now;
 		}
 	}
@@ -180,9 +179,21 @@ public class Game extends JFrame implements Runnable {
 	}
 	
 	public void setLevel(int incrementor) {
-		if(currentLevel + incrementor < level.length)
+		if(currentLevel + incrementor < level.length) {
 			currentLevel += incrementor;
-		level[currentLevel].startLevel();
+			
+			System.out.println("\nSetting up Level: " + currentLevel);
+			level[currentLevel].setup(this);
+			
+			while(true)
+				if(level[currentLevel].isFinishedLoading())
+					break;
+				
+			System.out.println("Strating Level: " + currentLevel + "\n");
+			level[currentLevel].startLevel();
+		}else
+			System.err.println("ATTEMPTED TO SET LEVEL OUT OF BOUNDS!");
+		
 	}
 	
 	public void setPauseOption(int tileID) {
@@ -202,7 +213,8 @@ public class Game extends JFrame implements Runnable {
             validate();
         } else {
             // Windowed mode
-            pack();
+			setBounds(0, 0, 600, 400);
+            //pack();
             setVisible(true);
         }
         
@@ -221,8 +233,8 @@ public class Game extends JFrame implements Runnable {
 		
 		screenWidth = getWidth();
 		screenHeight = getHeight();
-		System.out.println("Screen Width: " + getWidth() + ", Screen Height: " + getHeight());
-		renderer = new RenderHandler(getWidth(), getHeight());
+		System.out.println("Screen Width: " + screenWidth + ", Screen Height: " + screenHeight);
+		renderer = new RenderHandler(screenWidth, screenHeight);
     }
 	
 	public KeyBoardListener getKeyListener() {
