@@ -10,4 +10,6 @@ If you want to tryout AlphaQuest just download the repository and launch the **A
 
 **ESC** - Pauses the game
 
+**CTRL + S** - Opens a dialog to save the map
+
 **CTRL + Q** - Quits the game (you can also quit by pressing the **T** in the pause menu)
