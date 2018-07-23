@@ -57,7 +57,8 @@ public class Player implements GameObject {
 	boolean collisionTop = false;
 	boolean collisionBottom = false;
 
-	Rectangle tileRect = new Rectangle();
+	Rectangle tileRectY = new Rectangle();
+	Rectangle tileRectX = new Rectangle();
 	
 	public Player(Sprite sprite, int xZoom, int yZoom) {
 		this.sprite = sprite;
@@ -84,14 +85,15 @@ public class Player implements GameObject {
 
 		if (animatedSprite != null) {
 			renderer.renderSprite(animatedSprite, playerRectangle.x, playerRectangle.y, xZoom, yZoom, false);
-			renderer.renderRectangle(tileRect, xZoom, yZoom, false);
+			renderer.renderRectangle(tileRectY, xZoom, yZoom, false);
+			renderer.renderRectangle(tileRectX, xZoom, yZoom, false);
 		} else if (sprite != null) {
 			renderer.renderSprite(sprite, playerRectangle.x, playerRectangle.y, xZoom, yZoom, false);
 		} else {
 			renderer.renderRectangle(playerRectangle, xZoom, yZoom, false);
 			renderer.renderRectangle(collisionCheckRectangle, xZoom, yZoom, false);
-			renderer.renderRectangle(tileRect, xZoom, yZoom, false);
-			
+			renderer.renderRectangle(tileRectY, xZoom, yZoom, false);
+			renderer.renderRectangle(tileRectX, xZoom, yZoom, false);
 			/*renderer.renderRectangle(leftCheck, xZoom, yZoom, false);
 			renderer.renderRectangle(rightCheck, xZoom, yZoom, false);
 			renderer.renderRectangle(topCheck, xZoom, yZoom, false);
@@ -219,9 +221,16 @@ public class Player implements GameObject {
 		}
 		
 		if(!collisionRight) {
-			//playerRectangle.x = collisionCheckRectangle.x;
-		}else {
 			
+		}else {
+			MappedTile tile = game.getMap().getCollisionTile(Collision.RIGHT);
+			
+			if(tile != null) {
+				tileRectX  = new Rectangle((tile.x * game.xZoom * tileSize), (tile.y * game.yZoom * tileSize), tileSize, tileSize);
+				tileRectX.generateGraphics(0xff42f123);
+			
+				playerRectangle.x = (playerRectangle.w * game.xZoom) + (tile.x * game.xZoom * tileSize);
+			}
 		}
 		
 		if(!collisionTop) {
@@ -276,8 +285,8 @@ public class Player implements GameObject {
 					}
 				}
 				
-				tileRect  = new Rectangle((tile.x * game.xZoom * tileSize), (tile.y * game.xZoom * tileSize), tileSize, tileSize);
-				tileRect.generateGraphics(0xff42f47d);
+				tileRectY  = new Rectangle((tile.x * game.xZoom * tileSize), (tile.y * game.xZoom * tileSize), tileSize, tileSize);
+				tileRectY.generateGraphics(0xff42f47d);
 			}else {
 				playerRectangle.y = collisionCheckRectangle.y;
 				if(playerRectangle.y == minimumY) {
@@ -286,11 +295,12 @@ public class Player implements GameObject {
 			}
 		}else {
 			MappedTile tile = game.getMap().getCollisionTile(Collision.BOTTOM);
+			if(tile != null) {
+				tileRectY  = new Rectangle((tile.x * game.xZoom * tileSize), (tile.y * game.yZoom * tileSize), tileSize, tileSize);
+				tileRectY.generateGraphics(0xff42f47d);
 			
-			tileRect  = new Rectangle((tile.x * game.xZoom * tileSize), (tile.y * game.xZoom * tileSize), tileSize, tileSize);
-			tileRect.generateGraphics(0xff42f47d);
-			
-			minimumY = (tile.y * game.yZoom * tileSize) - (playerRectangle.h * game.yZoom);
+				minimumY = (tile.y * game.yZoom * tileSize) - (playerRectangle.h * game.yZoom);
+			}
 			playerRectangle.y = minimumY;
 		}
 		
