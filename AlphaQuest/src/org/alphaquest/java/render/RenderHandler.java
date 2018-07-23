@@ -1,14 +1,12 @@
 package org.alphaquest.java.render;
 
 import java.awt.Graphics;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 
 import org.alphaquest.java.Game;
-import org.alphaquest.java.game.Sprite;
+import org.alphaquest.java.functions.Sprite;
 import org.alphaquest.java.math.Rectangle;
 
 /**
@@ -50,19 +48,6 @@ public class RenderHandler {
 	private int maxScreenHeight;
 
 	public RenderHandler(int width, int height) {
-		
-//		GraphicsDevice[] graphicsDevices = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
-		
-//		maxScreenWidth = 0;
-//		maxScreenHeight = 0;
-//		for(int i = 0; i < graphicsDevices.length; i++) {
-//			if(maxScreenWidth < graphicsDevices[i].getDisplayMode().getWidth()) {
-//				maxScreenWidth = graphicsDevices[i].getDisplayMode().getWidth();
-//			}
-//			if(maxScreenHeight < graphicsDevices[i].getDisplayMode().getHeight()) {
-//				maxScreenHeight = graphicsDevices[i].getDisplayMode().getHeight();
-//			}
-//		}
 		//Create a BufferedImage that will represent our view.
 		view = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 		//Camera is an object of rectangle class

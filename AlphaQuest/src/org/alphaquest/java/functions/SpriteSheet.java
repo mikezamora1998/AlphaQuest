@@ -1,4 +1,4 @@
-package org.alphaquest.java.game;
+package org.alphaquest.java.functions;
 
 import java.awt.image.BufferedImage;
 

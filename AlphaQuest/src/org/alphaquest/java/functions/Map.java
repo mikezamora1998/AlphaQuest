@@ -1,4 +1,4 @@
-package org.alphaquest.java.game;
+package org.alphaquest.java.functions;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -80,6 +80,14 @@ public class Map {
 	private LevelElements level;
 
 	private Game game;
+	
+	Rectangle tileRectangle = new Rectangle();
+	
+	MappedTile tileLeft;
+	MappedTile tileRight;
+	MappedTile tileTop;
+	MappedTile tileBottom;
+	
 	//TODO: Talking Points
 	/**
 	 * Map constructor.
@@ -163,7 +171,7 @@ public class Map {
 
 				blocks[blockX][blockY].addTile(mappedTile);
 			}
-
+			scanner.close();
 		} catch(FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -184,70 +192,174 @@ public class Map {
 		return block.getTile(layer, tileX, tileY);
 	}
 	
-	public boolean checkCollision(Rectangle rect, int layer, int xZoom, int yZoom) {
-		int tileWidth = 16 * xZoom;
-		int tileHeight = 16 * yZoom;
+	public Tiles getTileSet() {
+		return tileSet;
+	}
+	
+	public MappedTile getCollisionTile(Collision collision) {
+		MappedTile tile = new MappedTile();
+		switch(collision) {
+		case BOTTOM:
+			tile = tileBottom;
+			break;
+		case LEFT:
+			tile = tileLeft;
+			break;
+		case RIGHT:
+			tile = tileRight;
+			break;
+		case TOP:
+			tile = tileTop;
+			break;
+		default:
+			break;
+		}
+		return tile;
+	}
+	
+	public void setCollisionTile(MappedTile tile, Collision collision) {
+		switch(collision) {
+		case BOTTOM:
+			tileBottom = tile;
+			break;
+		case LEFT:
+			tileLeft = tile;
+			break;
+		case RIGHT:
+			tileRight = tile;
+			break;
+		case TOP:
+			tileTop = tile;
+			break;
+		default:
+			break;
+		}
+	}
+	
+	public Collision checkCollision(Rectangle rect, int layer, int xZoom, int yZoom, Collision collision) {
+		
+		//System.out.println("rect.x: " + rect.x + ", rect.y: " + rect.y + ", rect.w: " + rect.w + ", rect.h: " + rect.h);
+		int w = 16;
+		
+		int tileWidth = 16;
+		
+		int tileWidthZoom = tileWidth * xZoom;
+		int tileHeightZoom = tileWidth * yZoom;
 
 		//Coordinates to check all tiles in a radius of 4 around the player
-		int topLeftX = (rect.x - 64)/tileWidth;
-		int topLeftY = (rect.y - 64)/tileHeight;
-		int bottomRightX = (rect.x + rect.w + 64)/tileWidth;
-		int bottomRightY = (rect.y + rect.h + 64)/tileHeight;
+		int topLeftX = (rect.x - (tileWidth * 4))/tileWidthZoom;
+		int topLeftY = (rect.y - (tileWidth * 4))/tileHeightZoom;
+		int bottomRightX = (rect.x + rect.w + (tileWidth * 4))/tileWidthZoom;
+		int bottomRightY = (rect.y + rect.h + (tileWidth * 4))/tileHeightZoom;
 
+		//System.out.println("topLeftX: " + topLeftX + ", topLeftY: " + topLeftY + ", bottomRightX: " + bottomRightX + ", bottomRightY: " + bottomRightY);
 		//Starting at the top left tile and going to the bottom right
 		for(int x = topLeftX; x < bottomRightX; x++)
 			for(int y = topLeftY; y < bottomRightY; y++) {
+				//System.out.println("X: " + x + ", Y: " + y);
 				MappedTile tile = getTile(layer, x, y);
-
+				
+				
 				if(tile != null) {
 					int collisionType = tileSet.collisionType(tile.id);
-
+					
+					//System.out.println("checking collision on tile: " + tileSet.tileName(tile.id) + ", with " + collision + " Collision");
+					
 					//Full tile collision
 					if(collisionType == 0) {
-						Rectangle tileRectangle = new Rectangle(tile.x*tileWidth, tile.y*tileHeight, tileWidth, tileWidth);
-						if(tileRectangle.intersects(rect)) {
-							return true;
+						
+						//System.out.println("collision id: " + collisionType);
+						
+						tileRectangle = new Rectangle(tile.x*tileWidthZoom, tile.y*tileHeightZoom, tileWidth, w);
+						if(tileRectangle.intersects(rect) && collision == Collision.BOTTOM) {
+							tileRectangle.generateGraphics(0xffffffff);
+							System.out.println("collision with Bottom");
+							tileBottom = tile;
+							return Collision.BOTTOM;
 						}
 
+						//Left of tile collision
+						tileRectangle = new Rectangle(tile.x*tileWidthZoom, tile.y*tileHeightZoom, w, tileWidth);
+						if(tileRectangle.intersects(rect) && collision == Collision.RIGHT) {
+							tileRectangle.generateGraphics(0xffffffff);
+							System.out.println("collision with Right");
+							tileRight = tile;
+							return Collision.RIGHT;
+						}
+
+						//Bottom of tile collision
+						tileRectangle = new Rectangle(tile.x*tileWidthZoom, tile.y*tileHeightZoom + tileHeightZoom, tileWidth, w);
+						Rectangle adjustedRect = new Rectangle(rect.x, rect.y + rect.h, rect.w, 1);
+						if(tileRectangle.intersects(adjustedRect) && collision == Collision.TOP) {
+							tileRectangle.generateGraphics(0xffffffff);
+							System.out.println("collision with Top");
+							tileTop = tile;
+							return Collision.TOP;
+						}
+
+						//Right of tile collision
+						tileRectangle = new Rectangle(tile.x*tileWidthZoom + tileWidthZoom, tile.y*tileHeightZoom, w, tileWidth);
+						if(tileRectangle.intersects(rect) && collision == Collision.LEFT) {
+							tileRectangle.generateGraphics(0xffffffff);
+							System.out.println("collision with Left");
+							tileLeft = tile;
+							return Collision.LEFT;
+						}
+						
 					//Top of tile collision
 					} else if(collisionType == 1) {
-						Rectangle tileRectangle = new Rectangle(tile.x*tileWidth, tile.y*tileHeight, tileWidth, 16);
-						if(tileRectangle.intersects(rect))
-							return true;
+						tileRectangle = new Rectangle(tile.x*tileWidthZoom, tile.y*tileHeightZoom, tileWidth, w);
+						if(tileRectangle.intersects(rect) && collision == Collision.BOTTOM) {
+							tileRectangle.generateGraphics(0xffffffff);
+							System.out.println("collision with Bottom");
+							tileBottom = tile;
+							return Collision.BOTTOM;
+						}
 
 					//Left of tile collision
 					} else if(collisionType == 2) {
-						Rectangle tileRectangle = new Rectangle(tile.x*tileWidth, tile.y*tileHeight, 16, tileHeight);
-						if(tileRectangle.intersects(rect))
-							return true;
+						tileRectangle = new Rectangle(tile.x*tileWidthZoom, tile.y*tileHeightZoom, w, tileWidth);
+						if(tileRectangle.intersects(rect) && collision == Collision.RIGHT) {
+							tileRectangle.generateGraphics(0xffffffff);
+							System.out.println("collision with Right");
+							tileRight = tile;
+							return Collision.RIGHT;
+						}
 
 					//Bottom of tile collision
 					} else if (collisionType == 3) {
-						Rectangle tileRectangle = new Rectangle(tile.x*tileWidth, tile.y*tileHeight + tileHeight - 16, tileWidth, 16);
+						tileRectangle = new Rectangle(tile.x*tileWidthZoom, tile.y*tileHeightZoom + tileHeightZoom, tileWidth, w);
 						Rectangle adjustedRect = new Rectangle(rect.x, rect.y + rect.h, rect.w, 1);
-						if(tileRectangle.intersects(adjustedRect))
-							return true;
+						if(tileRectangle.intersects(adjustedRect) && collision == Collision.TOP) {
+							tileRectangle.generateGraphics(0xffffffff);
+							System.out.println("collision with Top");
+							tileTop = tile;
+							return Collision.TOP;
+						}
 
 					//Right of tile collision
 					} else if (collisionType == 4) {
-						Rectangle tileRectangle = new Rectangle(tile.x*tileWidth + tileWidth - 16, tile.y*tileHeight, 16, tileHeight);
-						if(tileRectangle.intersects(rect))
-							return true;
+						tileRectangle = new Rectangle(tile.x*tileWidthZoom + tileWidthZoom, tile.y*tileHeightZoom, w, tileWidth);
+						if(tileRectangle.intersects(rect) && collision == Collision.LEFT) {
+							tileRectangle.generateGraphics(0xffffffff);
+							System.out.println("collision with Left");
+							tileLeft = tile;
+							return Collision.LEFT;
+						}
 						
 					//Ends Level
 					} else if (collisionType == 5) {
-						Rectangle tileRectangle = new Rectangle(tile.x*tileWidth, tile.y*tileHeight, tileWidth, tileWidth);
+						Rectangle tileRectangle = new Rectangle(tile.x*tileWidthZoom + tileWidthZoom, tile.y*tileHeightZoom, w, tileWidth);
 						if(tileRectangle.intersects(rect)) {
 							level.endLevel();
-							return true;
+							return Collision.END;
 						}
 					}
 				}
 			}
-		return false;
+		return Collision.NULL;
 	}
 	
-	//TODO: Talking Points Editor
 	/**
 	 * Sets a <b>tileID</b> at a specific <b>X</b> and <b>Y</b> position.
 	 * @param tileX <b>int</b>
@@ -465,6 +577,8 @@ public class Map {
 		for(int i = 0; i < objects.length; i++)
 			if(objects[i].getLayer() == Integer.MAX_VALUE)
 				objects[i].render(renderer, xZoom, yZoom);
+		
+		//renderer.renderRectangle(tileRectangle, xZoom, yZoom, false);
 	}
 	
 	//Block represents a 6/6 block of tiles
@@ -575,5 +689,7 @@ public class Map {
 			this.x = x;
 			this.y = y;
 		}
+
+		public MappedTile() {}
 	}
 }

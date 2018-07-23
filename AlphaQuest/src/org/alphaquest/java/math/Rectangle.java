@@ -149,7 +149,7 @@ public class Rectangle {
 		if(pixels != null) {
 			return pixels;
 		} else {
-			System.out.println("Attempted to retrive pixels from a Rectangle without generated graphics");
+			System.err.println("Attempted to retrive pixels from a Rectangle without generated graphics");
 		}
 		return null;
 	}

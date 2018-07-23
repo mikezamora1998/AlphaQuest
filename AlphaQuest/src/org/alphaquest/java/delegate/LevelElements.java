@@ -2,9 +2,9 @@ package org.alphaquest.java.delegate;
 
 import java.awt.image.BufferedImage;
 
-import org.alphaquest.java.game.Map;
-import org.alphaquest.java.game.Player;
-import org.alphaquest.java.game.Sprite;
+import org.alphaquest.java.functions.Map;
+import org.alphaquest.java.functions.Player;
+import org.alphaquest.java.functions.Sprite;
 import org.alphaquest.java.math.Rectangle;
 
 public interface LevelElements {

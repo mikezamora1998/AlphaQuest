@@ -1,4 +1,4 @@
-package org.alphaquest.java.game;
+package org.alphaquest.java.functions;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -43,6 +43,7 @@ public class Tiles {
 					i++;
 				}
 			}
+			scanner.close();
 		}catch(FileNotFoundException e){
 			e.printStackTrace();
 		}
@@ -81,6 +82,19 @@ public class Tiles {
 			System.out.println("TileID " + tileID + " is not within range " + tilesList.size() + ".");
 		}
 		return -1;
+	}
+	
+	public String tileName(int tileID) 
+	{
+		if(tileID >= 0 && tilesList.size() > tileID)
+		{
+			return tilesList.get(tileID).tileName;
+		}
+		else
+		{
+			System.out.println("TileID " + tileID + " is not within range " + tilesList.size() + ".");
+		}
+		return "null";
 	}
 	
 	class Tile{

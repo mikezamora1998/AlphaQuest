@@ -25,12 +25,9 @@ public class Sound {
     	this.type = type;
     	try {
     		System.out.println("Sound: " + path.replace("/", "").replace(".wav", "") + ", Type: " + type);
-    		
-    		//TODO: Use this for EXE Testing
+
     		clip = Applet.newAudioClip(filePathURL(path));
-    		
-    		//TODO: Use this for eclipse testing
-    		//clip = Applet.newAudioClip(Sound.class.getResource(path));
+
     	}catch(Exception e){
     		e.printStackTrace();
     	}

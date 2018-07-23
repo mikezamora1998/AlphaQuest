@@ -6,9 +6,9 @@ import java.io.File;
 
 import org.alphaquest.java.Game;
 import org.alphaquest.java.Toolkit.ToolKit;
-import org.alphaquest.java.game.Sprite;
-import org.alphaquest.java.game.SpriteSheet;
-import org.alphaquest.java.game.Tiles;
+import org.alphaquest.java.functions.Sprite;
+import org.alphaquest.java.functions.SpriteSheet;
+import org.alphaquest.java.functions.Tiles;
 import org.alphaquest.java.gui.GUI;
 import org.alphaquest.java.gui.GUIButtons;
 import org.alphaquest.java.gui.PauseButton;

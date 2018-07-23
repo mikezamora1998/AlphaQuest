@@ -13,7 +13,7 @@ import org.alphaquest.java.Toolkit.FileChooser;
 import org.alphaquest.java.Toolkit.KeyBoardListener;
 import org.alphaquest.java.Toolkit.MouseEventListener;
 import org.alphaquest.java.delegate.LevelDelegate;
-import org.alphaquest.java.game.Map;
+import org.alphaquest.java.functions.Map;
 import org.alphaquest.java.level.Level_1;
 import org.alphaquest.java.level.Level_2;
 import org.alphaquest.java.level.StartScreen;
@@ -83,7 +83,6 @@ public class Game extends JFrame implements Runnable {
 	private KeyBoardListener keyListener = new KeyBoardListener(this);
 	private MouseEventListener mouseListener = new MouseEventListener(this);
 	
-	//Zooms in on an image
 	public final int xZoom = 3;
 	public final int yZoom = 3;
 	public int screenWidth;
@@ -101,34 +100,30 @@ public class Game extends JFrame implements Runnable {
 	
 	public Game() {
 		super(GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()[0].getDefaultConfiguration());
-		System.setProperty("sun.java2d.xrender", "true");
         configureJFrame(GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()[0], getContentPane()); 
 
         level = new LevelDelegate[3];
         level[0] = new StartScreen(this);
         level[1] = new Level_1(this);
         level[2] = new Level_2(this);
-        //level[3] = new Level_3(this);
         
 		currentLevel = 0;
 		
 		setLevel(currentLevel);
-		//for(int i = 0; i < level.length; i++) {
-			//System.out.println("Level: " + 0);
-			//level[0].setup(this);
-		//}
 	}
 
 	public void update() {
 		level[currentLevel].update();
 	}
 	
+	/**
+	 * renders in linear order. Newest will be rendered over older
+	 */
 	public void render() {
 		BufferStrategy bufferStrategy = getBufferStrategy();
 		Graphics graphics = bufferStrategy.getDrawGraphics();
 		super.paint(graphics);
-		
-		//renders in linear order. Newest will be rendered over older
+
 		level[currentLevel].render();
 		
 		renderer.render(graphics);
@@ -141,19 +136,16 @@ public class Game extends JFrame implements Runnable {
 		long lastTime = System.nanoTime(); //long 2^63
 		double nanoSecondConversion = 1000000000.0 / 60; //60 frames per second
 		double changeInSeconds = 0;
-		
 		while(true) {
-			
 			long now = System.nanoTime();
-
 			changeInSeconds += (now - lastTime) / nanoSecondConversion;
 			while(changeInSeconds >= 1) {
-				if(level[currentLevel].isFinishedLoading())
-					update();
+				//checks if the level has loaded before updating the objects
+				if(level[currentLevel].isFinishedLoading()) update();
 				changeInSeconds--;
 			}
-			if(level[currentLevel].isFinishedLoading())
-				render();
+			//checks if the level has loaded before rendering the objects
+			if(level[currentLevel].isFinishedLoading()) render();
 			lastTime = now;
 		}
 	}
@@ -201,22 +193,23 @@ public class Game extends JFrame implements Runnable {
 	}
 	
 	public void configureJFrame(GraphicsDevice device, Container c) {
+		System.setProperty("sun.java2d.xrender", "true");
 		setContentPane(c);
 		boolean isFullScreen = false;
 
-        isFullScreen = device.isFullScreenSupported();
+       /* isFullScreen = device.isFullScreenSupported();
         setUndecorated(isFullScreen);
         setResizable(!isFullScreen);
         if (isFullScreen) {
             // Full-screen mode
             device.setFullScreenWindow(this);
             validate();
-        } else {
+        } else {*/
             // Windowed mode
-			setBounds(0, 0, 600, 400);
+			setBounds(0, 0, 1600, 900);
             //pack();
             setVisible(true);
-        }
+        //}
         
 		//Make our program shutdown when we exit out.
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
